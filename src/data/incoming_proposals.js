@@ -4,6 +4,22 @@
 
 export const incomingProposals = [
   {
+    id: 'cgp-0225',
+    title: 'Sustaining and Expanding MiniPay as Celo\'s Global Stablecoin Distribution Layer',
+    status: 'DRAFT',
+    proposer: 'Opera MiniPay (@opera_minipay)',
+    dateSubmitted: '2026-02-05',
+    fundingRequested: {
+      amount: 950212,
+      token: 'CELO',
+      usdEquivalent: null,
+      note: '⚠️ JSON amount (950,211 CELO) doesn\'t match markdown (212 CELO)'
+    },
+    summary: 'Funding request for MiniPay to continue as Celo\'s primary stablecoin distribution layer. Supports user acquisition, retention programs, and operational costs for H1 2026. Targets expanding user base and transaction volume across key markets.',
+    githubUrl: 'https://github.com/celo-org/governance/blob/main/CGPs/cgp-0225.md',
+    mondoUrl: null
+  },
+  {
     id: 'cgp-0224',
     title: 'Celo Foundation Season 2 Funding Proposal',
     status: 'DRAFT',
@@ -57,7 +73,8 @@ export const incomingProposals = [
     fundingRequested: {
       amount: 0,
       token: null,
-      usdEquivalent: 0
+      usdEquivalent: 0,
+      note: 'Non Funding Proposal'
     },
     summary: 'Enables Celo community to vote on Mento Governance Proposal 13. Increases circuit breaker threshold from 10bps to 15bps and introduces 5bps spread fee for three USDm trading pairs. Aims to reduce operational downtime from price volatility while generating protocol revenue.',
     githubUrl: 'https://github.com/celo-org/governance/blob/main/CGPs/cgp-0221.md',

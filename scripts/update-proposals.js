@@ -136,15 +136,15 @@ function parseCGPContent(content, cgpNumber) {
 }
 
 /**
- * Extract CELO amounts from Community Fund transactions in CGP JSON
+ * Fetch mainnet.json from CGP folder and extract CELO amount
  */
-function extractCommunityFundAmount(content) {
+async function extractCommunityFundAmountFromJSON(cgpNumber) {
   try {
-    // Look for JSON transaction blocks (with or without "json" label)
-    const jsonMatch = content.match(/```(?:json)?\s*\n(\[[\s\S]*?\]|\{[\s\S]*?\})\s*\n```/);
-    if (!jsonMatch) return 0;
+    const fileName = `cgp-${String(cgpNumber).padStart(4, '0')}`;
+    const url = `${GITHUB_RAW_BASE}/${fileName}/mainnet.json`;
 
-    const transactions = JSON.parse(jsonMatch[1]);
+    const data = await httpsGet(url);
+    const transactions = JSON.parse(data);
     let totalAmount = 0;
 
     // Parse transactions array
@@ -184,9 +184,32 @@ function extractCommunityFundAmount(content) {
 
     return totalAmount;
   } catch (error) {
-    console.error('Error parsing transaction JSON:', error.message);
+    // mainnet.json might not exist yet for drafts
     return 0;
   }
+}
+
+/**
+ * Extract CELO amount mentioned in markdown for verification
+ */
+function extractAmountFromMarkdown(content) {
+  // Look for common patterns like "Request: X CELO" or "X $CELO"
+  const patterns = [
+    /Request[:\s]+([0-9,]+(?:\.[0-9]+)?)\s*\$?CELO/i,
+    /([0-9,]+(?:\.[0-9]+)?)\s*\$CELO/i,
+    /Funding[:\s]+([0-9,]+(?:\.[0-9]+)?)\s*CELO/i
+  ];
+
+  for (const pattern of patterns) {
+    const match = content.match(pattern);
+    if (match) {
+      const amount = parseFloat(match[1].replace(/,/g, ''));
+      if (!isNaN(amount)) {
+        return Math.round(amount);
+      }
+    }
+  }
+  return null;
 }
 
 /**
@@ -200,9 +223,29 @@ async function fetchCGP(cgpNumber) {
     const content = await httpsGet(url);
     const proposal = parseCGPContent(content, cgpNumber);
 
-    // Extract funding amount from transactions
-    const amount = extractCommunityFundAmount(content);
-    proposal.fundingRequested.amount = amount;
+    // Extract funding amount from mainnet.json in cgp-XXXX folder (source of truth)
+    const jsonAmount = await extractCommunityFundAmountFromJSON(cgpNumber);
+
+    // Also check markdown for comparison
+    const mdAmount = extractAmountFromMarkdown(content);
+
+    // Verify amounts match
+    if (jsonAmount === 0 && mdAmount === null) {
+      // No mainnet.json and no funding mentioned in markdown - Non Funding Proposal
+      proposal.fundingRequested.amount = 0;
+      proposal.fundingRequested.note = 'Non Funding Proposal';
+    } else if (jsonAmount === 0 && mdAmount > 0) {
+      // Markdown mentions funding but no mainnet.json exists - Missing JSON
+      proposal.fundingRequested.amount = 0;
+      proposal.fundingRequested.note = `⚠️ Missing mainnet.json (markdown mentions ${mdAmount.toLocaleString()} CELO)`;
+    } else if (jsonAmount > 0 && mdAmount > 0 && Math.abs(jsonAmount - mdAmount) > 1) {
+      // Both exist but don't match
+      proposal.fundingRequested.amount = jsonAmount;
+      proposal.fundingRequested.note = `⚠️ JSON amount (${jsonAmount.toLocaleString()} CELO) doesn't match markdown (${mdAmount.toLocaleString()} CELO)`;
+    } else {
+      // Use JSON amount (source of truth)
+      proposal.fundingRequested.amount = jsonAmount;
+    }
 
     return proposal;
   } catch (error) {
@@ -238,6 +281,11 @@ async function updateProposals() {
       if (['DRAFT', 'PROPOSED', 'VOTING'].includes(proposal.status)) {
         proposals.push(proposal);
         console.log(`   ✅ ${proposal.id}: ${proposal.fundingRequested.amount.toLocaleString()} CELO`);
+
+        // Show warning if amounts don't match
+        if (proposal.fundingRequested.note) {
+          console.log(`      ${proposal.fundingRequested.note}`);
+        }
       } else {
         console.log(`   ⏭️  ${proposal.id}: Skipped (status: ${proposal.status})`);
       }
