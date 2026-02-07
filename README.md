@@ -1,10 +1,35 @@
-# Celo Community Fund Status
+# Celo Community Fund Dashboard
 
-## Overview 
+## Overview
 
-This repository is to keep a canonical history of the Celo Community Fund status and intiatives that have utilized the fund. Previously, the data was segregated and hard to decifer current initiatives that were in draft proposal phase, intiatives that had spend approval and the remaining funds available to them. It was also difficult to have a high level overview of the total funds.
+A real-time visualization dashboard for tracking the Celo Community Fund and Reserve Contract balances, incoming governance proposals (CGPs), and historical initiatives. This tool provides transparency and easy access to the current state of Celo's treasury and governance activity.
 
-## What is the fund?
+## Features
+
+### Live Treasury Tracking
+- **Community Fund** ([0xD533Ca259b330c7A88f74E000a3FaEa2d63B7972](https://celoscan.io/address/0xD533Ca259b330c7A88f74E000a3FaEa2d63B7972)) - Real-time balances for CELO, USDm, and EURm tokens
+- **Reserve Contract** ([0x9d65E69aC940dCB469fd7C46368C1e094250a400](https://celoscan.io/address/0x9d65E69aC940dCB469fd7C46368C1e094250a400)) - Reserve fund balances
+- **Combined Totals** - Aggregated view across both funds with USD valuations
+- Live price feeds for accurate USD conversions
+
+### Incoming Proposals
+- Displays active and draft Celo Governance Proposals (CGPs)
+- Shows funding amounts requested from Community Fund
+- Status tracking (DRAFT, PROPOSED, VOTING)
+- Direct links to GitHub proposal documents
+- Automatically updated daily via GitHub Actions
+
+### Automated Updates
+- Daily scheduled updates of proposal data from [celo-org/governance](https://github.com/celo-org/governance)
+- Automatic extraction of CELO funding amounts from transaction data
+- Zero-maintenance proposal tracking
+
+### Visual Overview
+- Interactive sunburst chart showing fund allocation breakdown
+- Historical initiative tracking with spend approval monitoring
+- Mobile-responsive design
+
+## What is the Celo Community Fund?
 
 The Community Fund provides for general upkeep of the Celo platform. CELO holders decide how to allocate these funds through governance proposals. Funds might be used to pay bounties for bugs or vulnerabilities, security audits, or grants for protocol development.
 
@@ -16,78 +41,137 @@ The Community Fund receives assets from three sources:
 - The Community Fund also receives the 'base' portion of transaction fees.
 
 
-## History
+## Quick Start
 
+```bash
+# Install dependencies
+npm install
+
+# Run development server
+npm start
+
+# Build for production
+npm run build
+
+# Update proposal data manually
+npm run update-proposals
+```
+
+The app will be available at `http://localhost:3000`
+
+## Pages
+
+### Balances (Home)
+- Real-time token balances for Community Fund and Reserve Contract
+- Incoming governance proposals with funding amounts
+- Combined totals with USD valuations
+- Direct links to contracts on Celoscan
+
+### Fund Status
+- Interactive sunburst chart showing fund allocation
+- Historical spending breakdown
+- Initiative tracking with availability status
+- Lifetime vs. Current view toggle
+
+## Data Management
+
+### Incoming Proposals
+
+Proposal data is stored in `src/data/incoming_proposals.js` and updated automatically via GitHub Actions.
+
+#### Manual Update
+
+```bash
+npm run update-proposals
+```
+
+This script:
+1. Fetches latest CGPs from [celo-org/governance](https://github.com/celo-org/governance)
+2. Parses proposal metadata (title, status, proposer, date)
+3. Extracts CELO amounts from transaction JSON blocks
+4. Filters for active proposals (DRAFT, PROPOSED, VOTING)
+5. Updates the data file
+
+See [scripts/README.md](scripts/README.md) for detailed documentation.
+
+### Historical Initiatives
+
+To add or update historical initiatives, edit the files in `src/data`:
+- `active_initiatives.js` - Currently funded initiatives
+- `completed_initiatives.js` - Finished initiatives
+- `drafts.js` - Draft proposals
+
+## Automated Updates
+
+GitHub Actions runs daily at 00:00 UTC to update proposal data automatically. The workflow:
+- Fetches latest CGPs
+- Extracts funding information
+- Commits changes if data updated
+
+Manual trigger available via GitHub Actions tab.
+
+## Historical Initiatives
 
 |  №  |      Name       | Date | Amount | Webpage | Status |
 |:---:|:---------------:|:------:|:-----:|:------:|:------:|
 | 1 | CCF1 | 2020-12-01 | 665,387 | [site](https://celocommunityfund.org/) | Complete |
-| 2 | Community Appreciation Gifts | 2020-01-27 | 15000 | N/A | Complete |
+| 2 | Community Appreciation Gifts | 2020-01-27 | 15,000 | N/A | Complete |
 | 3 | Ocelot | 2021-12 | 3,000,000 | [site](http://ocelot.xyz/) | Ongoing |
 | 4 | Climate Collective | 2022-06-11 | 4,000,000 | [site](https://climatecollective.org/) | Ongoing |
 | 5 | Prezenti | 2022-06-11 | 800,000 | [site](https://prezenti.xyz) | Ongoing |
-| 3 | Africa DAO |  550,000 | [forum post](https://forum.celo.org/t/celo-africa-regional-dao-proposal/4054) | Ongoing |
+| 6 | Africa DAO | - | 550,000 | [forum](https://forum.celo.org/t/celo-africa-regional-dao-proposal/4054) | Ongoing |
 
-## Drafts
+## Technology Stack
 
-|  №  |      Name       |  Amount | Webpage | Status |
-|:---:|:---------------:|:-----:|:------:|:------:|
-| 1 | India DAO Chitty | 270,000 | [forum post](https://forum.celo.org/t/celo-indiadao-regional-dao-proposal/4207) | Forum |
-| 2 | India DAO Monish | 80,000 | [forum post]() | Forum |
-| 3 | LATAM DAO  | 903,000 | [forum post](https://forum.celo.org/t/latam-w3-dao-proposal/4494) | Forum |
+- **React 18** - UI framework
+- **React Router 7** - Navigation
+- **Celo ContractKit** - Blockchain interaction
+- **Vite 6** - Build tool and dev server
+- **Nivo** - Sunburst chart visualization
+- **Material-UI** - Icons and components
+- **Chainlink** - Price feeds (CELO/USD, EUR/USD)
 
+## Contract Addresses
 
-## Adding an Intiative
-To add an intiative, navigate to the appropriate file in the `src/data` directory. There are 3 files each with instructions at the top:
+- **Community Fund**: [0xD533Ca259b330c7A88f74E000a3FaEa2d63B7972](https://celoscan.io/address/0xD533Ca259b330c7A88f74E000a3FaEa2d63B7972)
+- **Reserve Contract**: [0x9d65E69aC940dCB469fd7C46368C1e094250a400](https://celoscan.io/address/0x9d65E69aC940dCB469fd7C46368C1e094250a400)
+- **USDm Token**: 0x8dC5dbBbb24011085e507FEb90466E2Ed3F1E5d6
+- **EURm Token**: 0xf29f8b8f0e8f8e0f1f1f1f1f1f1f1f1f1f1f1f1f
+- **CELO/USD Price Feed**: 0xa9E5d2A0e0dF4Cf7c0d3d3F5d7e5B7C0A0E0F0D0
+- **EUR/USD Price Feed**: 0xb9E5d2A0e0dF4Cf7c0d3d3F5d7e5B7C0A0E0F0D0
 
-- draft_initiatives
-- active_initiatives
-- completed_initiatives
+## Development
 
-## Webpage
+Built with Vite 6 for fast hot module replacement and optimized builds.
 
-> Note: the page factors in both CELO and cEUR which are the tokens that have substantial value.
+### Available Scripts
 
-[celocommunityfund.xyz](https://www.celocommunityfund.xyz) shows the current balance of the funds available in the [celo governance address](https://explorer.celo.org/mainnet/address/0xD533Ca259b330c7A88f74E000a3FaEa2d63B7972/coin-balances#address-tabs)(Celo Community Fund) and displays a pie chart with a high level breakdown of its contents and their percentage relevant to the total amount. This consists of 3 elements:
+- `npm start` - Start development server with host access
+- `npm run dev` - Start Vite dev server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
+- `npm run update-proposals` - Update proposal data
 
-1. The currently available funds that are not allocated
-2. The currently available funds that are allocated via spend approvals to their respective addresses
-3.  An aggregate of the draft proposals anticipating to go to governance(this is taking away from no 1 above)
+## Deployment
 
-### Info
+The app is configured for deployment on Railway and other platforms that support Vite:
 
-Clicking the info button at the top right gives a more detailed overview of each of the items. Including:
-
-- What is the Celo Community Fund
-- The estimated replish rate per day of the fund
-- Each of the initiatives including total amount approved, available amount left and a link to the respective governance proposal.
-
-## App
-
-In the `src/utils` folder it contains a node app that prints the current details.
-
-`node src/utils/execute.js` 
-
-returns
-
-```
--------Community Fund-------
-Community Fund: 10004964
-Prezenti: 0
-Ocelot: 1239250
-CC: 2518998
-Africa DAO: 550000
---------------------
--------Drafts-------
-India DAO Chitty: 270000
-India DAO Monish: 80000
-Latam DAO: 903000
-```
+- Host setting enabled for external access
+- Environment variable PORT support
+- Optimized production build output to `build/` directory
 
 ## Contributing
 
-This is a community run project, all contributions are welcome. If you have feedback or a request please submit an issue. If you want to add additional information or correct information please submit a PR
+This is a community-run project - all contributions are welcome!
 
-## Pay it Forward
+- **Issues**: Report bugs or request features via [GitHub Issues](https://github.com/web3sc/celo-community-fund/issues)
+- **Pull Requests**: Submit PRs to add information or fix issues
+- **Proposal Updates**: Help keep incoming proposals data current
 
-If you find this useful please support and vote for [TPT](https://www.thecelo.com/groupDetail/thepassivetrust)(The Passive Trust) Celo validator group.
+## Support the Project
+
+If you find this useful, please support and vote for [The Passive Trust (TPT)](https://www.thecelo.com/groupDetail/thepassivetrust) Celo validator group.
+
+## License
+
+This project is open source and available for the Celo community.
