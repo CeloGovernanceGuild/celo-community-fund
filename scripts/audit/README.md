@@ -19,7 +19,7 @@ Requires Python 3. Network access to `forno.celo.org`
 | `verify.py` | `verified.json` | Execution receipts, proposal to CGP mapping from on-chain description URLs, balances and allowances |
 | `reconcile.py` | `recon.json` | CGP spends vs execution receipts, in both directions |
 | `grants.py` | `grants.json` | Exact effective amount of every grant (archive calls) |
-| `fetch_inflows.py` | `celo_in.json` | CELO transferred into the fund over the last year |
+| `fetch_inflows.py` | `celo_in.json` | CELO ERC-20 and native-value flows, plus a balance-delta reconciliation, over the last year |
 | `gen_data.py` | `src/data/ledger.js`, `src/data/proposals.js` | Ledger of every grant and pending proposals |
 | `gen_report.py` | `docs/audit.md` | The audit report |
 
