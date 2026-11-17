@@ -29,25 +29,23 @@ allowance with 1 wei left is visible as open.
 
 ## Webpage
 
-> The chart tracks CELO. The Ledger and Balances pages cover CELO, USDm and EURm.
-
-[celocommunityfund.xyz](https://www.celocommunityfund.xyz) shows the current CELO balance of the [governance contract](https://celoscan.io/address/0xD533Ca259b330c7A88f74E000a3FaEa2d63B7972) (Celo Community Fund) and a sunburst chart with a high level breakdown of its contents. This consists of 3 elements:
-
-1. The currently available funds that are not allocated
-2. The funds allocated via spend approvals (allowances) to their respective addresses
-3. An aggregate of the draft proposals anticipating to go to governance (this is taken from no. 1 above)
-
-The switch above the chart toggles between the **Lifetime** view (including CELO already spent by initiatives) and the **Current** view.
+[celocommunityfund.xyz](https://www.celocommunityfund.xyz) reads the Community Fund
+([governance contract](https://celoscan.io/address/0xD533Ca259b330c7A88f74E000a3FaEa2d63B7972)) live from the chain.
+The design follows the celo.org brand: yellow page, black ink, serif display type.
 
 ### Pages
 
-- **Fund Status**: CELO balance, funds available and the Lifetime / Current chart.
-- **Ledger**: every grant per spender and token with approved, claimed and remaining amounts. Each row
-  expands into the proposals that funded it, with requested, replaced and effective amounts and the
-  execution transaction.
+- **Overview**: balance, available, committed and claimed CELO; what the balance is made of; open
+  allowances and the latest grants.
+- **Ledger**: every grant per recipient and token with approved, claimed and remaining amounts.
+  Searchable and filterable. Each line opens into the proposals that funded it, with the execution
+  transaction.
 - **Balances**: Community Fund and Reserve holdings with USD values from Chainlink, and the fund's
   commitments per token.
-- **Proposals**: pending CGPs, their on-chain stage and fund requests.
+- **Proposals**: drafted and in-progress CGPs, their on-chain stage and funding requests.
+- **About**: how to read the numbers and where the data comes from.
+
+Amounts are shown in whole units; the exact value is in the hover title and in `docs/audit.md`.
 
 ## Development
 
@@ -83,9 +81,10 @@ src/
     celo.js             on-chain reads (viem): balances, allowances, Reserve, Chainlink prices
     fund.js             pure BigInt derivation of the ledger, totals and charts (tested)
     format.js           exact wei formatting (tested)
-  pages/                Fund Status, Ledger, Balances, Proposals
-  components/           icons
+  pages/                Overview, Ledger, Balances, Proposals, About
+  components/           Amount, charts (segmented bar, claim progress)
   App.jsx               layout and navigation
+  index.css, App.css    design tokens and styles
 scripts/
   status.js             CLI version of the dashboard (npm run status)
   audit/                governance audit that generates src/data and docs/audit.md

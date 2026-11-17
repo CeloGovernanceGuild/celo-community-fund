@@ -1,6 +1,6 @@
 {
-  "short_name": "CCF Status",
-  "name": "Celo Community Fund Status",
+  "short_name": "Community Fund",
+  "name": "Celo Community Fund",
   "icons": [
     {
       "src": "favicon.ico",
@@ -10,6 +10,6 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#FCFF52",
+  "background_color": "#FCFF52"
 }
