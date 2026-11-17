@@ -2,7 +2,7 @@
 
 ## Overview 
 
-This repository is to keep a canonical history of the Celo Community Fund status and intiatives that have utilized the fund. Previously, the data was segregated and hard to decifer current initiatives that were in draft proposal phase, intiatives that had spend approval and the remaining funds available to them. It was also difficult to have a high level overview of the total funds.
+This repository is to keep a canonical history of the Celo Community Fund status and initiatives that have utilized the fund. Previously, the data was segregated and hard to decipher current initiatives that were in draft proposal phase, initiatives that had spend approval and the remaining funds available to them. It was also difficult to have a high level overview of the total funds.
 
 ## What is the fund?
 
@@ -18,70 +18,87 @@ The Community Fund receives assets from three sources:
 
 ## History
 
-
-|  №  |      Name       | Date | Amount | Webpage | Status |
-|:---:|:---------------:|:------:|:-----:|:------:|:------:|
-| 1 | CCF1 | 2020-12-01 | 665,387 | [site](https://celocommunityfund.org/) | Complete |
-| 2 | Community Appreciation Gifts | 2020-01-27 | 15000 | N/A | Complete |
-| 3 | Ocelot | 2021-12 | 3,000,000 | [site](http://ocelot.xyz/) | Ongoing |
-| 4 | Climate Collective | 2022-06-11 | 4,000,000 | [site](https://climatecollective.org/) | Ongoing |
-| 5 | Prezenti | 2022-06-11 | 800,000 | [site](https://prezenti.xyz) | Ongoing |
-| 3 | Africa DAO |  550,000 | [forum post](https://forum.celo.org/t/celo-africa-regional-dao-proposal/4054) | Ongoing |
+| # | Name | Amount (CELO) | Proposal | Status |
+|:---:|:---|---:|:---:|:---:|
+| 1 | Celo Airdrop | 200,000 | [16](https://celo.stake.id/#/proposal/16) | Complete |
+| 2 | CCF1 | 665,387 | [18](https://celo.stake.id/#/proposal/18) | Complete |
+| 3 | Community Appreciation Gifts | 15,000 | [25](https://celo.stake.id/#/proposal/25) | Complete |
+| 4 | Ocelot | 3,000,000 | [43](https://celo.stake.id/#/proposal/43) | Ongoing |
+| 5 | Climate Collective | 4,000,000 | [60](https://celo.stake.id/#/proposal/60) | Ongoing |
+| 6 | Prezenti (2 rounds) | 2,400,000 | [61](https://celo.stake.id/#/proposal/61), [89](https://celo.stake.id/#/proposal/89) | Ongoing |
+| 7 | Africa DAO | 550,000 | [85](https://celo.stake.id/#/proposal/85) | Ongoing |
+| 8 | Chainlink | 5,980,313 | [88](https://celo.stake.id/#/proposal/88) | Ongoing |
+| 9 | Latam DAO | 903,000 | [96](https://celo.stake.id/#/proposal/96) | Ongoing |
+| 10 | Celo Tribe | 70,000 | [101](https://celo.stake.id/#/proposal/101) | Ongoing |
+| 11 | Europe DAO | 440,000 | [115](https://celo.stake.id/#/proposal/115) | Ongoing |
+| 12 | Asia DAO | 333,030 | [120](https://celo.stake.id/#/proposal/120) | Ongoing |
+| 13 | Mobile First Community | 120,000 | [123](https://celo.stake.id/#/proposal/123) | Ongoing |
 
 ## Drafts
 
-|  №  |      Name       |  Amount | Webpage | Status |
-|:---:|:---------------:|:-----:|:------:|:------:|
-| 1 | India DAO Chitty | 270,000 | [forum post](https://forum.celo.org/t/celo-indiadao-regional-dao-proposal/4207) | Forum |
-| 2 | India DAO Monish | 80,000 | [forum post]() | Forum |
-| 3 | LATAM DAO  | 903,000 | [forum post](https://forum.celo.org/t/latam-w3-dao-proposal/4494) | Forum |
+| # | Name | Amount (CELO) | Proposal |
+|:---:|:---|---:|:---:|
+| 1 | India DAO Chitty | 270,000 | [CGP-0064](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0064.md) |
+| 2 | India DAO Monish | 80,000 | N/A |
+| 3 | ImmuneFi Bug Bounty | 1,500,000 | [CGP-0073](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0073.md) |
+| 4 | Centrifuge Deployment | 400,000 | [CGP-0095](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0095.md) |
 
+## Adding an Initiative
 
-## Adding an Intiative
-To add an intiative, navigate to the appropriate file in the `src/data` directory. There are 3 files each with instructions at the top:
+Initiatives live in `src/data`, each file has instructions at the top:
 
-- draft_initiatives
-- active_initiatives
-- completed_initiatives
+- `drafts.js`: proposals expected to go to governance (their amounts are reserved from the funds available)
+- `active_initiatives.js`: approved spend allowances, read on-chain
+- `completed_initiatives.js`: fully used spend allowances
+
+Flow: Draft -> Active Initiative -> Completed Initiative.
 
 ## Webpage
 
-> Note: the page factors in both CELO and cEUR which are the tokens that have substantial value.
+> Note: the page only tracks CELO held by the Community Fund.
 
-[celocommunityfund.xyz](https://www.celocommunityfund.xyz) shows the current balance of the funds available in the [celo governance address](https://explorer.celo.org/mainnet/address/0xD533Ca259b330c7A88f74E000a3FaEa2d63B7972/coin-balances#address-tabs)(Celo Community Fund) and displays a pie chart with a high level breakdown of its contents and their percentage relevant to the total amount. This consists of 3 elements:
+[celocommunityfund.xyz](https://www.celocommunityfund.xyz) shows the current CELO balance of the [governance contract](https://celoscan.io/address/0xD533Ca259b330c7A88f74E000a3FaEa2d63B7972) (Celo Community Fund) and a sunburst chart with a high level breakdown of its contents. This consists of 3 elements:
 
 1. The currently available funds that are not allocated
-2. The currently available funds that are allocated via spend approvals to their respective addresses
-3.  An aggregate of the draft proposals anticipating to go to governance(this is taking away from no 1 above)
+2. The funds allocated via spend approvals (allowances) to their respective addresses
+3. An aggregate of the draft proposals anticipating to go to governance (this is taken from no. 1 above)
+
+The switch above the chart toggles between the **Lifetime** view (including CELO already spent by initiatives) and the **Current** view.
 
 ### Info
 
-Clicking the info button at the top right gives a more detailed overview of each of the items. Including:
+Clicking the info button at the top right gives a more detailed overview, including:
 
 - What is the Celo Community Fund
-- The estimated replish rate per day of the fund
-- Each of the initiatives including total amount approved, available amount left and a link to the respective governance proposal.
+- The estimated replenish rate per day of the fund
+- Each initiative with its total amount approved, available amount left and a link to its governance proposal
 
-## App
+## Development
 
-In the `src/utils` folder it contains a node app that prints the current details.
+Requires Node.js 20+.
 
-`node src/utils/execute.js` 
+```sh
+npm install
+npm run dev      # start the dev server
+npm test         # run unit tests
+npm run build    # production build into ./build
+```
 
-returns
+## CLI
+
+`npm run status` prints the current on-chain status:
 
 ```
 -------Community Fund-------
-Community Fund: 10004964
-Prezenti: 0
-Ocelot: 1239250
-CC: 2518998
-Africa DAO: 550000
---------------------
+Contract Balance: <balance>
+Ocelot: <remaining allowance>
+...
 -------Drafts-------
-India DAO Chitty: 270000
-India DAO Monish: 80000
-Latam DAO: 903000
+India DAO Chitty: 270,000
+...
+--------------------
+Estimated Replenish Rate: ~18,000 per day
+Funds Available (after allowances and drafts): <amount>
 ```
 
 ## Contributing

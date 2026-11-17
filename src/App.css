@@ -20,7 +20,6 @@ h4 {
   font-family: 'Inter', sans-serif;
   text-align: justify;
   z-index: 12;
-
 }
 
 .modal ul {
@@ -157,23 +156,35 @@ tr{
 }
 
 .TPT:hover {
-  cursor: hover;
+  cursor: pointer;
 }
 
 .pie-chart {
   width: 65vw;
 }
 
-.chart-text {
-  background-color: #282c34;
-  color: white;
-  border: none;
-  font-size: 1rem;
-  border-radius: 5px;
+.toggle {
+  display: inline-flex;
+  margin: 1rem;
+  background-color: white;
+  border-radius: 15px;
+  overflow: hidden;
 }
 
-.chart-button:hover {
+.toggle-option {
+  width: 110px;
+  height: 30px;
+  border: none;
+  background: transparent;
+  color: black;
+  font-size: 16px;
   cursor: pointer;
+}
+
+.toggle-option.selected {
+  background-color: #FCFF52;
+  color: #1e311b;
+  border-radius: 15px;
 }
 
 .tooltip {
@@ -199,10 +210,6 @@ tr{
   z-index: 1;
 }
 
-.toggle {
-  z-index: 0;
-}
-
 .tooltip:hover .tooltiptext {
   visibility: visible;
   transition: all 5s ease-in;
@@ -218,11 +225,6 @@ tr{
 
 
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
 
 .App-header {
   background-color: #282c34;
