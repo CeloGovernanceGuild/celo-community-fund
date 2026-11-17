@@ -47,8 +47,8 @@ NAMES = {
  "0x35ff861a0b6215cec71ea282b0d32afefa661795": "Celo SHIELD",
  "0xc733285e8e4db433d4cd641f99c46bf108dcb54f": "Celo Governance Guild",
  "0xb0d0780eddc2fa35906c0b37b9b4dc7583c3dbb0": "Celo Core Co.",
- "CELO:0x68ce71d4ceca3003701ca6844d9a345925407455": "Challenger Operator (Score Management Committee multisig)",
- "USDm:0x68ce71d4ceca3003701ca6844d9a345925407455": "Score Management Committee",
+ "CELO:0x68ce71d4ceca3003701ca6844d9a345925407455": "Score Management Committee (incl. Challenger Operator funding)",
+ "USDm:0x68ce71d4ceca3003701ca6844d9a345925407455": "Score Management Committee (incl. Challenger Operator funding)",
 }
 # Direct transfers are grouped by purpose; each recipient stays visible in the grant lines.
 TRANSFER_GROUPS = [

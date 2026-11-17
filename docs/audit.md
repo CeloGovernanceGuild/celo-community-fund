@@ -86,7 +86,7 @@ Entries with a remaining allowance, however small, are listed as open.
 | Celo Communities Guild | CELO | 1,304,258 | 1,304,258 | 0 | fully claimed | [CGP-165](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0165.md), [CGP-195](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0195.md), [CGP-219](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0219.md), [CGP-251](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0251.md) |
 | Celo Communities Guild | USDm | 98,180 | 98,180 | 0 | fully claimed | [CGP-165](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0165.md), [CGP-195](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0195.md) |
 | Prezenti Grants (Seasons 0-2) | USDm | 335,000 | 335,000 | 0 | fully claimed | [CGP-168](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0168.md) |
-| Score Management Committee | USDm | 105,000 | 105,000 | 0 | fully claimed | [CGP-169](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0169.md), [CGP-181](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0181.md), [CGP-210](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0210.md) |
+| Score Management Committee (incl. Challenger Operator funding) | USDm | 105,000 | 105,000 | 0 | fully claimed | [CGP-169](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0169.md), [CGP-181](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0181.md), [CGP-210](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0210.md) |
 | Celo Camp 2025 | CELO | 223,098 | 223,098 | 0 | fully claimed | [CGP-176](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0176.md) |
 | Celo Camp 2025 | USDm | 299,040 | 299,040 | 0 | fully claimed | [CGP-176](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0176.md) |
 | Prezenti Grants (Seasons 0-2) | CELO | 5,176,267 | 5,176,267 | 0 | fully claimed | [CGP-197](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0197.md), [CGP-227](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0227.md) |
@@ -98,7 +98,7 @@ Entries with a remaining allowance, however small, are listed as open.
 | cLabs Core Protocol Season 2 | CELO | 4,355,627 | 4,355,627 | 0 | transfer | [CGP-220](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0220.md) |
 | Celo Governance Guild | CELO | 862,000 | 862,000 | 0 | fully claimed | [CGP-223](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0223.md), [CGP-250](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0250.md) |
 | Celo Core Co. | CELO | 31,609,499 | 31,609,499 | 0 | fully claimed | [CGP-247](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0247.md) |
-| Challenger Operator (Score Management Committee multisig) | CELO | 1,312,500 | 1,312,500 | 0 | fully claimed | [CGP-242](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0242.md) |
+| Score Management Committee (incl. Challenger Operator funding) | CELO | 1,312,500 | 1,312,500 | 0 | fully claimed | [CGP-242](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0242.md) |
 
 ## Findings
 
