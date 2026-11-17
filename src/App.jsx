@@ -108,7 +108,7 @@ function App() {
             <p>The Community Fund provides for general upkeep of the Celo platform. CELO holders decide how to allocate these funds through governance proposals. Funds might be used to pay bounties for bugs or vulnerabilities, security audits, or grants for protocol development.</p>
             <p>The Community Fund receives assets from three sources:</p>
             <ul>
-              <li>The Community Fund obtains a desired epoch reward defined as a fraction of the total desired epoch rewards (governable, initially planned to be 25%). This amount is subject to adjustment up or down in the event of under- or over-spending against the epoch rewards target schedule. The Community Fund epoch rewards may be redirected to bolster the Reserve.</li>
+              <li>The Community Fund receives a share of epoch rewards, paid from CeloUnreleasedTreasury since the L2 migration.</li>
               <li>The Community Fund is the default destination for slashed assets.</li>
               <li>The Community Fund also receives the 'base' portion of transaction fees.</li>
             </ul>
@@ -116,7 +116,8 @@ function App() {
 
           <div>
             <hr />
-            <h3>Est Replenish Rate: ~{fmt(REPL_RATE)} CELO daily</h3>
+            <h3>Regular inflow: ~{fmt(REPL_RATE)} CELO daily</h3>
+            <p>Since the L2 migration, large grants are funded from the Reserve or the treasury in the same proposal that approves them.</p>
             <hr />
             <p>* All values below in CELO</p>
           </div>

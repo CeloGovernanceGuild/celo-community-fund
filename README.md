@@ -16,36 +16,27 @@ The Community Fund receives assets from three sources:
 - The Community Fund also receives the 'base' portion of transaction fees.
 
 
-## History
+## Initiatives
 
-| # | Name | Amount (CELO) | Proposal | Status |
-|:---:|:---|---:|:---:|:---:|
-| 1 | Celo Airdrop | 200,000 | [16](https://celo.stake.id/#/proposal/16) | Complete |
-| 2 | CCF1 | 665,387 | [18](https://celo.stake.id/#/proposal/18) | Complete |
-| 3 | Community Appreciation Gifts | 15,000 | [25](https://celo.stake.id/#/proposal/25) | Complete |
-| 4 | Ocelot | 3,000,000 | [43](https://celo.stake.id/#/proposal/43) | Ongoing |
-| 5 | Climate Collective | 4,000,000 | [60](https://celo.stake.id/#/proposal/60) | Ongoing |
-| 6 | Prezenti (2 rounds) | 2,400,000 | [61](https://celo.stake.id/#/proposal/61), [89](https://celo.stake.id/#/proposal/89) | Ongoing |
-| 7 | Africa DAO | 550,000 | [85](https://celo.stake.id/#/proposal/85) | Ongoing |
-| 8 | Chainlink | 5,980,313 | [88](https://celo.stake.id/#/proposal/88) | Ongoing |
-| 9 | Latam DAO | 903,000 | [96](https://celo.stake.id/#/proposal/96) | Ongoing |
-| 10 | Celo Tribe | 70,000 | [101](https://celo.stake.id/#/proposal/101) | Ongoing |
-| 11 | Europe DAO | 440,000 | [115](https://celo.stake.id/#/proposal/115) | Ongoing |
-| 12 | Asia DAO | 333,030 | [120](https://celo.stake.id/#/proposal/120) | Ongoing |
-| 13 | Mobile First Community | 120,000 | [123](https://celo.stake.id/#/proposal/123) | Ongoing |
+Initiative data in `src/data` is generated from an on-chain audit of every executed governance
+proposal: see [docs/audit.md](docs/audit.md) for the full list of grants, execution transactions and
+findings, and [scripts/audit](scripts/audit) to re-run it.
 
-## Drafts
+As of Celo block 83009701: 5 spenders still hold a CELO allowance,
+34 initiatives are completed, and there are no pending funding proposals.
 
-| # | Name | Amount (CELO) | Proposal |
-|:---:|:---|---:|:---:|
-| 1 | India DAO Chitty | 270,000 | [CGP-0064](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0064.md) |
-| 2 | India DAO Monish | 80,000 | N/A |
-| 3 | ImmuneFi Bug Bounty | 1,500,000 | [CGP-0073](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0073.md) |
-| 4 | Centrifuge Deployment | 400,000 | [CGP-0095](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0095.md) |
+| Active initiative | Approved (CELO) | Remaining allowance (CELO) | CGPs |
+|:---|---:|---:|:---|
+| CCF1 | 665,387.00 | 6,472.79 | [17](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0017.md) |
+| Community Appreciation Gifts | 15,000.00 | 14,300.00 | [20](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0020.md) |
+| Africa DAO | 550,000.00 | 989.90 | [68](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0068.md) |
+| CeloPG H2 2024 (second spender) | 1,250,000.00 | 1,250,000.00 | [141](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0141.md) |
+| CICLOPS | 69,426,799.00 | 37,597,705.00 | [158](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0158.md), [202](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0202.md), [231](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0231.md), [237](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0237.md), [248](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0248.md) |
 
 ## Adding an Initiative
 
-Initiatives live in `src/data`, each file has instructions at the top:
+Re-run the audit (`scripts/audit/run.sh`) after new proposals execute; it regenerates the files below.
+Drafts are the only file edited by hand. Each file has instructions at the top:
 
 - `drafts.js`: proposals expected to go to governance (their amounts are reserved from the funds available)
 - `active_initiatives.js`: approved spend allowances, read on-chain
@@ -70,7 +61,7 @@ The switch above the chart toggles between the **Lifetime** view (including CELO
 Clicking the info button at the top right gives a more detailed overview, including:
 
 - What is the Celo Community Fund
-- The estimated replenish rate per day of the fund
+- The regular daily CELO inflow to the fund
 - Each initiative with its total amount approved, available amount left and a link to its governance proposal
 
 ## Development
@@ -89,7 +80,7 @@ npm run build    # production build into ./build
 ```
 src/
   data/                 initiative data, the only place to edit when governance changes
-    data.js             contract addresses, colors, replenish rate
+    data.js             contract addresses, colors, regular inflow
     active_initiatives.js
     completed_initiatives.js
     drafts.js
@@ -116,13 +107,11 @@ through pull requests with passing CI, and only `dev` can be merged into
 ```
 -------Community Fund-------
 Contract Balance: <balance>
-Ocelot: <remaining allowance>
+CICLOPS: <remaining allowance>
 ...
 -------Drafts-------
-India DAO Chitty: 270,000
-...
 --------------------
-Estimated Replenish Rate: ~18,000 per day
+Regular inflow: ~30 CELO per day
 Funds Available (after allowances and drafts): <amount>
 ```
 

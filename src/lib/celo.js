@@ -11,12 +11,15 @@ const readCelo = (functionName, args) =>
 
 /**
  * Reads the governance contract's CELO balance and the remaining
- * spend allowance of each initiative, in whole CELO.
+ * spend allowance of each initiative, in whole CELO. Initiatives without
+ * an address were one-off transfers and have no allowance.
  */
 export async function fetchFundBalances(initiatives) {
   const [balance, ...remaining] = await Promise.all([
     readCelo("balanceOf", [GOVERNANCE_ADDRESS]),
-    ...initiatives.map((initiative) => readCelo("allowance", [GOVERNANCE_ADDRESS, initiative.address])),
+    ...initiatives.map((initiative) =>
+      initiative.address ? readCelo("allowance", [GOVERNANCE_ADDRESS, initiative.address]) : 0
+    ),
   ]);
 
   const allowances = Object.fromEntries(initiatives.map((initiative, i) => [initiative.title, remaining[i]]));

@@ -5,10 +5,11 @@ export const GOVERNANCE_ADDRESS = "0xD533Ca259b330c7A88f74E000a3FaEa2d63B7972";
 // Explorer links
 export const COMMUNITY_FUND_EXPLORER = `https://celoscan.io/address/${GOVERNANCE_ADDRESS}`;
 
-// Estimated replenish rate (CELO per day)
-// Quick and dirty estimate based on the rate observed over one day.
-// TODO: derive from a 90 day average on-chain.
-export const REPL_RATE = 18000;
+// Regular CELO inflow to the fund (CELO per day). After the L2 migration the fund
+// receives about 30 CELO/day from CeloUnreleasedTreasury; large grants are topped
+// up from the Reserve or the treasury in the same proposal that approves them.
+// Measured over 2026-02..2026-11, see docs/audit.md (finding 8).
+export const REPL_RATE = 30;
 
 // Colors
 export const contract_celo_color = "#FCFF52";
