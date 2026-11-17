@@ -605,6 +605,20 @@ main {
   display: none;
 }
 
+.how {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+  gap: var(--space-5);
+  margin: var(--space-4) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.how h3 {
+  margin: 0 0 var(--space-2);
+  font-size: 1rem;
+}
+
 .status-legend {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));

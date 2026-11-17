@@ -27,6 +27,15 @@ w("# Community Fund governance audit\n")
 w(f"Snapshot: Celo block {B} ({datetime.date.today().isoformat()}). Every number was read on-chain or from")
 w("[celo-org/governance](https://github.com/celo-org/governance) at that block. Amounts are exact to the wei:")
 w("nothing is rounded. The scripts that produce this report and `src/data` live in [`scripts/audit`](../scripts/audit).\n")
+w("## Who moves the money\n")
+w("- **The fund** is the Governance contract (`0xD533Ca259b330c7A88f74E000a3FaEa2d63B7972`). It only pays out when a")
+w("  proposal executes: an `approve` or `increaseAllowance` that the recipient later draws down, or a direct `transfer`.")
+w("- **Governance approver multisig** (`0x41822d8A191fcfB1cfcA5F7048818aCd8eE933d3`, read from `Governance.approver()`): it has to")
+w("  approve a proposal before it can execute. 3 confirmations of 14 owners as of 2026-11-17.")
+w("- **Celo Operations Safe** (`0x7A1E98FC9a008107DbD1f430a05Ace8cf6f3FE19`, 2 of 5 owners as of 2026-11-17): the only extra")
+w("  beneficiary registered in the FeeHandler (`0xcD437749E43A154C07F3553504c68fBfD56B8778`), under the name `cLabs`. It also")
+w("  receives the sequencer fee vault (`0x4200000000000000000000000000000000000011`) and sends the net revenue to the fund.")
+w("  It is not part of governance and its payments have no proposal; see finding 8.\n")
 w("## Method\n")
 w("1. Parse all CGPs in celo-org/governance: status, proposal id, and the transactions in `mainnet.json`.")
 w("2. Read every `ProposalExecuted` event of the Governance contract")
@@ -124,6 +133,7 @@ SRC = {
     "0x7a8c7a833565fc428cdfba20fe03fafb178a434f": "CeloUnreleasedTreasury",
     "0x9d65e69ac940dcb469fd7c46368c1e094250a400": "Celo Governance Reserve",
     "0x87647780180b8f55980c7d3ffefe08a9b29e9ae1": "Mento Reserve Safe",
+    "0x7a1e98fc9a008107dbd1f430a05ace8cf6f3fe19": "Celo Operations Safe (L2 sequencer revenue)",
 }
 # Inflows that follow from a proposal without being part of its on-chain execution.
 SRC_CGP = {"0x87647780180b8f55980c7d3ffefe08a9b29e9ae1": 253}
@@ -153,6 +163,11 @@ if flow_audit.get("recovered_from_rpc"):
     w("bisecting the balance against the recorded flows and read from the node, so it is included above.\n")
 if int(r["unexplained"]):
     w("**Warning:** the CELO flow scan does not reconcile to the balance change; review the unexplained difference before relying on the inflow totals.\n")
+if any(x["direction"] == "in" and x["from"] == "0x7a1e98fc9a008107dbd1f430a05ace8cf6f3fe19" for x in flows):
+    w("The Celo Operations Safe (`0x7a1e98fc9a008107dbd1f430a05ace8cf6f3fe19`, 2 of 5) collects the network's fee revenue from the")
+    w("FeeHandler and the sequencer fee vault and sends the net amount to the fund, with no governance proposal per payment.")
+    w("Celo Core Co. reports each payment, with its period and deductions, in")
+    w("[Initiating Ongoing Celo Chain Revenue Transactions](https://forum.celo.org/t/initiating-ongoing-celo-chain-revenue-transactions/13494).\n")
 if mento_return:
     w(f"The Mento Reserve Safe return is governed by {cgp_link(253)}. It is distinct from the Celo Governance")
     w("Reserve and is shown as an inflow, not as a locked deduction from the fund.\n")
