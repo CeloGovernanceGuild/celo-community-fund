@@ -4,24 +4,24 @@ spends = json.load(open("spends.json"))
 v = json.load(open("verified.json"))
 onchain = {int(k): e for k, e in v["onchain"].items()}
 execs = {int(k): e for k, e in v["execs"].items()}
-def pid_of(meta):
-    m = re.search(r"(\d+)", str(meta.get("governance-proposal-id", "")))
-    return int(m.group(1)) if m else None
-day = lambda p: datetime.datetime.utcfromtimestamp(execs[p]["ts"]).strftime("%Y-%m-%d")
+cgp_of = {int(p): n for p, n in v["cgp_of"].items()}
+pids_of = {int(n): ps for n, ps in v["pids_of"].items()}
+declared = {int(n): p for n, p in v["declared"].items()}
+day = lambda p: datetime.datetime.fromtimestamp(execs[p]["ts"], datetime.timezone.utc).strftime("%Y-%m-%d")
 
 issues = []
-# C. CGPs marked EXECUTED without an on-chain execution
+# C. CGP metadata vs chain
 for n, x in sorted(cgps.items()):
-    st = x["meta"].get("status", "").upper(); p = pid_of(x["meta"])
-    if st == "EXECUTED" and (p is None or p not in execs):
-        issues.append(("CGP marked EXECUTED, no on-chain ProposalExecuted", n, p, x["meta"].get("title")))
-    if st != "EXECUTED" and p in execs:
-        issues.append((f"CGP status {st} but proposal executed on-chain {day(p)}", n, p, x["meta"].get("title")))
+    st = x["meta"].get("status", "").upper()
+    done = [p for p in pids_of.get(n, []) if p in execs]
+    if st == "EXECUTED" and not done:
+        issues.append(("CGP marked EXECUTED, no on-chain ProposalExecuted", n, declared.get(n), x["meta"].get("title")))
+    if st != "EXECUTED" and done:
+        issues.append((f"CGP status {st} but proposal {done[-1]} executed on-chain {day(done[-1])}", n, done[-1], x["meta"].get("title")))
+    if done and declared.get(n) not in done:
+        issues.append((f"CGP governance-proposal-id is {declared.get(n)} but it executed as proposal {done[-1]}", n, done[-1], x["meta"].get("title")))
 # D. executed proposals with fund events but no CGP
-by_pid = {}
-for n, x in cgps.items():
-    p = pid_of(x["meta"])
-    if p is not None: by_pid.setdefault(p, []).append(n)
+by_pid = {p: [n] for p, n in cgp_of.items()}
 for p, evs in sorted(onchain.items()):
     if evs and p not in by_pid:
         issues.append(("On-chain fund spend with no CGP", None, p, evs))
@@ -29,7 +29,7 @@ for p, evs in sorted(onchain.items()):
 recon = []
 for p, evs in sorted(onchain.items()):
     cg = by_pid.get(p, [])
-    rows = [s for s in spends if s["cgp"] in cg and s["status"] == "EXECUTED"]
+    rows = [s for s in spends if s["cgp"] in cg]
     matched = set()
     for s in rows:
         hit = None

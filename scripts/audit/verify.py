@@ -29,12 +29,31 @@ for pid in sorted(execs):
         if lg["topics"][0] in (APPROVAL, TRANSFER) and lg["topics"][1][-40:] == GOV[2:]
     ]
 
-# 2. Proposal id -> CGP numbers
-cgp_by_pid = {}
+# 2. Proposal id -> CGP. A proposal id written in a CGP file wins. Proposals no CGP claims are
+# matched by the description URL they were queued with on-chain: a CGP that expires is re-submitted
+# under a new proposal id and the id in the CGP file is often left pointing at the first attempt.
+# (The on-chain URL alone is not reliable either: a few proposals were queued with a wrong CGP number.)
+known = {x["cgp"] for x in cgps}
+declared = {}  # CGP -> proposal id written in the CGP file
 for x in cgps:
     m = re.search(r"(\d+)", str(x["meta"].get("governance-proposal-id", "")))
     if m:
-        cgp_by_pid.setdefault(int(m.group(1)), []).append(x["cgp"])
+        declared[x["cgp"]] = int(m.group(1))
+cgp_of = {p: n for n, p in declared.items()}
+url_cache = json.load(open("proposal_cgp.json")) if os.path.exists("proposal_cgp.json") else {}
+for l in chain["queued"]:
+    pid = str(int(l["topics"][1], 16))
+    if pid not in url_cache:
+        tx = rpc("eth_getTransactionByHash", [l["transactionHash"]], retries=12)
+        m = re.search(rb"cgp-0*(\d+)", bytes.fromhex(tx["input"][2:]), re.I)
+        url_cache[pid] = int(m.group(1)) if m else None
+        json.dump(url_cache, open("proposal_cgp.json", "w"))
+for pid, n in url_cache.items():
+    if n in known:
+        cgp_of.setdefault(int(pid), n)
+pids_of = {}
+for p, n in sorted(cgp_of.items()):
+    pids_of.setdefault(n, []).append(p)
 
 # 3. Current allowance of every spender seen in a CGP or an execution receipt
 spenders = {(s["token"], s["to"].lower()) for s in spends
@@ -45,6 +64,6 @@ block = int(rpc("eth_blockNumber", []), 16)
 allowances = {f"{t}:{a}": str(allowance(t, a, hex(block))) for t, a in sorted(spenders)}
 balances = {t: str(balance_of(t, GOV, hex(block))) for t in TOKENS}
 
-json.dump({"block": block, "balances": balances, "execs": execs, "onchain": onchain, "cgp_by_pid": cgp_by_pid,
+json.dump({"block": block, "balances": balances, "execs": execs, "onchain": onchain, "cgp_of": cgp_of, "pids_of": pids_of, "declared": declared,
            "allowances": allowances}, open("verified.json", "w"), indent=1)
 print("block", block, "receipts", len(onchain), "allowances", len(allowances))

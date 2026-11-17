@@ -9,11 +9,8 @@ from common import allowance
 v = json.load(open("verified.json"))
 cgps = json.load(open("cgps.json"))
 spends = json.load(open("spends.json"))
-meta = {}
-for x in cgps:
-    m = re.search(r"(\d+)", str(x["meta"].get("governance-proposal-id", "")))
-    if m:
-        meta[int(m.group(1))] = (x["cgp"], x["meta"].get("title"))
+titles = {x["cgp"]: x["meta"].get("title") for x in cgps}
+meta = {int(p): (n, titles.get(n)) for p, n in v["cgp_of"].items()}
 declared = {}  # (cgp, token, spender) -> (function, amount) from mainnet.json
 for s in spends:
     if s["to"] and s["amount"]:
