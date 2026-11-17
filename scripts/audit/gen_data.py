@@ -133,5 +133,15 @@ open(f"{OUT}/proposals.js", "w").write(head + f"""
 
 export const proposals = {json.dumps(pending, indent=2)};
 """)
+deposits = json.load(open("deposits.json"))
+proposers = sorted({d["proposer"] for d in deposits["deposits"]})
+open(f"{OUT}/deposits.js", "w").write(head + f"""
+//
+// Every address that ever submitted a governance proposal. A proposal deposit sits in the fund
+// until its proposer withdraws it, so the site reads `refundedDeposits` for each of them and
+// does not count that CELO as available.
+
+export const proposers = {json.dumps(proposers, indent=2)};
+""")
 json.dump(ledger, open("ledger.json", "w")); json.dump(pending, open("proposals.json", "w"))
 print("ledger", len(ledger), "pending", [(p["cgp"], p["stage"], len(p["requests"])) for p in pending])

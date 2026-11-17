@@ -73,6 +73,13 @@
   display: flex;
   align-items: center;
   gap: var(--space-1);
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.nav::-webkit-scrollbar {
+  display: none;
 }
 
 .nav a {
@@ -466,6 +473,10 @@ main {
   background: var(--series-claimed);
 }
 
+.series-deposits {
+  background: var(--series-deposits);
+}
+
 .progress {
   display: flex;
   gap: 2px;
@@ -605,17 +616,77 @@ main {
   display: none;
 }
 
-.how {
+.steps {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
-  gap: var(--space-5);
+  gap: var(--space-4);
   margin: var(--space-4) 0 0;
   padding: 0;
   list-style: none;
+  counter-reset: step;
 }
 
-.how h3 {
-  margin: 0 0 var(--space-2);
+.steps > li {
+  position: relative;
+  padding-left: 3rem;
+  counter-increment: step;
+}
+
+.steps > li::before {
+  content: counter(step);
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.steps h3 {
+  margin: 0.25rem 0 var(--space-1);
+  font-size: 1rem;
+}
+
+.steps p {
+  margin: 0;
+  max-width: 44rem;
+}
+
+.steps p + p {
+  margin-top: var(--space-2);
+  overflow-wrap: anywhere;
+}
+
+.template-actions {
+  display: flex;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.template summary {
+  margin-top: var(--space-2);
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.template pre {
+  margin: var(--space-3) 0 0;
+  padding: var(--space-3);
+  max-height: 24rem;
+  overflow: auto;
+  border: 1px solid var(--line);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.sub-title {
+  margin: var(--space-5) 0 var(--space-2);
   font-size: 1rem;
 }
 

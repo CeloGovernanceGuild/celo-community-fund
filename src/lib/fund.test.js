@@ -34,6 +34,14 @@ describe('buildFundState', () => {
     expect(state.pending.map((p) => p.title)).toEqual(['CGP-9', 'D']);
   });
 
+  it('does not count unclaimed proposal deposits as available', () => {
+    const state = buildFundState({ balances: { CELO: 1000n * E, USDm: 10n * E }, allowances: {}, ledger, deposits: 40n * E });
+
+    expect(state.tokens.CELO).toMatchObject({ deposits: 40n * E, available: 960n * E });
+    expect(state.tokens.USDm).toMatchObject({ deposits: 0n, available: 10n * E });
+    expect(state.composition.find((c) => c.key === 'deposits').wei).toBe(40n * E);
+  });
+
   it('reports a negative available amount when allowances exceed the balance', () => {
     const allowances = { [allowanceKey('USDm', B)]: 500n * E };
     const state = buildFundState({ balances: { USDm: 2n * E }, allowances, ledger });
@@ -50,6 +58,7 @@ describe('buildFundState', () => {
       ['available', 0n],
       ['committed', 900n * E],
       ['pending', 0n],
+      ['deposits', 0n],
     ]);
   });
 });

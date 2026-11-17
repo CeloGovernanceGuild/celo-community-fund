@@ -16,8 +16,9 @@ export const allowanceKey = (token, address) => `${token}:${address.toLowerCase(
  * @param {Array} args.ledger generated ledger entries (src/data/ledger.js)
  * @param {Array} args.proposals generated pending proposals (src/data/proposals.js)
  * @param {Array} args.drafts manual drafts ({ title, amount: decimal string, token })
+ * @param {bigint} args.deposits CELO of proposal deposits their proposers can still withdraw
  */
-export function buildFundState({ balances, allowances, ledger, proposals = [], drafts = [] }) {
+export function buildFundState({ balances, allowances, ledger, proposals = [], drafts = [], deposits = 0n }) {
   const rows = ledger.map((entry) => {
     const approved = BigInt(entry.approved);
     const remaining = entry.kind === 'allowance' ? allowances[allowanceKey(entry.token, entry.address)] ?? 0n : 0n;
@@ -39,13 +40,16 @@ export function buildFundState({ balances, allowances, ledger, proposals = [], d
       const balance = balances[token] ?? 0n;
       const open = sum(tokenRows, 'remaining');
       const reserved = sum(pending.filter((p) => p.token === token), 'amount');
+      // Proposal deposits are paid in CELO only.
+      const held = token === 'CELO' ? deposits : 0n;
       return [token, {
         balance,
         open,
         reserved,
+        deposits: held,
         approved: sum(tokenRows, 'approved'),
         claimed: sum(tokenRows, 'claimed'),
-        available: balance - open - reserved,
+        available: balance - open - reserved - held,
       }];
     })
   );
@@ -56,6 +60,7 @@ export function buildFundState({ balances, allowances, ledger, proposals = [], d
     { key: 'available', label: 'Available', wei: celo.available > 0n ? celo.available : 0n },
     { key: 'committed', label: 'Open allowances', wei: celo.open },
     { key: 'pending', label: 'Pending proposals', wei: celo.reserved },
+    { key: 'deposits', label: 'Proposal deposits', wei: celo.deposits },
   ];
 
   return { rows, groups: groupByRecipient(rows), pending, tokens, composition, explorer: COMMUNITY_FUND_EXPLORER };

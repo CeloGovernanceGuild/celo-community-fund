@@ -18,6 +18,7 @@ const KIND_LABEL = { x: 'X', github: 'GitHub', website: 'website' };
 
 export const GUILD = {
   name: 'Celo Governance Guild',
+  entity: 'Celo Governance Guild Association, incorporated in Switzerland',
   links: [
     { kind: 'x', href: 'https://x.com/celogovernance' },
     { kind: 'github', href: 'https://github.com/CeloGovernanceGuild' },
@@ -74,6 +75,7 @@ export function CreditsCard() {
         <div>
           <p className="eyebrow">Maintained by</p>
           <h2 className="section-title" id="credits-title">{GUILD.name}</h2>
+          <p className="small muted">Legal entity: {GUILD.entity}</p>
         </div>
         <SocialLinks name={GUILD.name} links={GUILD.links} />
       </div>

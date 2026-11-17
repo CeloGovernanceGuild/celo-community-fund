@@ -1,6 +1,6 @@
 """Write docs/audit.md from the audit data. Every amount is exact (wei precision, no rounding)."""
 import datetime, json, os, re, sys
-from common import fmt
+from common import fmt, rpc
 
 OUT = sys.argv[1]
 g = json.load(open("grants.json")); v = json.load(open("verified.json"))
@@ -8,6 +8,13 @@ cg = {x["cgp"]: x for x in json.load(open("cgps.json"))}
 recon = json.load(open("recon.json")); flow_audit = json.load(open("celo_in.json"))
 flows = flow_audit["flows"]
 ledger = json.load(open("ledger.json")); pending = json.load(open("proposals.json"))
+# The report must describe the ledger that is published. gen_data.py writes both copies; if they
+# differ, this directory holds a stale run (for example after NAMES changed) and the report would
+# silently revert it.
+_published = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "src", "data", "ledger.js")).read()
+_published = json.loads(_published[_published.index("export const ledger = ") + len("export const ledger = "):].rsplit(";", 1)[0])
+if _published != ledger:
+    raise SystemExit("ledger.json does not match src/data/ledger.js: run gen_data.py before gen_report.py")
 pid2cgp = {int(p): n for p, n in v["cgp_of"].items()}
 mondo = {x["id"]: x for x in (json.load(open("mondo.json")) if os.path.exists("mondo.json") else []) if x.get("id")}
 url = lambda n: f"https://github.com/celo-org/governance/blob/main/CGPs/cgp-{n:04d}.md"
@@ -27,12 +34,21 @@ w("# Community Fund governance audit\n")
 w(f"Snapshot: Celo block {B} ({datetime.date.today().isoformat()}). Every number was read on-chain or from")
 w("[celo-org/governance](https://github.com/celo-org/governance) at that block. Amounts are exact to the wei:")
 w("nothing is rounded. The scripts that produce this report and `src/data` live in [`scripts/audit`](../scripts/audit).\n")
+def _signers(address, threshold_selector):
+    """Owners and required confirmations of a multisig at the audit block."""
+    call = lambda data: rpc("eth_call", [{"to": address, "data": data}, hex(B)])
+    owners = call("0xa0e67e2b")  # getOwners()
+    return int(call(threshold_selector), 16), int(owners[66:130], 16)
+
+
+approver_needed, approver_owners = _signers("0x41822d8A191fcfB1cfcA5F7048818aCd8eE933d3", "0xdc8452cd")  # required()
+safe_needed, safe_owners = _signers("0x7A1E98FC9a008107DbD1f430a05Ace8cf6f3FE19", "0xe75235b8")  # getThreshold()
 w("## Who moves the money\n")
 w("- **The fund** is the Governance contract (`0xD533Ca259b330c7A88f74E000a3FaEa2d63B7972`). It only pays out when a")
 w("  proposal executes: an `approve` or `increaseAllowance` that the recipient later draws down, or a direct `transfer`.")
 w("- **Governance approver multisig** (`0x41822d8A191fcfB1cfcA5F7048818aCd8eE933d3`, read from `Governance.approver()`): it has to")
-w("  approve a proposal before it can execute. 3 confirmations of 14 owners as of 2026-11-17.")
-w("- **Celo Operations Safe** (`0x7A1E98FC9a008107DbD1f430a05Ace8cf6f3FE19`, 2 of 5 owners as of 2026-11-17): the only extra")
+w(f"  approve a proposal before it can execute. {approver_needed} confirmations of {approver_owners} owners at block {B}.")
+w(f"- **Celo Operations Safe** (`0x7A1E98FC9a008107DbD1f430a05Ace8cf6f3FE19`, {safe_needed} of {safe_owners} owners at block {B}): the only extra")
 w("  beneficiary registered in the FeeHandler (`0xcD437749E43A154C07F3553504c68fBfD56B8778`), under the name `cLabs`. It also")
 w("  receives the sequencer fee vault (`0x4200000000000000000000000000000000000011`) and sends the net revenue to the fund.")
 w("  It is not part of governance and its payments have no proposal; see finding 8.\n")
@@ -168,6 +184,37 @@ if any(x["direction"] == "in" and x["from"] == "0x7a1e98fc9a008107dbd1f430a05ace
     w("FeeHandler and the sequencer fee vault and sends the net amount to the fund, with no governance proposal per payment.")
     w("Celo Core Co. reports each payment, with its period and deductions, in")
     w("[Initiating Ongoing Celo Chain Revenue Transactions](https://forum.celo.org/t/initiating-ongoing-celo-chain-revenue-transactions/13494).\n")
+dep = json.load(open("deposits.json")); dt = {k: int(x) for k, x in dep["totals"].items()}
+outcomes = [d["outcome"] for d in dep["deposits"]]
+w("**Proposal deposits.** Submitting a proposal sends a deposit to the Governance contract, which is the fund. When the")
+w("proposal leaves the queue the deposit becomes withdrawable by its proposer; if it expires in the queue it is forfeited")
+w(f"and stays in the fund. Of the {len(outcomes)} proposals ever submitted, {outcomes.count('dequeued')} left the queue,")
+w(f"{outcomes.count('in queue')} are in the queue and {outcomes.count('expired in queue')} expired in it.\n")
+w("| Proposal deposits, all time | CELO |\n|---|---:|")
+w(f"| Deposited | {fmt(dt['deposited'])} |")
+w(f"| Withdrawn by proposers | {fmt(dt['withdrawn'])} |")
+w(f"| Withdrawable, not withdrawn yet | {fmt(dt['refundable_not_withdrawn'])} |")
+w(f"| In the queue | {fmt(dt['in_queue'])} |")
+w(f"| Forfeited to the fund | {fmt(dt['forfeited'])} |\n")
+w(f"The {fmt(dt['refundable_not_withdrawn'] + dt['in_queue'])} CELO not withdrawn yet is in the fund's balance but belongs to the proposers,")
+w("so the site subtracts it from the available amount. The deposits still withdrawable, by proposal:\n")
+# `withdraw` pays out a proposer's whole balance, so what is still withdrawable is the deposits
+# of its most recent proposals.
+MONDO_STAGE = {5: "expired", 6: "executed", 7: "withdrawn", 8: "rejected"}
+w("| Proposal | Submitted | Deposit (CELO) | CGP | Outcome | Proposer | Submission tx |\n|---|---|---:|---|---|---|---|")
+for addr, amount in sorted(dep["claimable"].items(), key=lambda kv: -int(kv[1])):
+    held, covered = [], 0
+    for d in reversed([d for d in dep["deposits"] if d["proposer"] == addr]):
+        if covered >= int(amount):
+            break
+        held.append(d); covered += int(d["deposit"])
+    for d in reversed(held):
+        pid = d["proposal"]; n = pid2cgp.get(pid) or mondo.get(pid, {}).get("cgp")
+        title = clean((cg.get(n, {}).get("meta") or {}).get("title") or mondo.get(pid, {}).get("title") or "")
+        outcome = "executed" if str(pid) in v["execs"] else MONDO_STAGE.get(mondo.get(pid, {}).get("stage"), "not executed")
+        note = "" if covered == int(amount) else " (partial match)"
+        w(f"| {pid} | {d['date']} | {fmt(int(d['deposit']))} | " + (f"{cgp_link(n)} {title}" if n else "none") + f" | {outcome}{note} | `{addr}` | `{d['tx']}` |")
+w("")
 if mento_return:
     w(f"The Mento Reserve Safe return is governed by {cgp_link(253)}. It is distinct from the Celo Governance")
     w("Reserve and is shown as an inflow, not as a locked deduction from the fund.\n")

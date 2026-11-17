@@ -65,7 +65,7 @@ export default function OverviewPage({ state }) {
         <Stat
           label="Available"
           wei={celo.available}
-          note="Not committed to any grant or pending proposal"
+          note="Not committed to any grant, pending proposal or proposal deposit"
           link={<a className="stat-link" href="#/balances">See how it is calculated</a>}
         />
         <Stat
