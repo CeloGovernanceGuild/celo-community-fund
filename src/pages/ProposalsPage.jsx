@@ -1,7 +1,7 @@
 import React from 'react';
 import { getAddress } from 'viem';
 import Amount from '../components/Amount';
-import { EXPLORER } from '../data/data';
+import { addressUrl } from '../data/data';
 import { proposals } from '../data';
 
 const STAGE_TEXT = {
@@ -56,7 +56,7 @@ export default function ProposalsPage({ state }) {
                   <li key={`${r.function}-${r.to}-${r.token}`}>
                     <div className="row-main">
                       <span className="row-title">Requests <Amount wei={r.amount} /> {r.token}</span>
-                      <a className="mono" href={`${EXPLORER}/address/${r.to}`} target="_blank" rel="noopener noreferrer">{getAddress(r.to)}</a>
+                      <a className="link-out" href={addressUrl(r.to)} target="_blank" rel="noopener noreferrer" title={getAddress(r.to)}>Open the recipient on Celoscan</a>
                     </div>
                   </li>
                 ))}
@@ -64,11 +64,7 @@ export default function ProposalsPage({ state }) {
             )}
             <div className="actions">
               <a className="link-arrow" href={p.url} target="_blank" rel="noopener noreferrer">Read the proposal</a>
-              {p.proposalId && (
-                <a className="link-arrow" href={`https://mondo.celo.org/governance/${p.proposalId}`} target="_blank" rel="noopener noreferrer">
-                  Proposal {p.proposalId} on Mondo
-                </a>
-              )}
+              {p.proposalId && <span className="muted">On-chain proposal {p.proposalId}</span>}
             </div>
           </article>
         ))}

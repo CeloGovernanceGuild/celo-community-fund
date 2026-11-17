@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Amount from '../components/Amount';
-import { COMMUNITY_FUND_EXPLORER, EXPLORER, RESERVE_ADDRESS } from '../data/data';
+import { CELO_USD_FEED, COMMUNITY_FUND_EXPLORER, EUR_USD_FEED, GOVERNANCE_ADDRESS, RESERVE_ADDRESS, addressUrl, tokenHolderUrl } from '../data/data';
 import { fetchMarket } from '../lib/celo';
 import { TOKENS } from '../lib/fund';
 import { formatUsd } from '../lib/format';
@@ -11,19 +11,21 @@ const formatPrice = (price8) => {
   return `$${s.slice(0, -8)}.${s.slice(-8, -4)}`;
 };
 
-function Holdings({ title, href, amounts, prices }) {
+function Holdings({ title, href, holder, amounts, prices }) {
   return (
     <section className="card">
       <div className="card-head">
         <h2 className="section-title">{title}</h2>
-        <a className="link-arrow" href={href} target="_blank" rel="noopener noreferrer">Celoscan</a>
+        <a className="link-out" href={href} target="_blank" rel="noopener noreferrer">Open contract on Celoscan</a>
       </div>
       <table className="table">
         <thead><tr><th>Token</th><th className="num">Balance</th><th className="num">USD value</th></tr></thead>
         <tbody>
           {TOKENS.map((t) => (
             <tr key={t}>
-              <td>{t}</td>
+              <td>
+                <a className="link-out" href={tokenHolderUrl(t, holder)} target="_blank" rel="noopener noreferrer" title={`${t} balance and transfers on Celoscan`}>{t}</a>
+              </td>
               <td className="num"><Amount wei={amounts[t]} /></td>
               <td className="num">{prices ? formatUsd(amounts[t], prices[t]) ?? 'n/a' : '...'}</td>
             </tr>
@@ -60,8 +62,8 @@ export default function BalancesPage({ state }) {
 
       <div className="stack">
         <div className="grid-2">
-          <Holdings title="Community Fund" href={COMMUNITY_FUND_EXPLORER} amounts={fund} prices={market?.prices} />
-          {market && <Holdings title="Reserve" href={`${EXPLORER}/address/${RESERVE_ADDRESS}`} amounts={market.reserve} prices={market.prices} />}
+          <Holdings title="Community Fund" href={COMMUNITY_FUND_EXPLORER} holder={GOVERNANCE_ADDRESS} amounts={fund} prices={market?.prices} />
+          {market && <Holdings title="Reserve" href={addressUrl(RESERVE_ADDRESS)} holder={RESERVE_ADDRESS} amounts={market.reserve} prices={market.prices} />}
         </div>
 
         {reserveEmpty && (
@@ -75,7 +77,10 @@ export default function BalancesPage({ state }) {
           <div className="card-head">
             <div>
               <h2 className="section-title" id="commitments-title">Commitments</h2>
-              <p className="muted">Available is the balance minus open allowances and pending proposals.</p>
+              <p className="muted">
+                Available is the balance minus open allowances and pending proposals.{' '}
+                <a href="#/ledger?status=open">See the open allowances</a>
+              </p>
             </div>
           </div>
           <table className="table stackable">
@@ -107,7 +112,9 @@ export default function BalancesPage({ state }) {
 
         {market && (
           <p className="small muted">
-            USD values use Chainlink prices on Celo: CELO {formatPrice(market.prices.CELO)}, EUR {formatPrice(market.prices.EURm)}, USDm at $1.
+            USD values use Chainlink prices on Celo:{' '}
+            <a className="link-out" href={addressUrl(CELO_USD_FEED)} target="_blank" rel="noopener noreferrer">CELO {formatPrice(market.prices.CELO)}</a>,{' '}
+            <a className="link-out" href={addressUrl(EUR_USD_FEED)} target="_blank" rel="noopener noreferrer">EUR {formatPrice(market.prices.EURm)}</a>, USDm at $1.
           </p>
         )}
       </div>
