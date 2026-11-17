@@ -57,21 +57,21 @@ export default function BalancesPage({ state }) {
       <header className="page-head">
         <p className="eyebrow">Balances</p>
         <h1 className="display">What the fund holds, and what it owes.</h1>
-        <p className="lede">Token balances of the Community Fund and the Reserve, and how much of the fund is already promised.</p>
+        <p className="lede">Token balances of the Community Fund and the historical Celo Governance Reserve, and how much of the fund is already promised.</p>
       </header>
 
       <div className="stack">
         <div className="grid-2">
           <Holdings title="Community Fund" href={COMMUNITY_FUND_EXPLORER} holder={GOVERNANCE_ADDRESS} amounts={fund} prices={market?.prices} />
-          {market && <Holdings title="Reserve" href={addressUrl(RESERVE_ADDRESS)} holder={RESERVE_ADDRESS} amounts={market.reserve} prices={market.prices} />}
+          {market && <Holdings title="Celo Governance Reserve (historical)" href={addressUrl(RESERVE_ADDRESS)} holder={RESERVE_ADDRESS} amounts={market.reserve} prices={market.prices} />}
         </div>
 
         {reserveEmpty && (
           <p className="notice" role="note">
-            <span>The Reserve holds none of these tokens. Governance moved its CELO into the Community Fund to pay for grants.</span>
+            <span>The historical Celo Governance Reserve holds none of these tokens. It is separate from the Community Fund and does not reduce its Available amount.</span>
           </p>
         )}
-        {error && <p className="notice" role="alert"><span>Reserve balances and prices could not be loaded.</span></p>}
+        {error && <p className="notice" role="alert"><span>Governance Reserve balances and prices could not be loaded.</span></p>}
 
         <section className="card" aria-labelledby="commitments-title">
           <div className="card-head">

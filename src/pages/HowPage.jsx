@@ -5,7 +5,6 @@ import {
   GOVERNANCE_APPROVER,
   LINKS,
   OPERATIONS_SAFE,
-  REPL_RATE,
   REVENUE_REPORTS_URL,
   SECURITY_COUNCIL,
   TOKEN_ADDRESSES,
@@ -134,12 +133,14 @@ export default function HowPage() {
               <Out href={REVENUE_REPORTS_URL}>each one on the Celo forum</Out>.
             </li>
             <li>
-              <strong>Daily protocol payment.</strong> About {REPL_RATE} CELO a day from the{' '}
-              <Out href={addressUrl(UNRELEASED_TREASURY)}>unreleased treasury</Out>.
+              <strong>Protocol payments.</strong> The <Out href={addressUrl(UNRELEASED_TREASURY)}>unreleased treasury</Out>{' '}
+              makes epoch payments to the fund. They are separate from sequencer distributions and can change through
+              governance, so the audit reports each flow rather than presenting a combined daily rate as guaranteed.
             </li>
             <li>
-              <strong>Top-ups and returns.</strong> A proposal can bring CELO from the Reserve or the unreleased treasury
-              in the same execution that grants it, and unused funds are sometimes returned.
+              <strong>One-off returns and transfers.</strong> Governance can return CELO to the fund or move it in from
+              the unreleased treasury. The Mento Reserve Safe return is an inflow governed by CGP-253; it is distinct
+              from the Celo Governance Reserve.
             </li>
             <li>
               <strong>Proposal deposits.</strong> The deposit for submitting a proposal sits in the fund until its
