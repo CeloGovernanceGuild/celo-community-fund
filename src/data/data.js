@@ -15,6 +15,18 @@ export const SEQUENCER_FEE_VAULT = "0x4200000000000000000000000000000000000011";
 export const UNRELEASED_TREASURY = "0x7A8c7a833565fc428cdFBa20FE03fAfb178A434f";
 export const GOVERNANCE_APPROVER = "0x41822d8A191fcfB1cfcA5F7048818aCd8eE933d3";
 export const REVENUE_REPORTS_URL = "https://forum.celo.org/t/initiating-ongoing-celo-chain-revenue-transactions/13494";
+export const SECURITY_COUNCIL = "0x51a3a77baF58fef0309452CeaCB09221e556f223";
+
+// Public references for the governance process (see the How it works page)
+export const LINKS = {
+  forum: "https://forum.celo.org/c/governance/",
+  governanceRepo: "https://github.com/celo-org/governance",
+  callIssues: "https://github.com/celo-org/governance/issues",
+  createProposal: "https://docs.celo.org/learn/protocol/governance/create-governance-proposal",
+  governanceDocs: "https://docs.celo.org/learn/protocol/governance/overview",
+  mondo: "https://mondo.celo.org/governance",
+  celocli: "https://docs.celo.org/build/tools/libraries-sdks/cli",
+};
 
 // Chainlink price feeds on Celo (8 decimals)
 export const CELO_USD_FEED = "0x0568fD19986748cEfF3301e55c0eb1E729E0Ab7e";

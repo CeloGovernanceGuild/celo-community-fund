@@ -43,6 +43,7 @@ The design follows the celo.org brand: yellow page, black ink, serif display typ
 - **Balances**: Community Fund and Reserve holdings with USD values from Chainlink, and the fund's
   commitments per token.
 - **Proposals**: drafted and in-progress CGPs, their on-chain stage and funding requests.
+- **How it works**: where the money comes from, the proposal process with its templates, who signs off and how recipients claim.
 - **About**: how to read the numbers and where the data comes from.
 
 Amounts are shown in whole units; the exact value is in the hover title and in `docs/audit.md`.
@@ -81,7 +82,8 @@ src/
     celo.js             on-chain reads (viem): balances, allowances, Reserve, Chainlink prices
     fund.js             pure BigInt derivation of the ledger, totals and charts (tested)
     format.js           exact wei formatting (tested)
-  pages/                Overview, Ledger, Balances, Proposals, About
+  pages/                Overview, Ledger, Balances, Proposals, How it works, About
+  templates/            Proposal templates offered for download on the How it works page
   components/           Amount, charts (segmented bar, claim progress)
   App.jsx               layout and navigation
   index.css, App.css    design tokens and styles

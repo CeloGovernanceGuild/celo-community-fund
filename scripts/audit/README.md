@@ -20,7 +20,8 @@ Requires Python 3. Network access to `forno.celo.org`
 | `reconcile.py` | `recon.json` | CGP spends vs execution receipts, in both directions |
 | `grants.py` | `grants.json` | Exact effective amount of every grant (archive calls) |
 | `fetch_inflows.py` | `celo_in.json` | CELO ERC-20 and native-value flows, plus a balance-delta reconciliation, over the last year |
-| `gen_data.py` | `src/data/ledger.js`, `src/data/proposals.js` | Ledger of every grant and pending proposals |
+| `deposits.py` | `deposits.json` | Every proposal deposit: withdrawn, still withdrawable by its proposer, in the queue or forfeited |
+| `gen_data.py` | `src/data/ledger.js`, `src/data/proposals.js`, `src/data/deposits.js` | Ledger of every grant, pending proposals and proposer addresses |
 | `gen_report.py` | `docs/audit.md` | The audit report |
 
 All amounts are integers in wei; nothing is rounded.

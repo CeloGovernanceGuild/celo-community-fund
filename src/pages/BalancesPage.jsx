@@ -78,14 +78,15 @@ export default function BalancesPage({ state }) {
             <div>
               <h2 className="section-title" id="commitments-title">Commitments</h2>
               <p className="muted">
-                Available is the balance minus open allowances and pending proposals.{' '}
+                Available is the balance minus open allowances, pending proposals and the proposal deposits that their
+                proposers have not withdrawn yet.{' '}
                 <a href="#/ledger?status=open">See the open allowances</a>
               </p>
             </div>
           </div>
           <table className="table stackable">
             <thead>
-              <tr><th>Token</th><th className="num">Balance</th><th className="num">Open allowances</th><th className="num">Pending proposals</th><th className="num">Available</th></tr>
+              <tr><th>Token</th><th className="num">Balance</th><th className="num">Open allowances</th><th className="num">Pending proposals</th><th className="num">Proposal deposits</th><th className="num">Available</th></tr>
             </thead>
             <tbody>
               {TOKENS.map((t) => {
@@ -96,6 +97,7 @@ export default function BalancesPage({ state }) {
                     <td className="num" data-label="Balance"><Amount wei={s.balance} /></td>
                     <td className="num" data-label="Open allowances"><Amount wei={s.open} /></td>
                     <td className="num" data-label="Pending proposals"><Amount wei={s.reserved} /></td>
+                    <td className="num" data-label="Proposal deposits"><Amount wei={s.deposits} /></td>
                     <td className={s.available < 0n ? 'num negative' : 'num'} data-label="Available"><Amount wei={s.available} /></td>
                   </tr>
                 );
