@@ -21,3 +21,12 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# vite
+/dist
+
+# audit intermediates
+/.audit
+
+.governance
+__pycache__/

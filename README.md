@@ -2,7 +2,7 @@
 
 ## Overview 
 
-This repository is to keep a canonical history of the Celo Community Fund status and intiatives that have utilized the fund. Previously, the data was segregated and hard to decifer current initiatives that were in draft proposal phase, intiatives that had spend approval and the remaining funds available to them. It was also difficult to have a high level overview of the total funds.
+This repository is to keep a canonical history of the Celo Community Fund status and initiatives that have utilized the fund. Previously, the data was segregated and hard to decipher current initiatives that were in draft proposal phase, initiatives that had spend approval and the remaining funds available to them. It was also difficult to have a high level overview of the total funds.
 
 ## What is the fund?
 
@@ -16,72 +16,92 @@ The Community Fund receives assets from three sources:
 - The Community Fund also receives the 'base' portion of transaction fees.
 
 
-## History
+## Initiatives
 
+The data in `src/data` is generated from an on-chain audit of every executed governance proposal:
+see [docs/audit.md](docs/audit.md) for the full ledger, every execution transaction and the findings,
+and [scripts/audit](scripts/audit) to re-run it. A scheduled workflow re-runs the audit every day and
+opens a pull request into `dev` when something changed.
 
-|  №  |      Name       | Date | Amount | Webpage | Status |
-|:---:|:---------------:|:------:|:-----:|:------:|:------:|
-| 1 | CCF1 | 2020-12-01 | 665,387 | [site](https://celocommunityfund.org/) | Complete |
-| 2 | Community Appreciation Gifts | 2020-01-27 | 15000 | N/A | Complete |
-| 3 | Ocelot | 2021-12 | 3,000,000 | [site](http://ocelot.xyz/) | Ongoing |
-| 4 | Climate Collective | 2022-06-11 | 4,000,000 | [site](https://climatecollective.org/) | Ongoing |
-| 5 | Prezenti | 2022-06-11 | 800,000 | [site](https://prezenti.xyz) | Ongoing |
-| 3 | Africa DAO |  550,000 | [forum post](https://forum.celo.org/t/celo-africa-regional-dao-proposal/4054) | Ongoing |
-
-## Drafts
-
-|  №  |      Name       |  Amount | Webpage | Status |
-|:---:|:---------------:|:-----:|:------:|:------:|
-| 1 | India DAO Chitty | 270,000 | [forum post](https://forum.celo.org/t/celo-indiadao-regional-dao-proposal/4207) | Forum |
-| 2 | India DAO Monish | 80,000 | [forum post]() | Forum |
-| 3 | LATAM DAO  | 903,000 | [forum post](https://forum.celo.org/t/latam-w3-dao-proposal/4494) | Forum |
-
-
-## Adding an Intiative
-To add an intiative, navigate to the appropriate file in the `src/data` directory. There are 3 files each with instructions at the top:
-
-- draft_initiatives
-- active_initiatives
-- completed_initiatives
+Nothing is rounded: every amount is kept in wei and displayed with all its decimals. For each spender
+the ledger shows what governance approved, what was already claimed and what is still allowed, so an
+allowance with 1 wei left is visible as open.
 
 ## Webpage
 
-> Note: the page factors in both CELO and cEUR which are the tokens that have substantial value.
+> The chart tracks CELO. The Ledger and Balances pages cover CELO, USDm and EURm.
 
-[celocommunityfund.xyz](https://www.celocommunityfund.xyz) shows the current balance of the funds available in the [celo governance address](https://explorer.celo.org/mainnet/address/0xD533Ca259b330c7A88f74E000a3FaEa2d63B7972/coin-balances#address-tabs)(Celo Community Fund) and displays a pie chart with a high level breakdown of its contents and their percentage relevant to the total amount. This consists of 3 elements:
+[celocommunityfund.xyz](https://www.celocommunityfund.xyz) shows the current CELO balance of the [governance contract](https://celoscan.io/address/0xD533Ca259b330c7A88f74E000a3FaEa2d63B7972) (Celo Community Fund) and a sunburst chart with a high level breakdown of its contents. This consists of 3 elements:
 
 1. The currently available funds that are not allocated
-2. The currently available funds that are allocated via spend approvals to their respective addresses
-3.  An aggregate of the draft proposals anticipating to go to governance(this is taking away from no 1 above)
+2. The funds allocated via spend approvals (allowances) to their respective addresses
+3. An aggregate of the draft proposals anticipating to go to governance (this is taken from no. 1 above)
 
-### Info
+The switch above the chart toggles between the **Lifetime** view (including CELO already spent by initiatives) and the **Current** view.
 
-Clicking the info button at the top right gives a more detailed overview of each of the items. Including:
+### Pages
 
-- What is the Celo Community Fund
-- The estimated replish rate per day of the fund
-- Each of the initiatives including total amount approved, available amount left and a link to the respective governance proposal.
+- **Fund Status**: CELO balance, funds available and the Lifetime / Current chart.
+- **Ledger**: every grant per spender and token with approved, claimed and remaining amounts. Each row
+  expands into the proposals that funded it, with requested, replaced and effective amounts and the
+  execution transaction.
+- **Balances**: Community Fund and Reserve holdings with USD values from Chainlink, and the fund's
+  commitments per token.
+- **Proposals**: pending CGPs, their on-chain stage and fund requests.
 
-## App
+## Development
 
-In the `src/utils` folder it contains a node app that prints the current details.
+Requires Node.js 22 (see `.nvmrc`).
 
-`node src/utils/execute.js` 
+```sh
+npm ci
+npm run dev      # start the dev server
+npm test         # run unit tests
+npm run build    # production build into ./build
+```
 
-returns
+### Project structure
+
+```
+src/
+  data/
+    ledger.js           every grant, generated by scripts/audit (exact wei)
+    proposals.js        pending CGPs and their on-chain stage, generated by scripts/audit
+    drafts.js           manual drafts without a CGP (the only data edited by hand)
+    data.js             addresses, price feeds, colors, regular inflow
+  lib/
+    celo.js             on-chain reads (viem): balances, allowances, Reserve, Chainlink prices
+    fund.js             pure BigInt derivation of the ledger, totals and charts (tested)
+    format.js           exact wei formatting (tested)
+  pages/                Fund Status, Ledger, Balances, Proposals
+  components/           icons
+  App.jsx               layout and navigation
+scripts/
+  status.js             CLI version of the dashboard (npm run status)
+  audit/                governance audit that generates src/data and docs/audit.md
+docs/audit.md           audit report
+.github/workflows/      CI, branch flow check, daily audit
+```
+
+### Branches and releases
+
+`feature branch -> dev -> main`. `dev` and `main` are protected: changes go
+through pull requests with passing CI, and only `dev` can be merged into
+`main`. See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## CLI
+
+`npm run status` prints the current on-chain status:
 
 ```
 -------Community Fund-------
-Community Fund: 10004964
-Prezenti: 0
-Ocelot: 1239250
-CC: 2518998
-Africa DAO: 550000
---------------------
+Contract Balance: <balance>
+CICLOPS: <remaining allowance>
+...
 -------Drafts-------
-India DAO Chitty: 270000
-India DAO Monish: 80000
-Latam DAO: 903000
+--------------------
+Regular inflow: ~30 CELO per day
+Funds Available (after allowances and drafts): <amount>
 ```
 
 ## Contributing
