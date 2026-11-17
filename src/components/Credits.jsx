@@ -36,6 +36,11 @@ export const MEMBERS = [
     ],
   },
   {
+    name: '0xGoldo',
+    role: 'Guild member',
+    links: [{ kind: 'github', href: 'https://github.com/0xGoldo' }],
+  },
+  {
     name: '0xj4an',
     role: 'Rebuild and maintenance: on-chain audit, ledger, redesign',
     links: [

@@ -5,7 +5,7 @@ import { COMMUNITY_FUND_EXPLORER } from './data/data';
 import { AUDIT_BLOCK, drafts, ledger, proposals } from './data';
 import { fetchFundBalances } from './lib/celo';
 import { buildFundState } from './lib/fund';
-import { GUILD, SocialLinks } from './components/Credits';
+import { GUILD } from './components/Credits';
 import OverviewPage from './pages/OverviewPage';
 import LedgerPage from './pages/LedgerPage';
 import BalancesPage from './pages/BalancesPage';
@@ -33,7 +33,13 @@ function App() {
   useEffect(() => {
     const onHashChange = () => {
       setPath(currentPath());
-      window.scrollTo(0, 0);
+      // "#/about?credits" jumps to the credits card; every other navigation starts at the top.
+      const target = window.location.hash.includes('?credits') ? 'credits-title' : null;
+      setTimeout(() => {
+        const el = target && document.getElementById(target);
+        if (el) el.scrollIntoView({ block: 'start' });
+        else window.scrollTo(0, 0);
+      }, 0);
     };
     window.addEventListener('hashchange', onHashChange);
     return () => window.removeEventListener('hashchange', onHashChange);
@@ -119,11 +125,12 @@ function App() {
             <h2>Project</h2>
             <ul>
               <li><a href={REPO} target="_blank" rel="noopener noreferrer">Source code on GitHub</a></li>
-              <li className="footer-credit">
-                <span>Maintained by the {GUILD.name}</span>
-                <SocialLinks name={GUILD.name} links={GUILD.links} />
+              <li>Maintained by the <a href="#/about?credits">{GUILD.name}</a></li>
+              <li>
+                Originally built by <a href="https://github.com/0xzoz" target="_blank" rel="noopener noreferrer">0xzoz</a>{' '}
+                (<a href="https://www.web3socialcapital.xyz" target="_blank" rel="noopener noreferrer">w3sc</a>).
+                Support <a href="https://www.thecelo.com/groupDetail/thepassivetrust" target="_blank" rel="noopener noreferrer">The Passive Trust</a> validator group.
               </li>
-              <li>Originally built by 0xzoz (w3sc). <a href="#/about">See who is behind this</a></li>
             </ul>
           </div>
         </div>
