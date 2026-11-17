@@ -1,0 +1,8 @@
+.git
+.github
+.audit
+.governance
+node_modules
+build
+dist
+*.log
