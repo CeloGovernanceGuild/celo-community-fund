@@ -124,7 +124,7 @@ Maintained by the **Celo Governance Guild** ([X](https://x.com/celogovernance), 
 
 | Guild member | Role on this site | Links |
 |---|---|---|
-| 0xzoz | Original author (w3sc), 2023 | [X](https://x.com/0xzoz), [GitHub](https://github.com/0xzoz), [website](https://www.web3socialcapital.xyz) |
+| 0xzoz | Original author, 2023 | [X](https://x.com/0xzoz), [GitHub](https://github.com/0xzoz) |
 | 0xGoldo | Guild member | [GitHub](https://github.com/0xGoldo) |
 | 0xj4an | Rebuild and maintenance: on-chain audit, ledger, redesign | [X](https://x.com/0xj4an), [GitHub](https://github.com/0xj4an-Work), [website](https://0xj4an.xyz) |
 
