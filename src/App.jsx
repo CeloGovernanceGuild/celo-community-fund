@@ -119,8 +119,16 @@ function App() {
             <ul>
               <li><a href={REPO} target="_blank" rel="noopener noreferrer">Source code on GitHub</a></li>
               <li>
-                Originally built by <a href="https://www.web3socialcapital.xyz" target="_blank" rel="noopener noreferrer">w3sc</a>.
-                Support <a href="https://www.thecelo.com/groupDetail/thepassivetrust" target="_blank" rel="noopener noreferrer">The Passive Trust</a> validator group.
+                Originally built by <a href="https://www.web3socialcapital.xyz" target="_blank" rel="noopener noreferrer">w3sc</a>{' '}
+                (<a href="https://github.com/0xzoz" target="_blank" rel="noopener noreferrer">0xzoz</a>).
+              </li>
+              <li>
+                Rebuilt and maintained by the Celo Governance Guild{' '}
+                (<a href="https://x.com/celogovernance" target="_blank" rel="noopener noreferrer">X</a>,{' '}
+                <a href="https://github.com/CeloGovernanceGuild" target="_blank" rel="noopener noreferrer">GitHub</a>){' '}
+                and 0xj4an{' '}
+                (<a href="https://x.com/0xj4an" target="_blank" rel="noopener noreferrer">X</a>,{' '}
+                <a href="https://0xj4an.xyz" target="_blank" rel="noopener noreferrer">website</a>).
               </li>
             </ul>
           </div>

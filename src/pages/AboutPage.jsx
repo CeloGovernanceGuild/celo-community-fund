@@ -86,6 +86,42 @@ export default function AboutPage() {
           </p>
         </section>
 
+        <section className="card" aria-labelledby="credits-title">
+          <h2 className="section-title" id="credits-title">Who is behind this</h2>
+          <ul className="rows" style={{ marginTop: '1rem' }}>
+            <li>
+              <div className="row-main">
+                <span className="row-title">Originally built by w3sc (0xzoz)</span>
+                <span className="row-meta" style={{ marginTop: 0 }}>
+                  <a className="link-out" href="https://www.web3socialcapital.xyz" target="_blank" rel="noopener noreferrer">w3sc website</a>
+                  <a className="link-out" href="https://github.com/0xzoz" target="_blank" rel="noopener noreferrer">0xzoz on GitHub</a>
+                </span>
+              </div>
+              <p className="row-meta"><span>Created the site in 2023 and maintained it through its first version.</span></p>
+            </li>
+            <li>
+              <div className="row-main">
+                <span className="row-title">Rebuilt and maintained by the Celo Governance Guild</span>
+                <span className="row-meta" style={{ marginTop: 0 }}>
+                  <a className="link-out" href="https://x.com/celogovernance" target="_blank" rel="noopener noreferrer">Celo Governance on X</a>
+                  <a className="link-out" href="https://github.com/CeloGovernanceGuild" target="_blank" rel="noopener noreferrer">Guild on GitHub</a>
+                </span>
+              </div>
+              <p className="row-meta"><span>Hosts the code and keeps the data in line with governance.</span></p>
+            </li>
+            <li>
+              <div className="row-main">
+                <span className="row-title">Rebuilt and maintained by 0xj4an</span>
+                <span className="row-meta" style={{ marginTop: 0 }}>
+                  <a className="link-out" href="https://x.com/0xj4an" target="_blank" rel="noopener noreferrer">0xj4an on X</a>
+                  <a className="link-out" href="https://0xj4an.xyz" target="_blank" rel="noopener noreferrer">0xj4an.xyz</a>
+                </span>
+              </div>
+              <p className="row-meta"><span>On-chain audit, exact ledger and the 2026 redesign.</span></p>
+            </li>
+          </ul>
+        </section>
+
         <section className="card">
           <h2 className="section-title">Found something wrong?</h2>
           <p style={{ marginTop: '0.75rem', maxWidth: '48rem' }}>
