@@ -28,11 +28,10 @@ export const GUILD = {
 export const MEMBERS = [
   {
     name: '0xzoz',
-    role: 'Original author (w3sc), 2023',
+    role: 'Original author, 2023',
     links: [
       { kind: 'x', href: 'https://x.com/0xzoz' },
       { kind: 'github', href: 'https://github.com/0xzoz' },
-      { kind: 'website', href: 'https://www.web3socialcapital.xyz' },
     ],
   },
   {
