@@ -6,7 +6,7 @@ import {
   initiative_spent_celo_color,
   pending_drafts_celo_color,
 } from '../data/data.js';
-import { formatWei, parseUnits18, toNumber } from './format.js';
+import { formatWhole, parseUnits18, toNumber } from './format.js';
 
 export const TOKENS = ['CELO', 'USDm', 'EURm'];
 // On-chain stages in which a proposal can still execute (null: CGP not submitted on-chain yet).
@@ -58,7 +58,7 @@ export function buildFundState({ balances, allowances, ledger, proposals = [], d
   );
 
   const celo = tokens.CELO;
-  const node = (name, color, wei) => ({ name, color, loc: toNumber(wei > 0n ? wei : 0n), exact: formatWei(wei) });
+  const node = (name, color, wei) => ({ name, color, loc: toNumber(wei > 0n ? wei : 0n), label: formatWhole(wei) });
   const celoRows = rows.filter((r) => r.token === 'CELO');
   const balanceSlice = {
     name: 'Contract Balance',

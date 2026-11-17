@@ -2,7 +2,8 @@ import React from 'react';
 import { getAddress } from 'viem';
 import { EXPLORER } from '../data/data';
 import { proposals } from '../data';
-import { formatWei } from '../lib/format';
+import Amount from '../components/Amount';
+import { formatWhole } from '../lib/format';
 
 export default function ProposalsPage({ state }) {
   return (
@@ -33,7 +34,7 @@ export default function ProposalsPage({ state }) {
                   {p.requests.map((r) => (
                     <tr key={`${r.function}-${r.to}`}>
                       <td>{r.function}</td>
-                      <td className="num">{formatWei(r.amount)}</td>
+                      <td className="num"><Amount wei={r.amount} /></td>
                       <td>{r.token}</td>
                       <td className="mono"><a href={`${EXPLORER}/address/${r.to}`} target="_blank" rel="noopener noreferrer">{getAddress(r.to)}</a></td>
                     </tr>
@@ -46,7 +47,7 @@ export default function ProposalsPage({ state }) {
       </div>
 
       {state.pending.length > 0 && (
-        <p className="note">Reserved from funds available: {state.pending.map((p) => `${p.title} ${formatWei(p.amount)} ${p.token}`).join(', ')}.</p>
+        <p className="note">Reserved from funds available: {state.pending.map((p) => `${p.title} ${formatWhole(p.amount)} ${p.token}`).join(', ')}.</p>
       )}
     </section>
   );

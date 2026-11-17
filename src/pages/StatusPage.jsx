@@ -11,11 +11,11 @@ import {
   initiative_spent_celo_color,
   pending_drafts_celo_color,
 } from '../data/data';
-import { formatWei } from '../lib/format';
+import Amount from '../components/Amount';
 
 const Tooltip = ({ id, data }) => (
   <strong className="chart-tooltip">
-    {id}: {data.exact} <img className="symbol-hover" alt="CELO" src={symbol_black} />
+    {id}: {data.label} <img className="symbol-hover" alt="CELO" src={symbol_black} />
   </strong>
 );
 
@@ -41,9 +41,9 @@ export default function StatusPage({ state }) {
         <span className="tooltiptext">View Governance Contract</span>
         <h4>
           <p className="amount-disclaimer">Contract Balance | Funds Available</p>
-          {formatWei(celo.balance)} <img className="symbol" alt="CELO" src={symbol} />
+          <Amount wei={celo.balance} /> <img className="symbol" alt="CELO" src={symbol} />
           <span> | </span>
-          {formatWei(celo.available)} <img className="symbol" alt="CELO" src={symbol} />
+          <Amount wei={celo.available} /> <img className="symbol" alt="CELO" src={symbol} />
         </h4>
       </a>
 

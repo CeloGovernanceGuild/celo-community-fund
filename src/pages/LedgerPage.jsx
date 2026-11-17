@@ -2,7 +2,7 @@ import React, { Fragment, useState } from 'react';
 import { getAddress } from 'viem';
 import { EXPLORER } from '../data/data';
 import { TOKENS } from '../lib/fund';
-import { formatWei } from '../lib/format';
+import Amount from '../components/Amount';
 
 const cgpUrl = (n) => `https://github.com/celo-org/governance/blob/main/CGPs/cgp-${String(n).padStart(4, '0')}.md`;
 const STATUSES = ['all', 'open', 'fully claimed', 'transferred'];
@@ -24,9 +24,9 @@ function Grants({ entry }) {
             <td>{g.proposalId}</td>
             <td>{g.function}</td>
             <td className="mono"><a href={`${EXPLORER}/address/${g.to}`} target="_blank" rel="noopener noreferrer">{getAddress(g.to)}</a></td>
-            <td className="num">{formatWei(g.requested)}</td>
-            <td className="num">{formatWei(g.replaced)}</td>
-            <td className="num">{formatWei(g.effective)}</td>
+            <td className="num"><Amount wei={g.requested} /></td>
+            <td className="num"><Amount wei={g.replaced} /></td>
+            <td className="num"><Amount wei={g.effective} /></td>
             <td className="mono"><a href={`${EXPLORER}/tx/${g.tx}`} target="_blank" rel="noopener noreferrer">{g.tx}</a></td>
           </tr>
         ))}
@@ -52,7 +52,8 @@ export default function LedgerPage({ state }) {
       <p className="page-intro">
         Every grant the Community Fund made through governance. <strong>Approved</strong> is the effective amount
         governance granted, <strong>Claimed</strong> what the spender already pulled, <strong>Remaining</strong> the
-        live allowance. Amounts are exact; click a row to see each proposal and its execution transaction.
+        live allowance. Amounts are shown in whole units (hover for the exact value); anything left below one unit
+        shows as &lt;1 and stays open. Click a row to see each proposal and its execution transaction.
       </p>
 
       <table className="totals">
@@ -63,9 +64,9 @@ export default function LedgerPage({ state }) {
           {TOKENS.map((t) => (
             <tr key={t}>
               <td>{t}</td>
-              <td className="num">{formatWei(state.tokens[t].approved)}</td>
-              <td className="num">{formatWei(state.tokens[t].claimed)}</td>
-              <td className="num">{formatWei(state.tokens[t].open)}</td>
+              <td className="num"><Amount wei={state.tokens[t].approved} /></td>
+              <td className="num"><Amount wei={state.tokens[t].claimed} /></td>
+              <td className="num"><Amount wei={state.tokens[t].open} /></td>
             </tr>
           ))}
         </tbody>
@@ -102,9 +103,9 @@ export default function LedgerPage({ state }) {
                   <tr className={`ledger-row status-${r.status.replace(' ', '-')}`} onClick={() => toggle(key)} aria-expanded={open}>
                     <td>{open ? '- ' : '+ '}{r.title}</td>
                     <td>{r.token}</td>
-                    <td className="num">{formatWei(r.approved)}</td>
-                    <td className="num">{formatWei(r.claimed)}</td>
-                    <td className="num">{formatWei(r.remaining)}</td>
+                    <td className="num"><Amount wei={r.approved} /></td>
+                    <td className="num"><Amount wei={r.claimed} /></td>
+                    <td className="num"><Amount wei={r.remaining} /></td>
                     <td>{r.status}</td>
                     <td>{r.cgps.map((n) => <a key={n} href={cgpUrl(n)} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()}>{n} </a>)}</td>
                   </tr>

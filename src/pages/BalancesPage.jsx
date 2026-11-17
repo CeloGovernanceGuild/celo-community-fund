@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { COMMUNITY_FUND_EXPLORER, EXPLORER, RESERVE_ADDRESS } from '../data/data';
 import { fetchMarket } from '../lib/celo';
 import { TOKENS } from '../lib/fund';
-import { formatUsd, formatWei } from '../lib/format';
+import Amount from '../components/Amount';
+import { formatUsd } from '../lib/format';
 
 const formatPrice = (price8) => {
   if (!price8) return 'n/a';
@@ -20,7 +21,7 @@ function Holdings({ title, href, amounts, prices }) {
           {TOKENS.map((t) => (
             <tr key={t}>
               <td>{t}</td>
-              <td className="num">{formatWei(amounts[t])}</td>
+              <td className="num"><Amount wei={amounts[t]} /></td>
               <td className="num">{prices ? formatUsd(amounts[t], prices[t]) ?? 'n/a' : '...'}</td>
             </tr>
           ))}
@@ -70,10 +71,10 @@ export default function BalancesPage({ state }) {
               return (
                 <tr key={t}>
                   <td>{t}</td>
-                  <td className="num">{formatWei(s.balance)}</td>
-                  <td className="num">{formatWei(s.open)}</td>
-                  <td className="num">{formatWei(s.reserved)}</td>
-                  <td className={s.available < 0n ? 'num negative' : 'num'}>{formatWei(s.available)}</td>
+                  <td className="num"><Amount wei={s.balance} /></td>
+                  <td className="num"><Amount wei={s.open} /></td>
+                  <td className="num"><Amount wei={s.reserved} /></td>
+                  <td className={s.available < 0n ? 'num negative' : 'num'}><Amount wei={s.available} /></td>
                 </tr>
               );
             })}
@@ -88,7 +89,7 @@ export default function BalancesPage({ state }) {
       {market && (
         <p className="note">
           Prices from Chainlink on Celo: CELO/USD {formatPrice(market.prices.CELO)}, EUR/USD {formatPrice(market.prices.EURm)}, USDm at $1.
-          USD values are conversions to the cent; token balances are exact.
+          Token balances are shown in whole units; hover for the exact value.
         </p>
       )}
     </section>
