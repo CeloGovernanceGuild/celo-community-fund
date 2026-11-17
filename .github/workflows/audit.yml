@@ -1,0 +1,58 @@
+name: Governance audit
+
+# Re-runs the on-chain audit every day and opens a pull request into dev when
+# the ledger, pending proposals or report changed. dev is protected, so the
+# update only lands after CI passes and someone merges it.
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: governance-audit
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: dev
+          # A token other than GITHUB_TOKEN is needed for the pull request to trigger CI.
+          token: ${{ secrets.AUDIT_PR_TOKEN || github.token }}
+      - uses: actions/checkout@v5
+        with:
+          repository: celo-org/governance
+          path: .governance
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Run audit
+        run: scripts/audit/run.sh .governance
+      - name: Open pull request if data changed
+        env:
+          GH_TOKEN: ${{ secrets.AUDIT_PR_TOKEN || github.token }}
+        run: |
+          if git diff --quiet -- src/data docs/audit.md; then
+            echo "No changes."
+            exit 0
+          fi
+          branch="data/audit-$(date -u +%Y-%m-%d)"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$branch"
+          git add src/data docs/audit.md
+          git commit -m "chore(data): refresh governance audit"
+          git push --force origin "$branch"
+          if ! gh pr view "$branch" --json number >/dev/null 2>&1; then
+            gh pr create --base dev --head "$branch" \
+              --title "chore(data): refresh governance audit $(date -u +%Y-%m-%d)" \
+              --body "Automated run of \`scripts/audit/run.sh\`. Review \`docs/audit.md\` for new grants, claims and findings."
+          fi

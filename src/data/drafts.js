@@ -1,14 +1,10 @@
-// Draft initiatives: funding proposals expected to go to governance that are
-// not executed yet. Their amounts are reserved from the funds available.
+// Manual drafts: funding requests discussed on the forum that have no CGP yet.
+// CGPs are picked up automatically from celo-org/governance (src/data/proposals.js),
+// so only add here what is not in that repository. Amounts are reserved from the
+// funds available.
 //
-// As of the governance audit (see docs/audit.md) there are no pending funding
-// proposals: every live proposal on-chain changes parameters only.
+// Shape: { title, token: "CELO" | "USDm" | "EURm", amount: "1234.5" (exact decimal string), proposal: "<forum url>" }
 //
-// To add one:
-//   1. Set `amount` to the CELO amount being requested
-//   2. Link the proposal (CGP or forum post)
-//   3. Add the spender address once it is known
-//
-// Initiative flow: Draft -> Active Initiative -> Completed Initiative
+// Initiative flow: Draft -> CGP (proposals.js) -> executed grant (ledger.js)
 
 export const drafts = [];
