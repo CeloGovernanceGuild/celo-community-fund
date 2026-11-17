@@ -127,7 +127,3 @@ Maintained by the **Celo Governance Guild** ([X](https://x.com/celogovernance), 
 | 0xzoz | Original author, 2023 | [X](https://x.com/0xzoz), [GitHub](https://github.com/0xzoz) |
 | 0xGoldo | Guild member | [GitHub](https://github.com/0xGoldo) |
 | 0xj4an | Rebuild and maintenance: on-chain audit, ledger, redesign | [X](https://x.com/0xj4an), [GitHub](https://github.com/0xj4an-Work), [website](https://0xj4an.xyz) |
-
-## Pay it Forward
-
-If you find this useful please support and vote for [TPT](https://www.thecelo.com/groupDetail/thepassivetrust)(The Passive Trust) Celo validator group.

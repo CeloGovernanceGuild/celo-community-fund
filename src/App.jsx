@@ -129,7 +129,6 @@ function App() {
               <li>
                 Originally built by <a href="https://github.com/0xzoz" target="_blank" rel="noopener noreferrer">0xzoz</a>{' '}
                 (<a href="https://www.web3socialcapital.xyz" target="_blank" rel="noopener noreferrer">w3sc</a>).
-                Support <a href="https://www.thecelo.com/groupDetail/thepassivetrust" target="_blank" rel="noopener noreferrer">The Passive Trust</a> validator group.
               </li>
             </ul>
           </div>
