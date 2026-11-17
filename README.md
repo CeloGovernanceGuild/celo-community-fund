@@ -118,6 +118,12 @@ Funds Available (after allowances and drafts): <amount>
 
 This is a community run project, all contributions are welcome. If you have feedback or a request please submit an issue. If you want to add additional information or correct information please submit a PR
 
+## Credits
+
+- Originally built by [w3sc](https://www.web3socialcapital.xyz) ([0xzoz](https://github.com/0xzoz)) in 2023.
+- Rebuilt and maintained by the Celo Governance Guild ([X](https://x.com/celogovernance), [GitHub](https://github.com/CeloGovernanceGuild))
+  and 0xj4an ([X](https://x.com/0xj4an), [website](https://0xj4an.xyz)): on-chain audit, exact ledger and the 2026 redesign.
+
 ## Pay it Forward
 
 If you find this useful please support and vote for [TPT](https://www.thecelo.com/groupDetail/thepassivetrust)(The Passive Trust) Celo validator group.
