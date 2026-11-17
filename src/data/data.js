@@ -15,6 +15,10 @@ export const EUR_USD_FEED = "0x3D207061Dbe8E2473527611BFecB87Ff12b28dDa";
 // Explorer links
 export const EXPLORER = "https://celoscan.io";
 export const COMMUNITY_FUND_EXPLORER = `${EXPLORER}/address/${GOVERNANCE_ADDRESS}`;
+export const addressUrl = (address) => `${EXPLORER}/address/${address}`;
+export const txUrl = (hash) => `${EXPLORER}/tx/${hash}`;
+// Token page filtered to one holder: its balance and every transfer of that token in or out of it.
+export const tokenHolderUrl = (token, holder) => `${EXPLORER}/token/${TOKEN_ADDRESSES[token]}?a=${holder}`;
 
 // Regular CELO inflow to the fund (CELO per day). After the L2 migration the fund
 // receives about 30 CELO/day from CeloUnreleasedTreasury; large grants are topped

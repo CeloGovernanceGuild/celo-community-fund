@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { getAddress } from 'viem';
 import Amount from '../components/Amount';
 import { ClaimProgress } from '../components/Charts';
-import { EXPLORER } from '../data/data';
+import { addressUrl, tokenHolderUrl, txUrl } from '../data/data';
 import { TOKENS } from '../lib/fund';
 
 const cgpUrl = (n) => `https://github.com/celo-org/governance/blob/main/CGPs/cgp-${String(n).padStart(4, '0')}.md`;
@@ -50,10 +50,10 @@ function Grant({ grant, token }) {
       </span>
       <span className="grant-amount num"><Amount wei={grant.effective} /> {token}</span>
       <span className="grant-links">
-        <a href={cgpUrl(grant.cgp)} target="_blank" rel="noopener noreferrer">CGP-{grant.cgp}</a>
-        <span className="muted">Proposal {grant.proposalId}</span>
-        <a href={`${EXPLORER}/tx/${grant.tx}`} target="_blank" rel="noopener noreferrer" title={grant.tx}>Execution tx {short(grant.tx)}</a>
-        <a href={`${EXPLORER}/address/${grant.to}`} target="_blank" rel="noopener noreferrer" title={getAddress(grant.to)}>Recipient {short(getAddress(grant.to))}</a>
+        <a href={cgpUrl(grant.cgp)} target="_blank" rel="noopener noreferrer">Read proposal CGP-{grant.cgp}</a>
+        <span className="muted">On-chain proposal {grant.proposalId}</span>
+        <a className="link-out" href={txUrl(grant.tx)} target="_blank" rel="noopener noreferrer" title={grant.tx}>Transaction on Celoscan</a>
+        <a className="link-out" href={addressUrl(grant.to)} target="_blank" rel="noopener noreferrer" title={getAddress(grant.to)}>Recipient {short(getAddress(grant.to))} on Celoscan</a>
       </span>
     </div>
   );
@@ -81,9 +81,10 @@ function Entry({ row }) {
         <div className="ledger-detail" id={id}>
           {row.kind === 'allowance' && <ClaimProgress claimed={row.claimed} remaining={row.remaining} />}
           {row.address && (
-            <p className="small muted" style={{ margin: '0.75rem 0' }}>
-              Spender{' '}
-              <a className="mono" href={`${EXPLORER}/address/${row.address}`} target="_blank" rel="noopener noreferrer">{getAddress(row.address)}</a>
+            <p className="row-meta" style={{ margin: '0.75rem 0' }}>
+              <span>Recipient <span className="mono">{getAddress(row.address)}</span></span>
+              <a className="link-out" href={addressUrl(row.address)} target="_blank" rel="noopener noreferrer">Open on Celoscan</a>
+              <a className="link-out" href={tokenHolderUrl(row.token, row.address)} target="_blank" rel="noopener noreferrer">See its {row.token} claims on Celoscan</a>
             </p>
           )}
           {row.grants.map((g) => <Grant key={`${g.tx}-${g.to}`} grant={g} token={row.token} />)}
@@ -96,7 +97,10 @@ function Entry({ row }) {
 export default function LedgerPage({ state }) {
   const [query, setQuery] = useState('');
   const [token, setToken] = useState('all');
-  const [status, setStatus] = useState('all');
+  const [status, setStatus] = useState(() => {
+    const wanted = new URLSearchParams(window.location.hash.split('?')[1] ?? '').get('status');
+    return STATUS_FILTERS.some((f) => f.value === wanted) ? wanted : 'all';
+  });
   const [sort, setSort] = useState('newest');
 
   const rows = useMemo(() => {
