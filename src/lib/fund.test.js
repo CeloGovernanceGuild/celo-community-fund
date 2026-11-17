@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { allowanceKey, buildFundState } from './fund.js';
+import { allowanceKey, buildFundState, groupByRecipient } from './fund.js';
 
 const E = 10n ** 18n;
 const A = '0x00000000000000000000000000000000000000aa';
@@ -51,5 +51,25 @@ describe('buildFundState', () => {
       ['committed', 900n * E],
       ['pending', 0n],
     ]);
+  });
+});
+
+describe('groupByRecipient', () => {
+  const grant = (date) => ({ date, cgp: 1, tx: '0x1', to: A, requested: '1', replaced: '0', effective: '1' });
+  const multi = [
+    { title: 'PG', token: 'USDm', kind: 'allowance', address: A, approved: (100n * E).toString(), cgps: [141], grants: [grant('2024-07-13')] },
+    { title: 'PG', token: 'CELO', kind: 'allowance', address: A.toUpperCase().replace('0X', '0x'), approved: (1250n * E).toString(), cgps: [141], grants: [grant('2024-07-13')] },
+    { title: 'T', token: 'CELO', kind: 'transfer', approved: (5n * E).toString(), cgps: [3], grants: [grant('2023-01-01')] },
+  ];
+
+  it('puts every token of one recipient in a single entry, CELO first', () => {
+    const allowances = { [allowanceKey('USDm', A)]: 100n * E, [allowanceKey('CELO', A)]: 0n };
+    const { rows } = buildFundState({ balances: {}, allowances, ledger: multi });
+    const groups = groupByRecipient(rows);
+
+    expect(groups).toHaveLength(2);
+    expect(groups[0]).toMatchObject({ title: 'PG', tokens: ['CELO', 'USDm'], status: 'open', cgps: [141] });
+    expect(groups[0].grants.map((g) => g.token)).toEqual(['CELO', 'USDm']);
+    expect(groups[1]).toMatchObject({ title: 'T', tokens: ['CELO'], status: 'transferred' });
   });
 });

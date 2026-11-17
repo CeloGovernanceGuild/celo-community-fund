@@ -15,13 +15,24 @@ const STATUS_FILTERS = [
   { value: 'transferred', label: 'Transferred' },
 ];
 const STATUS_LABEL = { open: 'Open', 'fully claimed': 'Fully claimed', transferred: 'Transferred' };
+const FUNCTION_LABEL = { approve: 'Allowance set', increaseAllowance: 'Allowance increased', transfer: 'Direct transfer' };
+
+// Amounts of different tokens cannot be added up, so sorting compares CELO first, then USDm, then EURm.
+const amountOf = (group, field, token) => group.positions.find((p) => p.token === token)?.[field] ?? 0n;
+const byAmount = (field) => (a, b) => {
+  for (const token of TOKENS) {
+    const x = amountOf(a, field, token);
+    const y = amountOf(b, field, token);
+    if (x !== y) return x < y ? 1 : -1;
+  }
+  return 0;
+};
 const SORTS = {
-  newest: { label: 'Newest grant', compare: (a, b) => (a.grants.at(-1).date < b.grants.at(-1).date ? 1 : -1) },
-  approved: { label: 'Largest approved', compare: (a, b) => (a.approved < b.approved ? 1 : -1) },
-  remaining: { label: 'Largest remaining', compare: (a, b) => (a.remaining < b.remaining ? 1 : -1) },
+  newest: { label: 'Newest grant', compare: (a, b) => (a.lastGrant < b.lastGrant ? 1 : -1) },
+  approved: { label: 'Largest approved', compare: byAmount('approved') },
+  remaining: { label: 'Largest remaining', compare: byAmount('remaining') },
   name: { label: 'Name', compare: (a, b) => a.title.localeCompare(b.title) },
 };
-const FUNCTION_LABEL = { approve: 'Allowance set', increaseAllowance: 'Allowance increased', transfer: 'Direct transfer' };
 
 function Segmented({ label, options, value, onChange }) {
   const id = `filter-${label.toLowerCase()}`;
@@ -37,7 +48,7 @@ function Segmented({ label, options, value, onChange }) {
   );
 }
 
-function Grant({ grant, token }) {
+function Grant({ grant }) {
   const replaced = BigInt(grant.replaced);
   return (
     <div className="grant">
@@ -48,7 +59,7 @@ function Grant({ grant, token }) {
           <span className="muted"> (requested <Amount wei={grant.requested} />, replaced an unclaimed <Amount wei={replaced} />)</span>
         )}
       </span>
-      <span className="grant-amount num"><Amount wei={grant.effective} /> {token}</span>
+      <span className="grant-amount num"><Amount wei={grant.effective} /> {grant.token}</span>
       <span className="grant-links">
         <a href={cgpUrl(grant.cgp)} target="_blank" rel="noopener noreferrer">Read proposal CGP-{grant.cgp}</a>
         <span className="muted">On-chain proposal {grant.proposalId}</span>
@@ -59,35 +70,57 @@ function Grant({ grant, token }) {
   );
 }
 
-function Entry({ row }) {
+// One amount per token, each with its unit, so a recipient funded in CELO and USDm reads as one line.
+function Amounts({ label, positions, field }) {
+  return (
+    <span className="ledger-cell num">
+      <span className="cell-label">{label}</span>
+      {positions.map((p) => (
+        <span className="amount-line" key={p.token}><Amount wei={p[field]} /> <span className="unit">{p.token}</span></span>
+      ))}
+    </span>
+  );
+}
+
+function Entry({ group, positions }) {
   const [open, setOpen] = useState(false);
-  const id = `entry-${row.kind}-${row.token}-${row.address ?? row.title.replace(/\W+/g, '-')}`;
+  const id = `entry-${group.key.replace(/\W+/g, '-')}`;
+  const tokens = new Set(positions.map((p) => p.token));
   return (
     <li className="ledger-item">
       <button className="ledger-toggle" type="button" aria-expanded={open} aria-controls={id} onClick={() => setOpen((v) => !v)}>
         <span className="ledger-name">
-          <span className="row-title">{row.title}</span>
+          <span className="row-title">{group.title}</span>
           <span className="row-meta">
-            <span className="badge plain">{row.token}</span>
-            <span className={row.status === 'open' ? 'badge open' : 'badge'}>{STATUS_LABEL[row.status]}</span>
+            {positions.map((p) => <span className="badge plain" key={p.token}>{p.token}</span>)}
+            <span className={group.status === 'open' ? 'badge open' : 'badge'}>{STATUS_LABEL[group.status]}</span>
           </span>
         </span>
-        <span className="ledger-cell num"><span className="cell-label">Approved</span><Amount wei={row.approved} /></span>
-        <span className="ledger-cell num"><span className="cell-label">Claimed</span><Amount wei={row.claimed} /></span>
-        <span className="ledger-cell num"><span className="cell-label">Remaining</span><Amount wei={row.remaining} /></span>
+        <Amounts label="Approved" positions={positions} field="approved" />
+        <Amounts label="Claimed" positions={positions} field="claimed" />
+        <Amounts label="Remaining" positions={positions} field="remaining" />
         <span className="chevron" aria-hidden="true" />
       </button>
       {open && (
         <div className="ledger-detail" id={id}>
-          {row.kind === 'allowance' && <ClaimProgress claimed={row.claimed} remaining={row.remaining} />}
-          {row.address && (
+          {group.kind === 'allowance' && positions.map((p) => (
+            <div className="position" key={p.token}>
+              <span className="small muted">{p.token}: claimed <Amount wei={p.claimed} /> of <Amount wei={p.approved} /></span>
+              <ClaimProgress claimed={p.claimed} remaining={p.remaining} />
+            </div>
+          ))}
+          {group.address && (
             <p className="row-meta" style={{ margin: '0.75rem 0' }}>
-              <span>Recipient <span className="mono">{getAddress(row.address)}</span></span>
-              <a className="link-out" href={addressUrl(row.address)} target="_blank" rel="noopener noreferrer">Open on Celoscan</a>
-              <a className="link-out" href={tokenHolderUrl(row.token, row.address)} target="_blank" rel="noopener noreferrer">See its {row.token} claims on Celoscan</a>
+              <span>Recipient <span className="mono">{getAddress(group.address)}</span></span>
+              <a className="link-out" href={addressUrl(group.address)} target="_blank" rel="noopener noreferrer">Open on Celoscan</a>
+              {positions.map((p) => (
+                <a key={p.token} className="link-out" href={tokenHolderUrl(p.token, group.address)} target="_blank" rel="noopener noreferrer">
+                  See its {p.token} claims on Celoscan
+                </a>
+              ))}
             </p>
           )}
-          {row.grants.map((g) => <Grant key={`${g.tx}-${g.to}`} grant={g} token={row.token} />)}
+          {group.grants.filter((g) => tokens.has(g.token)).map((g) => <Grant key={`${g.tx}-${g.to}-${g.token}`} grant={g} />)}
         </div>
       )}
     </li>
@@ -103,14 +136,14 @@ export default function LedgerPage({ state }) {
   });
   const [sort, setSort] = useState('newest');
 
-  const rows = useMemo(() => {
+  const groups = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return state.rows
-      .filter((r) => token === 'all' || r.token === token)
-      .filter((r) => status === 'all' || r.status === status)
-      .filter((r) => !q || r.title.toLowerCase().includes(q) || (r.address ?? '').includes(q) || r.cgps.some((n) => `cgp-${n}` === q || String(n) === q))
+    return state.groups
+      .filter((g) => token === 'all' || g.tokens.includes(token))
+      .filter((g) => status === 'all' || g.status === status)
+      .filter((g) => !q || g.title.toLowerCase().includes(q) || (g.address ?? '').toLowerCase().includes(q) || g.cgps.some((n) => `cgp-${n}` === q || String(n) === q))
       .sort(SORTS[sort].compare);
-  }, [state.rows, query, token, status, sort]);
+  }, [state.groups, query, token, status, sort]);
 
   return (
     <>
@@ -118,8 +151,8 @@ export default function LedgerPage({ state }) {
         <p className="eyebrow">Ledger</p>
         <h1 className="display">Every grant, to the last CELO.</h1>
         <p className="lede">
-          One line per recipient and token. Approved is what governance granted, claimed is what the recipient
-          already took, remaining is what it can still take. Open any line to see the proposals behind it.
+          One line per recipient, with every token it was granted. Approved is what governance granted, claimed is
+          what the recipient already took, remaining is what it can still take. Open any line to see the proposals behind it.
         </p>
       </header>
 
@@ -159,10 +192,10 @@ export default function LedgerPage({ state }) {
           </div>
 
           <p className="small muted" role="status" style={{ marginBottom: '0.75rem' }}>
-            {rows.length} of {state.rows.length} entries. Amounts are in whole units; hover a number for the exact value.
+            {groups.length} of {state.groups.length} recipients. Amounts are in whole units; hover a number for the exact value.
           </p>
 
-          {rows.length === 0 ? (
+          {groups.length === 0 ? (
             <p className="empty">Nothing matches these filters.</p>
           ) : (
             <>
@@ -170,7 +203,9 @@ export default function LedgerPage({ state }) {
                 <span>Recipient</span><span>Approved</span><span>Claimed</span><span>Remaining</span><span />
               </div>
               <ul className="rows" style={{ borderTop: 0 }}>
-                {rows.map((r) => <Entry key={`${r.kind}:${r.token}:${r.address ?? r.title}`} row={r} />)}
+                {groups.map((g) => (
+                  <Entry key={g.key} group={g} positions={token === 'all' ? g.positions : g.positions.filter((p) => p.token === token)} />
+                ))}
               </ul>
             </>
           )}
