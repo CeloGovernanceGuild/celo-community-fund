@@ -1,5 +1,5 @@
 """Write docs/audit.md from the audit data. Every amount is exact (wei precision, no rounding)."""
-import datetime, json, re, sys
+import datetime, json, os, re, sys
 from common import fmt
 
 OUT = sys.argv[1]
@@ -7,6 +7,8 @@ g = json.load(open("grants.json")); v = json.load(open("verified.json"))
 cg = {x["cgp"]: x for x in json.load(open("cgps.json"))}
 recon = json.load(open("recon.json")); inflows = json.load(open("celo_in.json"))
 ledger = json.load(open("ledger.json")); pending = json.load(open("proposals.json"))
+pid2cgp = {int(p): n for p, n in v["cgp_of"].items()}
+mondo = {x["id"]: x for x in (json.load(open("mondo.json")) if os.path.exists("mondo.json") else []) if x.get("id")}
 url = lambda n: f"https://github.com/celo-org/governance/blob/main/CGPs/cgp-{n:04d}.md"
 cgp_link = lambda n: f"[CGP-{n}]({url(n)})"
 B = v["block"]; bal = {k: int(x) for k, x in v["balances"].items()}
@@ -92,13 +94,21 @@ w("above the balance reverts, so this is not a loss, but those allowances are no
 w("### 7. CGP metadata does not match the chain\n")
 w("| CGP | Repository | Chain |\n|---|---|---|")
 for item in recon["issues"]:
-    if "status" in item[0] or "no on-chain" in item[0]:
-        chain = item[0].split(" but ")[1] if " but " in item[0] else f"proposal {item[2]} never executed"
+    if "status" in item[0] or "no on-chain" in item[0] or "governance-proposal-id" in item[0]:
+        adopted = mondo.get(int(item[2]) if item[2].isdigit() else -1, {}).get("stage") == 9
+        chain = item[0].split(" but ")[1] if " but " in item[0] else (
+            f"proposal {item[2]} was not executed" + (" (Mondo: adopted, a vote with nothing to execute)" if adopted else ""))
         w(f"| {cgp_link(int(item[1]))} | {item[0].split(' but ')[0].replace('CGP ', '').replace('marked ', '')} | {chain} |")
 for p in pending:
     if p["stage"] == "Expiration":
         w(f"| {cgp_link(p['cgp'])} | status {p['status']} | proposal {p['proposalId']} expired |")
-w("\nProposals executed on-chain with no CGP: 83, 315, 316, 317. None of them moves fund assets.")
+no_cgp = sorted(int(p) for p in v["execs"] if int(p) not in pid2cgp)
+moving = [p for p in no_cgp if v["onchain"][str(p)]]
+w(f"\nProposals executed on-chain with no CGP: {', '.join(map(str, no_cgp)) or 'none'}."
+  + (" None of them moves fund assets." if not moving else f" Moving fund assets: {moving}."))
+w("A proposal is matched to the CGP that declares its id; proposals no CGP declares are matched by the description")
+w("URL they were queued with on-chain, so a CGP that expired and was re-submitted under a new proposal id is")
+w("followed to the attempt that executed.")
 w("CGPs 14, 17, 20, 38, 52, 54, 61, 69, 70 and 75 have no `mainnet.json`; their fund movements were taken from the")
 w("execution receipts.\n")
 w("### 8. Inflows and replenish rate\n")
@@ -106,10 +116,6 @@ w("After the L2 migration the regular inflow is about 30 CELO/day from `CeloUnre
 w("funded in the same execution that approves them. Inflows of 100,000 CELO or more in the last year:\n")
 w("| Date | From | Amount | Tx | Proposal |\n|---|---|---:|---|---|")
 tx2pid = {e["tx"].lower(): int(p) for p, e in v["execs"].items()}
-pid2cgp = {}
-for n, x in cg.items():
-    m = re.search(r"(\d+)", str(x["meta"].get("governance-proposal-id", "")))
-    if m: pid2cgp[int(m.group(1))] = n
 SRC = {"7a8c7a833565fc428cdfba20fe03fafb178a434f": "CeloUnreleasedTreasury", "9d65e69ac940dcb469fd7c46368c1e094250a400": "Reserve"}
 for x in inflows:
     a = int(x["data"], 16)
@@ -119,6 +125,20 @@ for x in inflows:
     w(f"| {d} | {SRC.get(frm, '`0x' + frm + '`')} | {fmt(a)} | `{x['transactionHash']}` | " + (cgp_link(pid2cgp[p]) if p in pid2cgp else "none") + " |")
 w("\nInflows with no proposal came from Safes outside governance. `0x87647780180b8f55980c7d3ffefe08a9b29e9ae1` is the")
 w(f"spender of the Mento USDm/USDC liquidity allowance from {cgp_link(69)}. Their owners should confirm what these transfers are.\n")
+w("### 9. Cross-check with Mondo\n")
+if mondo:
+    ours = {int(p) for p in v["execs"]}
+    theirs = {i for i, x in mondo.items() if x["stage"] == 6}
+    w(f"[Mondo](https://mondo.celo.org/governance), the Celo governance app, lists {len(mondo)} proposals, {len(theirs)} of them executed.")
+    w(f"- Executed on-chain and executed in Mondo: {len(ours & theirs)}")
+    w(f"- Executed in Mondo but not on-chain: {', '.join(map(str, sorted(theirs - ours))) or 'none'}")
+    missing = sorted(ours - theirs)
+    w(f"- Executed on-chain but not listed as executed in Mondo: {', '.join(map(str, missing)) or 'none'}"
+      + (" (not in Mondo's list at all)" if missing and all(p not in mondo for p in missing) else ""))
+    diff = sorted(p for p in ours & theirs if mondo[p].get("cgp") and pid2cgp.get(p) != mondo[p]["cgp"])
+    w(f"- Proposals where Mondo and this audit disagree on the CGP: {', '.join(map(str, diff)) or 'none'}\n")
+else:
+    w("Mondo data was not available for this run.\n")
 w("## Pending proposals\n")
 if pending:
     w("| CGP | Status | Proposal | On-chain stage | Fund requests |\n|---|---|---:|---|---|")

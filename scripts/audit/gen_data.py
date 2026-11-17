@@ -94,13 +94,14 @@ ledger.sort(key=lambda e: (e["firstGrant"], e["title"]))
 # Pending proposals: CGPs not executed on-chain and not rejected, withdrawn or expired.
 STAGES = ["None", "Queued", "Approval", "Referendum", "Execution", "Expiration"]
 executed = {int(p) for p in v["execs"]}
+pids_of = {int(n): ps for n, ps in v["pids_of"].items()}
 pending = []
 for x in cgps:
     st = x["meta"].get("status", "").upper()
-    m = re.search(r"(\d+)", str(x["meta"].get("governance-proposal-id", "")))
-    pid = int(m.group(1)) if m else None
-    if st not in ("DRAFT", "PROPOSED", "VOTING") or (pid in executed):
+    attempts = pids_of.get(x["cgp"], [])
+    if st not in ("DRAFT", "PROPOSED", "VOTING") or any(p in executed for p in attempts):
         continue
+    pid = max(attempts) if attempts else None  # latest on-chain attempt
     stage = None
     if pid is not None:
         stage = STAGES[int(rpc("eth_call", [{"to": GOV, "data": "0x582ae53b" + hex(pid)[2:].rjust(64, "0")}, "latest"]), 16)]

@@ -1,6 +1,6 @@
 # Community Fund governance audit
 
-Snapshot: Celo block 83012440 (2026-11-17). Every number was read on-chain or from
+Snapshot: Celo block 83014439 (2026-11-17). Every number was read on-chain or from
 [celo-org/governance](https://github.com/celo-org/governance) at that block. Amounts are exact to the wei:
 nothing is rounded. The scripts that produce this report and `src/data` live in [`scripts/audit`](../scripts/audit).
 
@@ -23,12 +23,12 @@ nothing is rounded. The scripts that produce this report and `src/data` live in 
 
 | Token | Fund balance | Open allowances | Balance minus open allowances |
 |---|---:|---:|---:|
-| CELO | 77,858,535.449750414683749888 | 38,869,472.15175548892 | 38,989,063.297994925763749888 |
+| CELO | 77,858,565.789090605232734323 | 38,869,472.15175548892 | 38,989,093.637335116312734323 |
 | USDm | 1,670.502286982809573708 | 1,152,130.261 | -1,150,459.758713017190426292 |
 | EURm | 55.994895651259895506 | 0 | 55.994895651259895506 |
 
 - Executed proposals checked: 208
-- CGP spend transactions verified against execution receipts: 110 of 110
+- CGP spend transactions verified against execution receipts: 112 of 112
 - CELO grants executed after the site's previous data update (2023-08-25): 54
 - Pending CGPs with an on-chain proposal that can still execute: 0
 
@@ -163,17 +163,24 @@ above the balance reverts, so this is not a loss, but those allowances are not f
 
 | CGP | Repository | Chain |
 |---|---|---|
-| [CGP-189](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0189.md) | EXECUTED, no on-chain ProposalExecuted | proposal 236 never executed |
-| [CGP-233](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0233.md) | EXECUTED, no on-chain ProposalExecuted | proposal 286 never executed |
-| [CGP-242](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0242.md) | status PROPOSED | proposal executed on-chain 2026-09-03 |
-| [CGP-243](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0243.md) | EXECUTED, no on-chain ProposalExecuted | proposal 297 never executed |
-| [CGP-251](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0251.md) | status PROPOSED | proposal executed on-chain 2026-09-09 |
-| [CGP-253](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0253.md) | status PROPOSED | proposal executed on-chain 2026-09-08 |
-| [CGP-256](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0256.md) | status PROPOSED | proposal 313 expired |
-| [CGP-255](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0255.md) | status PROPOSED | proposal 312 expired |
-| [CGP-254](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0254.md) | status PROPOSED | proposal 314 expired |
+| [CGP-189](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0189.md) | EXECUTED, no on-chain ProposalExecuted | proposal 236 was not executed (Mondo: adopted, a vote with nothing to execute) |
+| [CGP-233](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0233.md) | EXECUTED, no on-chain ProposalExecuted | proposal 286 was not executed (Mondo: adopted, a vote with nothing to execute) |
+| [CGP-242](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0242.md) | status PROPOSED | proposal 309 executed on-chain 2026-09-03 |
+| [CGP-243](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0243.md) | EXECUTED, no on-chain ProposalExecuted | proposal 297 was not executed (Mondo: adopted, a vote with nothing to execute) |
+| [CGP-251](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0251.md) | status PROPOSED | proposal 311 executed on-chain 2026-09-09 |
+| [CGP-253](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0253.md) | status PROPOSED | proposal 310 executed on-chain 2026-09-08 |
+| [CGP-254](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0254.md) | status PROPOSED | proposal 317 executed on-chain 2026-11-12 |
+| [CGP-254](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0254.md) | governance-proposal-id is 314 | it executed as proposal 317 |
+| [CGP-255](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0255.md) | status PROPOSED | proposal 315 executed on-chain 2026-11-10 |
+| [CGP-255](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0255.md) | governance-proposal-id is 312 | it executed as proposal 315 |
+| [CGP-256](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0256.md) | status PROPOSED | proposal 316 executed on-chain 2026-11-12 |
+| [CGP-256](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0256.md) | governance-proposal-id is 313 | it executed as proposal 316 |
+| [CGP-63](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0063.md) | status DRAFT | proposal 78 expired |
 
-Proposals executed on-chain with no CGP: 83, 315, 316, 317. None of them moves fund assets.
+Proposals executed on-chain with no CGP: none. None of them moves fund assets.
+A proposal is matched to the CGP that declares its id; proposals no CGP declares are matched by the description
+URL they were queued with on-chain, so a CGP that expired and was re-submitted under a new proposal id is
+followed to the attempt that executed.
 CGPs 14, 17, 20, 38, 52, 54, 61, 69, 70 and 75 have no `mainnet.json`; their fund movements were taken from the
 execution receipts.
 
@@ -200,17 +207,22 @@ funded in the same execution that approves them. Inflows of 100,000 CELO or more
 Inflows with no proposal came from Safes outside governance. `0x87647780180b8f55980c7d3ffefe08a9b29e9ae1` is the
 spender of the Mento USDm/USDC liquidity allowance from [CGP-69](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0069.md). Their owners should confirm what these transfers are.
 
+### 9. Cross-check with Mondo
+
+[Mondo](https://mondo.celo.org/governance), the Celo governance app, lists 294 proposals, 200 of them executed.
+- Executed on-chain and executed in Mondo: 200
+- Executed in Mondo but not on-chain: none
+- Executed on-chain but not listed as executed in Mondo: 68, 83, 86, 88, 89, 96, 111, 115 (not in Mondo's list at all)
+- Proposals where Mondo and this audit disagree on the CGP: none
+
 ## Pending proposals
 
 | CGP | Status | Proposal | On-chain stage | Fund requests |
 |---|---|---:|---|---|
 | [CGP-257](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0257.md) Revenue-Based CELO Burn - Allocate 25% of Net L2 Sequencer Revenue to Permanent Burn | DRAFT | - | not submitted | none |
-| [CGP-256](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0256.md) Fix USAT and XAUT0 Fee Distribution in FeeHandler | PROPOSED | 313 | Expiration | none |
-| [CGP-255](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0255.md) Set the Governance Hotfix Execution Window to 24 Hours | PROPOSED | 312 | Expiration | none |
-| [CGP-254](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0254.md) Governance Approver Rotation Correction: Re-add Eran Tromer, Remove Kobi Gurkan | PROPOSED | 314 | Expiration | none |
 | [CGP-190](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0190.md) Enable USDGLO as Gas Currency | DRAFT | - | not submitted | none |
 | [CGP-89](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0089.md) Enable G$ as Gas Currency | DRAFT | - | not submitted | none |
-| [CGP-63](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0063.md) Learn to Earn | DRAFT | - | not submitted | none |
+| [CGP-63](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0063.md) Learn to Earn | DRAFT | 78 | Expiration | none |
 
 ## Every grant
 

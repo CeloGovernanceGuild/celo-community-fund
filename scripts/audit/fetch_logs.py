@@ -7,6 +7,7 @@ GOVT = "0x" + GOV[2:].lower().rjust(64, "0")
 APPROVAL = "0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925"
 TRANSFER = "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"
 EXECUTED = "0x712ae1383f79ac853f8d882153778e0260ef8f03b504e2866e0593e04d2b291f"
+QUEUED = "0x1bfe527f3548d9258c2512b6689f0acfccdd0557d80a53845db25fc57e93d8fe"
 TOKENS = {"CELO": "0x471EcE3750Da237f93B8E339c536989b8978a438",
           "USDm": "0x765DE816845861e75A25fCA122bb6898B8B1282a",
           "EURm": "0xD8763CBa276a3738E6DE85b4b3bF5FDed6D6cA73"}
@@ -49,9 +50,10 @@ rpc = urllib.request.Request("https://forno.celo.org", data=b'{"jsonrpc":"2.0","
 latest = int(json.load(urllib.request.urlopen(rpc, timeout=60))["result"], 16)
 out = {"latest_block": latest}
 out["executed"] = logs(GOV, [EXECUTED], 0, latest)
+out["queued"] = logs(GOV, [QUEUED], 0, latest)
 for sym, addr in TOKENS.items():
     out[f"{sym}_approval"] = logs(addr, [APPROVAL, GOVT], 0, latest)
     out[f"{sym}_transfer_out"] = logs(addr, [TRANSFER, GOVT], 0, latest)
     print(sym, len(out[f"{sym}_approval"]), len(out[f"{sym}_transfer_out"]), file=sys.stderr)
-print("executed", len(out["executed"]), file=sys.stderr)
+print("executed", len(out["executed"]), "queued", len(out["queued"]), file=sys.stderr)
 json.dump(out, open(sys.argv[1], "w"))

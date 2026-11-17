@@ -16,7 +16,7 @@ Requires Python 3. Network access to `forno.celo.org`
 | `parse_cgps.py` | `cgps.json` | CGP metadata and `mainnet.json` transactions |
 | `extract_spends.py` | `spends.json` | Fund spends declared in CGPs |
 | `fetch_logs.py` | `chain.json` | `ProposalExecuted` events, fund token approvals and transfers |
-| `verify.py` | `verified.json` | Execution receipts, current balances and allowances |
+| `verify.py` | `verified.json` | Execution receipts, proposal to CGP mapping from on-chain description URLs, balances and allowances |
 | `reconcile.py` | `recon.json` | CGP spends vs execution receipts, in both directions |
 | `grants.py` | `grants.json` | Exact effective amount of every grant (archive calls) |
 | `fetch_inflows.py` | `celo_in.json` | CELO transferred into the fund over the last year |
