@@ -15,5 +15,5 @@ for (const fund of state.funds) console.log(`${fund.title}: ${fmt(fund.available
 console.log("-------Drafts-------");
 for (const draft of drafts) console.log(`${draft.title}: ${fmt(draft.amount)}`);
 console.log("--------------------");
-console.log(`Estimated Replenish Rate: ~${fmt(REPL_RATE)} per day`);
+console.log(`Regular inflow: ~${fmt(REPL_RATE)} CELO per day`);
 console.log(`Funds Available (after allowances and drafts): ${fmt(state.fundsAvailable)}`);

@@ -40,4 +40,12 @@ describe("buildFundState", () => {
     expect(state.fundsAvailable).toBe(-100);
     expect(state.charts.Current.children[0].children[0].loc).toBe(0);
   });
+
+  it("treats initiatives without an allowance as fully spent", () => {
+    const transfers = [{ title: "T", approved: 300, proposal: "t" }];
+    const state = buildFundState({ balance: 1000, allowances: {}, initiatives: transfers, drafts: [] });
+
+    expect(state.funds[0]).toMatchObject({ available: 0, spent: 300 });
+    expect(state.fundsAvailable).toBe(1000);
+  });
 });
