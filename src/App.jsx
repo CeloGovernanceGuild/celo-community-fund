@@ -21,7 +21,7 @@ const PAGES = [
   { path: 'about', label: 'About', Component: AboutPage },
 ];
 
-const currentPath = () => window.location.hash.replace(/^#\/?/, '') || 'overview';
+const currentPath = () => window.location.hash.replace(/^#\/?/, '').split('?')[0] || 'overview';
 
 function App() {
   const [state, setState] = useState(null);
@@ -108,7 +108,7 @@ function App() {
           <div>
             <h2>Sources</h2>
             <ul>
-              <li><a href={COMMUNITY_FUND_EXPLORER} target="_blank" rel="noopener noreferrer">Governance contract on Celoscan</a></li>
+              <li><a className="link-out" href={COMMUNITY_FUND_EXPLORER} target="_blank" rel="noopener noreferrer">Open the fund contract on Celoscan</a></li>
               <li><a href="https://github.com/celo-org/governance" target="_blank" rel="noopener noreferrer">Celo governance proposals (CGPs)</a></li>
               <li><a href="https://mondo.celo.org/governance" target="_blank" rel="noopener noreferrer">Vote on Mondo</a></li>
               <li><a href={`${REPO}/blob/main/docs/audit.md`} target="_blank" rel="noopener noreferrer">Audit report</a></li>

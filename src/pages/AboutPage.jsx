@@ -1,8 +1,27 @@
 import React from 'react';
-import { COMMUNITY_FUND_EXPLORER, REPL_RATE } from '../data/data';
+import {
+  CELO_USD_FEED,
+  COMMUNITY_FUND_EXPLORER,
+  EUR_USD_FEED,
+  GOVERNANCE_ADDRESS,
+  REPL_RATE,
+  RESERVE_ADDRESS,
+  TOKEN_ADDRESSES,
+  addressUrl,
+} from '../data/data';
 import { AUDIT_BLOCK } from '../data';
 
 const REPO = 'https://github.com/CeloGovernanceGuild/celo-community-fund';
+
+const CONTRACTS = [
+  { name: 'Community Fund (Governance contract)', what: 'Holds the fund and executes proposals', address: GOVERNANCE_ADDRESS },
+  { name: 'CELO token', what: 'Balance and allowances in CELO', address: TOKEN_ADDRESSES.CELO },
+  { name: 'USDm token', what: 'Balance and allowances in USDm', address: TOKEN_ADDRESSES.USDm },
+  { name: 'EURm token', what: 'Balance and allowances in EURm', address: TOKEN_ADDRESSES.EURm },
+  { name: 'Reserve', what: 'Source of CELO for large grants', address: RESERVE_ADDRESS },
+  { name: 'Chainlink CELO / USD', what: 'Price used for USD values', address: CELO_USD_FEED },
+  { name: 'Chainlink EUR / USD', what: 'Price used for USD values', address: EUR_USD_FEED },
+];
 
 export default function AboutPage() {
   return (
@@ -37,10 +56,26 @@ export default function AboutPage() {
             </ul>
             <div className="actions">
               <a className="link-arrow" href={`${REPO}/blob/main/docs/audit.md`} target="_blank" rel="noopener noreferrer">Audit report</a>
-              <a className="link-arrow" href={COMMUNITY_FUND_EXPLORER} target="_blank" rel="noopener noreferrer">Governance contract</a>
+              <a className="link-out" href={COMMUNITY_FUND_EXPLORER} target="_blank" rel="noopener noreferrer">Open the fund contract on Celoscan</a>
             </div>
           </section>
         </div>
+
+        <section className="card" aria-labelledby="contracts-title">
+          <h2 className="section-title" id="contracts-title">Check it yourself on-chain</h2>
+          <p className="muted">Every number on this site comes from these contracts. Each one opens on Celoscan.</p>
+          <ul className="rows" style={{ marginTop: '1rem' }}>
+            {CONTRACTS.map((c) => (
+              <li key={c.address}>
+                <div className="row-main">
+                  <span className="row-title">{c.name}</span>
+                  <a className="link-out" href={addressUrl(c.address)} target="_blank" rel="noopener noreferrer">Open on Celoscan</a>
+                </div>
+                <p className="row-meta"><span>{c.what}</span><span className="mono">{c.address}</span></p>
+              </li>
+            ))}
+          </ul>
+        </section>
 
         <section className="card">
           <h2 className="section-title">How the fund is replenished</h2>

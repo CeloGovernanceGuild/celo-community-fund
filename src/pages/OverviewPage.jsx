@@ -1,20 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import Amount from '../components/Amount';
 import { ClaimProgress, SegmentedBar } from '../components/Charts';
+import { COMMUNITY_FUND_EXPLORER, GOVERNANCE_ADDRESS, tokenHolderUrl, txUrl } from '../data/data';
 import { fetchMarket } from '../lib/celo';
 import { formatUsd } from '../lib/format';
 
 const cgpUrl = (n) => `https://github.com/celo-org/governance/blob/main/CGPs/cgp-${String(n).padStart(4, '0')}.md`;
 
-function Stat({ label, wei, unit = 'CELO', note }) {
+function Stat({ label, wei, unit = 'CELO', note, link }) {
   return (
     <div className="stat">
       <p className="stat-label">{label}</p>
       <p className="stat-value"><Amount wei={wei} /> <span className="stat-unit">{unit}</span></p>
       {note && <p className="stat-note">{note}</p>}
+      {link}
     </div>
   );
 }
+
+const Out = ({ href, children }) => (
+  <a className="stat-link link-out" href={href} target="_blank" rel="noopener noreferrer">{children}</a>
+);
 
 export default function OverviewPage({ state }) {
   const [celoPrice, setCeloPrice] = useState(null);
@@ -50,10 +56,30 @@ export default function OverviewPage({ state }) {
       </header>
 
       <section className="stats" aria-label="Key figures">
-        <Stat label="Fund balance" wei={celo.balance} note={usd(celo.balance) ?? 'CELO held by the governance contract'} />
-        <Stat label="Available" wei={celo.available} note="Not committed to any grant or pending proposal" />
-        <Stat label="Committed" wei={celo.open} note={`Approved and not yet claimed, across ${open.length} grants`} />
-        <Stat label="Claimed all time" wei={celo.claimed} note="Already paid out to grant recipients" />
+        <Stat
+          label="Fund balance"
+          wei={celo.balance}
+          note={usd(celo.balance) ?? 'CELO held by the governance contract'}
+          link={<Out href={tokenHolderUrl('CELO', GOVERNANCE_ADDRESS)}>Check the balance on Celoscan</Out>}
+        />
+        <Stat
+          label="Available"
+          wei={celo.available}
+          note="Not committed to any grant or pending proposal"
+          link={<a className="stat-link" href="#/balances">See how it is calculated</a>}
+        />
+        <Stat
+          label="Committed"
+          wei={celo.open}
+          note={`Approved and not yet claimed, across ${open.length} grants`}
+          link={<a className="stat-link" href="#/ledger?status=open">See the open grants</a>}
+        />
+        <Stat
+          label="Claimed all time"
+          wei={celo.claimed}
+          note="Already paid out to grant recipients"
+          link={<Out href={tokenHolderUrl('CELO', GOVERNANCE_ADDRESS)}>See every payout on Celoscan</Out>}
+        />
       </section>
 
       <div className="stack">
@@ -65,6 +91,9 @@ export default function OverviewPage({ state }) {
             </div>
           </div>
           <SegmentedBar segments={state.composition} unit="CELO" label="Fund balance" />
+          <div className="actions">
+            <a className="link-out" href={COMMUNITY_FUND_EXPLORER} target="_blank" rel="noopener noreferrer">Open the fund contract on Celoscan</a>
+          </div>
         </section>
 
         {usdm.available < 0n && (
@@ -93,6 +122,7 @@ export default function OverviewPage({ state }) {
                   <ClaimProgress claimed={r.claimed} remaining={r.remaining} />
                   <p className="row-meta">
                     <span>Claimed <Amount wei={r.claimed} /> of <Amount wei={r.approved} /></span>
+                    <a className="link-out" href={tokenHolderUrl('CELO', r.address)} target="_blank" rel="noopener noreferrer">See its claims on Celoscan</a>
                   </p>
                 </li>
               ))}
@@ -114,7 +144,8 @@ export default function OverviewPage({ state }) {
                   </div>
                   <p className="row-meta">
                     <span>{g.date}</span>
-                    <a href={cgpUrl(g.cgp)} target="_blank" rel="noopener noreferrer">CGP-{g.cgp}</a>
+                    <a href={cgpUrl(g.cgp)} target="_blank" rel="noopener noreferrer">Proposal CGP-{g.cgp}</a>
+                    <a className="link-out" href={txUrl(g.tx)} target="_blank" rel="noopener noreferrer">Transaction on Celoscan</a>
                   </p>
                 </li>
               ))}

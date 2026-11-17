@@ -240,6 +240,23 @@ main {
   content: ' \2192';
 }
 
+.link-out {
+  text-underline-offset: 2px;
+}
+
+.link-out::after {
+  content: ' \2197';
+  display: inline-block;
+  text-decoration: none;
+}
+
+.stat-link {
+  display: inline-block;
+  margin-top: var(--space-3);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
 .link-arrow:hover {
   text-decoration: underline;
 }
