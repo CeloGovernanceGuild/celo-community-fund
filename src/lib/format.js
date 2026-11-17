@@ -10,6 +10,17 @@ export function formatWei(wei) {
   return sign + group((abs / WEI).toString()) + (frac ? `.${frac}` : '');
 }
 
+/**
+ * Whole-unit display of a wei amount (decimals dropped, not rounded up). A non-zero amount
+ * below one unit shows as "<1" so it is never mistaken for zero.
+ */
+export function formatWhole(wei) {
+  const value = BigInt(wei);
+  const abs = value < 0n ? -value : value;
+  if (abs > 0n && abs < WEI) return value < 0n ? '>-1' : '<1';
+  return (value < 0n ? '-' : '') + group((abs / WEI).toString());
+}
+
 /** Approximate number for chart geometry only; never displayed as a value. */
 export const toNumber = (wei) => Number(BigInt(wei) / 10n ** 12n) / 1e6;
 

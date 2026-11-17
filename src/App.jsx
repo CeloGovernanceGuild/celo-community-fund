@@ -80,7 +80,7 @@ function App() {
           <hr />
           <p>
             Every grant comes from an on-chain audit of all executed governance proposals (snapshot at block {AUDIT_BLOCK}).
-            Remaining allowances and balances are read live. Amounts are exact to the wei.
+            Remaining allowances and balances are read live. Amounts are tracked to the wei and shown in whole units.
             See the <a href="https://github.com/CeloGovernanceGuild/celo-community-fund/blob/main/docs/audit.md" target="_blank" rel="noopener noreferrer">audit report</a>.
           </p>
         </div>
