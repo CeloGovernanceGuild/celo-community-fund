@@ -41,12 +41,15 @@ describe('buildFundState', () => {
     expect(state.tokens.USDm.available).toBe(2n * E - 500n * E);
   });
 
-  it('never gives the chart a negative slice and keeps the real value for tooltips', () => {
+  it('splits the CELO balance for the composition bar without a negative segment', () => {
     const allowances = { [allowanceKey('CELO', A)]: 900n * E };
     const state = buildFundState({ balances: { CELO: 100n * E }, allowances, ledger });
-    const fund = state.charts.Current.children[0].children[0];
 
-    expect(fund.loc).toBe(0);
-    expect(fund.label).toBe('-800');
+    expect(state.tokens.CELO.available).toBe(-800n * E);
+    expect(state.composition.map((c) => [c.key, c.wei])).toEqual([
+      ['available', 0n],
+      ['committed', 900n * E],
+      ['pending', 0n],
+    ]);
   });
 });

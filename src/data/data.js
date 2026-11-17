@@ -21,11 +21,3 @@ export const COMMUNITY_FUND_EXPLORER = `${EXPLORER}/address/${GOVERNANCE_ADDRESS
 // up from the Reserve or the treasury in the same proposal that approves them.
 // Measured over 2026-02..2026-11, see docs/audit.md (finding 8).
 export const REPL_RATE = 30;
-
-// Colors
-export const contract_celo_color = "#FCFF52";
-export const contract_celo_spent_color = "#FF9A51";
-export const contract_celo_available_color = "#56DF7C";
-export const pending_drafts_celo_color = "#9B9B9B";
-export const initiative_spent_celo_color = "#B490FF";
-export const initiative_available_celo_color = "#7CC0FF";
