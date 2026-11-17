@@ -36,8 +36,8 @@ for p, evs in sorted(onchain.items()):
         for i, e in enumerate(evs):
             if i in matched: continue
             if e["token"] == s["token"] and e["to"].lower() == str(s["to"]).lower():
-                if s["fn"] == "transfer" and e["kind"] == "transfer" and abs(e["amount"] - s["amount"]) < 1e-6: hit = i
-                elif s["fn"] == "approve" and e["kind"] == "approval" and abs(e["amount"] - s["amount"]) < 1e-6: hit = i
+                if s["fn"] == "transfer" and e["kind"] == "transfer" and int(e["amount"]) == int(s["amount"]): hit = i
+                elif s["fn"] == "approve" and e["kind"] == "approval" and int(e["amount"]) == int(s["amount"]): hit = i
                 elif s["fn"] == "increaseAllowance" and e["kind"] == "approval": hit = i
                 if hit is not None: break
         if hit is None and s["fn"] == "transfer(address,uint256)":
