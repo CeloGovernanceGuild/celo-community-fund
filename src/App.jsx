@@ -5,6 +5,7 @@ import { COMMUNITY_FUND_EXPLORER } from './data/data';
 import { AUDIT_BLOCK, drafts, ledger, proposals } from './data';
 import { fetchFundBalances } from './lib/celo';
 import { buildFundState } from './lib/fund';
+import { GUILD, SocialLinks } from './components/Credits';
 import OverviewPage from './pages/OverviewPage';
 import LedgerPage from './pages/LedgerPage';
 import BalancesPage from './pages/BalancesPage';
@@ -118,18 +119,11 @@ function App() {
             <h2>Project</h2>
             <ul>
               <li><a href={REPO} target="_blank" rel="noopener noreferrer">Source code on GitHub</a></li>
-              <li>
-                Originally built by <a href="https://www.web3socialcapital.xyz" target="_blank" rel="noopener noreferrer">w3sc</a>{' '}
-                (<a href="https://github.com/0xzoz" target="_blank" rel="noopener noreferrer">0xzoz</a>).
+              <li className="footer-credit">
+                <span>Maintained by the {GUILD.name}</span>
+                <SocialLinks name={GUILD.name} links={GUILD.links} />
               </li>
-              <li>
-                Rebuilt and maintained by the Celo Governance Guild{' '}
-                (<a href="https://x.com/celogovernance" target="_blank" rel="noopener noreferrer">X</a>,{' '}
-                <a href="https://github.com/CeloGovernanceGuild" target="_blank" rel="noopener noreferrer">GitHub</a>){' '}
-                and 0xj4an{' '}
-                (<a href="https://x.com/0xj4an" target="_blank" rel="noopener noreferrer">X</a>,{' '}
-                <a href="https://0xj4an.xyz" target="_blank" rel="noopener noreferrer">website</a>).
-              </li>
+              <li>Originally built by 0xzoz (w3sc). <a href="#/about">See who is behind this</a></li>
             </ul>
           </div>
         </div>
