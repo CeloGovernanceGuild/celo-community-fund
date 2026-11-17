@@ -86,7 +86,7 @@ for e in ledger:
     r = remaining(e)
     if r > 0:
         w(f"| {e['title']} | {e['token']} | {fmt(r)} | {e['grants'][-1]['date']} | `{e['address']}` |")
-w("\nThe CeloPG H2 2024 second spender never claimed anything since July 2024. Old leftovers can be revoked")
+w("\nThe CeloPG x Optimism matching budget (PG <> OP multisig) was never claimed: it was only to be used if Optimism approved a joint grant program. Old leftovers can be revoked")
 w("by governance with `approve(spender, 0)` or confirmed by their spenders.\n")
 w("### 6. USDm allowances are not backed\n")
 w(f"The fund holds {fmt(bal['USDm'])} USDm against {fmt(out['USDm'])} USDm of open allowances. A `transferFrom`")

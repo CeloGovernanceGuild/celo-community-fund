@@ -46,8 +46,8 @@ Entries with a remaining allowance, however small, are listed as open.
 | Ocelot (Celo Ecosystem Treasury) | CELO | 3,000,000 | 3,000,000 | 0 | fully claimed | [CGP-38](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0038.md) |
 | Climate Collective | CELO | 4,700,000 | 4,700,000 | 0 | fully claimed | [CGP-52](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0052.md) |
 | Prezenti (Community Fund stewardship) | CELO | 2,400,000 | 2,400,000 | 0 | fully claimed | [CGP-54](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0054.md), [CGP-72](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0072.md) |
-| Governance-Owned USDm/USDC Liquidity | USDm | 5,000,000 | 5,000,000 | 0 | fully claimed | [CGP-61](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0061.md) |
-| Mento USDm/USDC Liquidity | USDm | 11,000,000 | 9,962,881.739 | 1,037,118.261 | open | [CGP-69](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0069.md) |
+| Governance-Owned USDm/USDC Liquidity (Mobius) | USDm | 5,000,000 | 5,000,000 | 0 | fully claimed | [CGP-61](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0061.md) |
+| Mento-Owned USDm/USDC Liquidity (Curve) | USDm | 11,000,000 | 9,962,881.739 | 1,037,118.261 | open | [CGP-69](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0069.md) |
 | Africa DAO | CELO | 550,000 | 549,010.1 | 989.9 | open | [CGP-68](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0068.md) |
 | Chainlink SCALE | CELO | 5,980,314 | 5,980,312 | 2 | open | [CGP-75](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0075.md) |
 | Latam DAO | CELO | 903,000 | 903,000 | 0 | fully claimed | [CGP-76](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0076.md) |
@@ -61,8 +61,8 @@ Entries with a remaining allowance, however small, are listed as open.
 | Governance Approvers Gas | CELO | 60 | 60 | 0 | transfer | [CGP-101](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0101.md) |
 | cLabs L2 Project | CELO | 5,561,944 | 5,561,944 | 0 | transfer | [CGP-106](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0106.md), [CGP-154](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0154.md) |
 | MiniPay Strategic Grant | CELO | 11,705,090.325 | 11,705,089.545 | 0.78 | open | [CGP-111](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0111.md), [CGP-170](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0170.md), [CGP-225](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0225.md) |
-| Public Goods Funding H1 2024 | CELO | 700,000 | 700,000 | 0 | fully claimed | [CGP-115](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0115.md) |
-| Public Goods Funding H1 2024 | USDm | 1,700,000 | 1,699,988 | 12 | open | [CGP-115](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0115.md) |
+| CeloPG H1 2024 | CELO | 700,000 | 700,000 | 0 | fully claimed | [CGP-115](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0115.md) |
+| CeloPG H1 2024 | USDm | 1,700,000 | 1,699,988 | 12 | open | [CGP-115](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0115.md) |
 | Outlier Ventures RWA Accelerator | CELO | 41,000 | 41,000 | 0 | fully claimed | [CGP-129](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0129.md) |
 | Outlier Ventures RWA Accelerator | USDm | 200,000 | 200,000 | 0 | fully claimed | [CGP-129](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0129.md) |
 | Red Beard Ventures Accelerator | CELO | 46,000 | 46,000 | 0 | fully claimed | [CGP-130](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0130.md) |
@@ -70,8 +70,8 @@ Entries with a remaining allowance, however small, are listed as open.
 | Stabila | CELO | 20,346,426.11 | 20,346,425.43 | 0.68 | open | [CGP-132](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0132.md), [CGP-162](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0162.md), [CGP-179](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0179.md), [CGP-193](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0193.md), [CGP-222](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0222.md), [CGP-246](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0246.md) |
 | CeloPG H2 2024 | CELO | 325,000 | 325,000 | 0 | fully claimed | [CGP-141](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0141.md) |
 | CeloPG H2 2024 | USDm | 875,000 | 860,000 | 15,000 | open | [CGP-141](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0141.md) |
-| CeloPG H2 2024 (second spender) | CELO | 1,250,000 | 0 | 1,250,000 | open | [CGP-141](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0141.md) |
-| CeloPG H2 2024 (second spender) | USDm | 100,000 | 0 | 100,000 | open | [CGP-141](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0141.md) |
+| CeloPG x Optimism matching (PG <> OP) | CELO | 1,250,000 | 0 | 1,250,000 | open | [CGP-141](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0141.md) |
+| CeloPG x Optimism matching (PG <> OP) | USDm | 100,000 | 0 | 100,000 | open | [CGP-141](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0141.md) |
 | Stablecoin & dApp Public Goods Dashboard | USDm | 175,000 | 175,000 | 0 | fully claimed | [CGP-148](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0148.md) |
 | CeloColombia DAO | USDm | 38,000 | 38,000 | 0 | fully claimed | [CGP-153](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0153.md) |
 | Celo Governance Guild | USDm | 55,000 | 55,000 | 0 | fully claimed | [CGP-152](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0152.md) |
@@ -90,15 +90,15 @@ Entries with a remaining allowance, however small, are listed as open.
 | Celo Camp 2025 | CELO | 223,098 | 223,098 | 0 | fully claimed | [CGP-176](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0176.md) |
 | Celo Camp 2025 | USDm | 299,040 | 299,040 | 0 | fully claimed | [CGP-176](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0176.md) |
 | Prezenti Grants (Seasons 0-2) | CELO | 5,176,267 | 5,176,267 | 0 | fully claimed | [CGP-197](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0197.md), [CGP-227](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0227.md) |
-| Next FX Market | CELO | 9,147,160 | 9,147,160 | 0 | fully claimed | [CGP-199](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0199.md) |
-| Next FX Market | USDm | 300,000 | 300,000 | 0 | fully claimed | [CGP-199](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0199.md) |
+| FX Market Liquidity Strategy | CELO | 9,147,160 | 9,147,160 | 0 | fully claimed | [CGP-199](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0199.md) |
+| FX Market Liquidity Strategy | USDm | 300,000 | 300,000 | 0 | fully claimed | [CGP-199](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0199.md) |
 | L2 Development Next Phase | CELO | 6,453,860 | 6,453,860 | 0 | transfer | [CGP-201](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0201.md) |
 | Celo Foundation | CELO | 13,426,449.275000000000000025 | 13,426,449.275000000000000025 | 0 | fully claimed | [CGP-200](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0200.md), [CGP-224](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0224.md) |
 | Celo SHIELD | CELO | 183,333 | 183,333 | 0 | fully claimed | [CGP-215](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0215.md) |
 | cLabs Core Protocol Season 2 | CELO | 4,355,627 | 4,355,627 | 0 | transfer | [CGP-220](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0220.md) |
 | Celo Governance Guild | CELO | 862,000 | 862,000 | 0 | fully claimed | [CGP-223](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0223.md), [CGP-250](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0250.md) |
 | Celo Core Co. | CELO | 31,609,499 | 31,609,499 | 0 | fully claimed | [CGP-247](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0247.md) |
-| Celo Challenger Operator | CELO | 1,312,500 | 1,312,500 | 0 | fully claimed | [CGP-242](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0242.md) |
+| Challenger Operator (Score Management Committee multisig) | CELO | 1,312,500 | 1,312,500 | 0 | fully claimed | [CGP-242](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0242.md) |
 
 ## Findings
 
@@ -139,19 +139,19 @@ The Stabila reduction was restored by [CGP-179](https://github.com/celo-org/gove
 |---|---|---:|---|---|
 | CCF1 | CELO | 6,472.79175548892 | 2021-02-11 | `0x2f90bb1caf4079192481b1a7f3088220d291456d` |
 | Community Appreciation Gifts | CELO | 14,300 | 2021-03-26 | `0x5374cf78f82e3610f9678bd7af617785ff6c578a` |
-| Mento USDm/USDC Liquidity | USDm | 1,037,118.261 | 2023-01-12 | `0x87647780180b8f55980c7d3ffefe08a9b29e9ae1` |
+| Mento-Owned USDm/USDC Liquidity (Curve) | USDm | 1,037,118.261 | 2023-01-12 | `0x87647780180b8f55980c7d3ffefe08a9b29e9ae1` |
 | Africa DAO | CELO | 989.9 | 2023-03-04 | `0xc59533fd060e38230100f3577ef5ad9467ae2594` |
 | Chainlink SCALE | CELO | 2 | 2023-04-07 | `0x46421b8ef42b67ae4e24be599bd78144e5e12088` |
 | Climate Collective Follow-on | CELO | 1 | 2023-05-14 | `0x9cf769bcce5e750534d88b251fb5b58da9776190` |
 | MiniPay Strategic Grant | CELO | 0.78 | 2026-02-18 | `0x6f62e32cae54d66e234f0d1e27be7e33896dc4ce` |
-| Public Goods Funding H1 2024 | USDm | 12 | 2024-02-16 | `0x71f433514957d00287a9d33da759f1e0c1732381` |
+| CeloPG H1 2024 | USDm | 12 | 2024-02-16 | `0x71f433514957d00287a9d33da759f1e0c1732381` |
 | Stabila | CELO | 0.68 | 2026-08-06 | `0x9c257bdc314dc516e673728d70f45444f6e22412` |
 | CeloPG H2 2024 | USDm | 15,000 | 2024-07-13 | `0x1b98202492bd78bb042523674eec19cd0ac50f96` |
-| CeloPG H2 2024 (second spender) | CELO | 1,250,000 | 2024-07-13 | `0xdd817a3d583bb0b97579c5959b4c929504f688d7` |
-| CeloPG H2 2024 (second spender) | USDm | 100,000 | 2024-07-13 | `0xdd817a3d583bb0b97579c5959b4c929504f688d7` |
+| CeloPG x Optimism matching (PG <> OP) | CELO | 1,250,000 | 2024-07-13 | `0xdd817a3d583bb0b97579c5959b4c929504f688d7` |
+| CeloPG x Optimism matching (PG <> OP) | USDm | 100,000 | 2024-07-13 | `0xdd817a3d583bb0b97579c5959b4c929504f688d7` |
 | CICLOPS | CELO | 37,597,705 | 2026-08-10 | `0xd71efa410b6eaab0bac3b515b393c886be70f09e` |
 
-The CeloPG H2 2024 second spender never claimed anything since July 2024. Old leftovers can be revoked
+The CeloPG x Optimism matching budget (PG <> OP multisig) was never claimed: it was only to be used if Optimism approved a joint grant program. Old leftovers can be revoked
 by governance with `approve(spender, 0)` or confirmed by their spenders.
 
 ### 6. USDm allowances are not backed
