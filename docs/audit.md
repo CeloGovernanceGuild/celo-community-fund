@@ -9,8 +9,8 @@ nothing is rounded. The scripts that produce this report and `src/data` live in 
 - **The fund** is the Governance contract (`0xD533Ca259b330c7A88f74E000a3FaEa2d63B7972`). It only pays out when a
   proposal executes: an `approve` or `increaseAllowance` that the recipient later draws down, or a direct `transfer`.
 - **Governance approver multisig** (`0x41822d8A191fcfB1cfcA5F7048818aCd8eE933d3`, read from `Governance.approver()`): it has to
-  approve a proposal before it can execute. 3 confirmations of 14 owners as of 2026-11-17.
-- **Celo Operations Safe** (`0x7A1E98FC9a008107DbD1f430a05Ace8cf6f3FE19`, 2 of 5 owners as of 2026-11-17): the only extra
+  approve a proposal before it can execute. 3 confirmations of 14 owners at block 83014439.
+- **Celo Operations Safe** (`0x7A1E98FC9a008107DbD1f430a05Ace8cf6f3FE19`, 2 of 5 owners at block 83014439): the only extra
   beneficiary registered in the FeeHandler (`0xcD437749E43A154C07F3553504c68fBfD56B8778`), under the name `cLabs`. It also
   receives the sequencer fee vault (`0x4200000000000000000000000000000000000011`) and sends the net revenue to the fund.
   It is not part of governance and its payments have no proposal; see finding 8.
@@ -238,6 +238,47 @@ The Celo Operations Safe (`0x7a1e98fc9a008107dbd1f430a05ace8cf6f3fe19`, 2 of 5) 
 FeeHandler and the sequencer fee vault and sends the net amount to the fund, with no governance proposal per payment.
 Celo Core Co. reports each payment, with its period and deductions, in
 [Initiating Ongoing Celo Chain Revenue Transactions](https://forum.celo.org/t/initiating-ongoing-celo-chain-revenue-transactions/13494).
+
+**Proposal deposits.** Submitting a proposal sends a deposit to the Governance contract, which is the fund. When the
+proposal leaves the queue the deposit becomes withdrawable by its proposer; if it expires in the queue it is forfeited
+and stays in the fund. Of the 316 proposals ever submitted, 316 left the queue,
+0 are in the queue and 0 expired in it.
+
+| Proposal deposits, all time | CELO |
+|---|---:|
+| Deposited | 1,605,704 |
+| Withdrawn by proposers | 1,544,104 |
+| Withdrawable, not withdrawn yet | 61,600 |
+| In the queue | 0 |
+| Forfeited to the fund | 0 |
+
+The 61,600 CELO not withdrawn yet is in the fund's balance but belongs to the proposers,
+so the site subtracts it from the available amount. The deposits still withdrawable, by proposal:
+
+| Proposal | Submitted | Deposit (CELO) | CGP | Outcome | Proposer | Submission tx |
+|---|---|---:|---|---|---|---|
+| 316 | 2026-11-03 | 10,000 | [CGP-256](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0256.md) Fix USAT and XAUT0 Fee Distribution in FeeHandler | executed | `0x9f9671112b64005edf17d85384a6b16a494d44c4` | `0xe55b9c87ce543ffa4bebfc73b7e28c29b0cc4e5ec52321589587abd51f68de43` |
+| 317 | 2026-11-03 | 10,000 | [CGP-254](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0254.md) Governance Approver Rotation Correction: Re-add Eran Tromer, Remove Kobi Gurkan | executed | `0x9f9671112b64005edf17d85384a6b16a494d44c4` | `0x749509ebc3ac89a10ae069092c08139d4c940824e77f7a9402872cb1d90aaffc` |
+| 310 | 2026-08-31 | 10,000 | [CGP-253](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0253.md) Proxy Vote for MGP-19 - Bringing Stable Asset Issuance Home to Celo Governance | executed | `0x2738f38fde510743e0c589415e0598c4cee6eaa7` | `0x82c8fda833e9b6f1f2662550ce2a4146262a44fe40e4efe00b8bb9974f37e2b3` |
+| 314 | 2026-10-20 | 10,000 | [CGP-254](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0254.md) Governance Approver Rotation Correction: Re-add Eran Tromer, Remove Kobi Gurkan | expired | `0x8ef439ee8f6905bfd2343668039d39eb2b77706e` | `0x3fba41a47310c1dfb26f5e5f45e3f63cb1ed9643daa68c434abb3ef5fb871acf` |
+| 290 | 2026-05-12 | 10,000 | [CGP-238](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0238.md) Contracts Release 16 | executed | `0xc11f5ac70b86517dcc10f20d8b0d5e77ebb956ce` | `0xf033db3a1a595c2472c1719d1596320c019e0279d9d31c630288b9f4361f1461` |
+| 305 | 2026-07-31 | 10,000 | [CGP-249](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0249.md) Prezenti Grants Season 3: Redeployment of Held Funds | executed | `0xc685ccecfea58d10d0ca1a058bb0b37032a7a310` | `0xf60527df6155995be82b708a5ac65621cd3a7014afe132fd4e023538de0d8f7d` |
+| 135 | 2023-09-15 | 100 | [CGP-99](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0099.md) Celo Core Contracts Release 10 | executed | `0xf3eb910da09b8af348e0e5b6636da442cfa79239` | `0x1a52162ef0f0b6cb474cfb9715156960c147a2a77b7c1290aa4c0890d787404a` |
+| 136 | 2023-09-15 | 100 | [CGP-100](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0100.md) Set baseFeeOpCodeActivationBlock on GasPriceMinimum for Gingerbread hardfork | executed | `0xf3eb910da09b8af348e0e5b6636da442cfa79239` | `0x996d39f96669116d63a70df1ed6ed32f98026e01d29236c81834ee08e5551624` |
+| 143 | 2023-12-07 | 100 | [CGP-108](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0108.md) Enable Celo buyback from FeeHandler and fee distributions | executed | `0xf3eb910da09b8af348e0e5b6636da442cfa79239` | `0x6a09e50b6bd80cf6a7a1dddc3aebdbab469cbdd93143aebf0001d21e36fb5302` |
+| 84 | 2023-02-10 | 100 | [CGP-68](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0068.md) Celo Africa DAO | not executed | `0x48853eb3d2d69232bf28ab3cfe535d0351ed62c6` | `0x9633ec83c5ed11a1ce96ee60b6a4e3696435618a902be9d7daa73d866b08364c` |
+| 85 | 2023-02-21 | 100 | [CGP-68](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0068.md) Celo Africa DAO | executed | `0x48853eb3d2d69232bf28ab3cfe535d0351ed62c6` | `0x4ab216ccbbfcedafd531db02fe477c6b1b040467f8ef106d160d8701ceb2eaa0` |
+| 148 | 2023-12-18 | 100 | [CGP-107](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0107.md) Celo Dapps over Apps | rejected | `0x79d4881d34b6159abcab35ad5029a4de66c28626` | `0xe7385c4f8378b25e526b463e738e42c8ea5331a70ad8bc19ce2daf20a3b77f35` |
+| 149 | 2024-01-09 | 100 | [CGP-107](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0107.md) Celo Dapps over Apps | rejected | `0x79d4881d34b6159abcab35ad5029a4de66c28626` | `0x524afdf4fa3816ed2a26ff86b957303b7ac387a8d2b82486c7da3d4d3c57486c` |
+| 122 | 2023-08-10 | 100 | [CGP-91](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0091.md) Road to COP28 | expired | `0x826c7a38f9e6f9c6c4bdcea33e0cf1ee265ab9c2` | `0x6abc0ba243de4f6cd16eb68a8b909cb07c62442d6af00367d521ca35c51fec89` |
+| 128 | 2023-08-18 | 100 | [CGP-91](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0091.md) Road to COP28 | expired | `0x826c7a38f9e6f9c6c4bdcea33e0cf1ee265ab9c2` | `0x3b19890a62d5f257fdd0b3c9d9b85a7af6f535cac9dd7d0214ac271f68506b93` |
+| 18 | 2021-02-02 | 100 | [CGP-17](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0017.md) Activation of Celo Community Fund | executed | `0x099f3f5527671594351e30b48ca822cc90778a11` | `0xded902f3b91a61f6004f8abdc22a3eb0df5d2a84cba8529abed58ec3b8efe574` |
+| 130 | 2023-08-29 | 100 | [CGP-95](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0095.md) Centrifuge Deployment on Celo | executed | `0x42b4a02f79438d558ab33e326638ed752b94d187` | `0xa82508fb596d7f03353f89c473c6c81122a2e095a363690f1c38131f5c6b962f` |
+| 138 | 2023-10-04 | 100 | [CGP-85](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0085.md) G$ oracle activation | executed | `0x66582d24fead72555adac681cc621cacbb208324` | `0x767f68034a3e863c71367b14042c53b82f7e6a0c44628bc66fb6389a286ac413` |
+| 87 | 2023-03-17 | 100 | [CGP-72](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0072.md) Prezenti (Celo Community Fund) stewardship follow-on funding request | expired | `0x685305ff7116bb13cdd140b371dddfe3f786a129` | `0x370c2474ac08a55428f915a5a20ef70fd80471bc0ff40813b0eb6bc2938ebd11` |
+| 155 | 2024-02-02 | 100 | [CGP-116](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0116.md) Celo Ecosystem Liquidity Operation Guild (CELO-Guild) | rejected | `0x6a1067eebc1c2f0aaea7faa1d1bf1626bccc5119` | `0x69ae71a7c62e2834daa4ac60c8d019f0ca291465aa030847b31e313edbda3adc` |
+| 89 | 2023-03-28 | 100 | [CGP-72](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0072.md) Prezenti (Celo Community Fund) stewardship follow-on funding request | executed | `0xd843751eedd5e370abb756dbb7c4c65d406201b8` | `0x3b661fded3b53c67409b587a7d3d4733eb1e4fe8ef2da85a226d09f539a795ea` |
+| 88 | 2023-03-28 | 100 | [CGP-75](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0075.md) Celo to Join Chainlink SCALE Program To Accelerate Ecosystem Growth | executed | `0xf7bcc62c9acab666d04c0e0d6c4948d839bf2cc8` | `0x5c9bbd23fab59363bff99e027e6f14b1c51a995adcd77c23356334a4168fa8eb` |
 
 The Mento Reserve Safe return is governed by [CGP-253](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0253.md). It is distinct from the Celo Governance
 Reserve and is shown as an inflow, not as a locked deduction from the fund.

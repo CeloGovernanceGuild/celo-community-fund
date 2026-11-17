@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import logo from './images/celo_logo.png';
 import './App.css';
 import { COMMUNITY_FUND_EXPLORER } from './data/data';
-import { AUDIT_BLOCK, drafts, ledger, proposals } from './data';
+import { AUDIT_BLOCK, drafts, ledger, proposals, proposers } from './data';
 import { fetchFundBalances } from './lib/celo';
 import { buildFundState } from './lib/fund';
 import { GUILD } from './components/Credits';
@@ -10,6 +10,7 @@ import OverviewPage from './pages/OverviewPage';
 import LedgerPage from './pages/LedgerPage';
 import BalancesPage from './pages/BalancesPage';
 import ProposalsPage from './pages/ProposalsPage';
+import HowPage from './pages/HowPage';
 import AboutPage from './pages/AboutPage';
 
 const REPO = 'https://github.com/CeloGovernanceGuild/celo-community-fund';
@@ -19,6 +20,7 @@ const PAGES = [
   { path: 'ledger', label: 'Ledger', Component: LedgerPage },
   { path: 'balances', label: 'Balances', Component: BalancesPage },
   { path: 'proposals', label: 'Proposals', Component: ProposalsPage },
+  { path: 'how', label: 'How it works', Component: HowPage },
   { path: 'about', label: 'About', Component: AboutPage },
 ];
 
@@ -48,9 +50,9 @@ function App() {
   useEffect(() => {
     let cancelled = false;
     setError(false);
-    fetchFundBalances(ledger)
-      .then(({ balances, allowances }) => {
-        if (!cancelled) setState(buildFundState({ balances, allowances, ledger, proposals, drafts }));
+    fetchFundBalances(ledger, proposers)
+      .then(({ balances, allowances, deposits }) => {
+        if (!cancelled) setState(buildFundState({ balances, allowances, ledger, proposals, drafts, deposits }));
       })
       .catch((err) => {
         console.error(err);

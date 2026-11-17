@@ -92,6 +92,18 @@ for block in gaps:
     flows = unique_sorted(flows + logs_at(block))
     recovered += len(flows) - before
 
+# A CELO value call into or out of the Governance contract itself is a proposal deposit
+# (`propose`) or its refund (`withdraw`). Tag them so they are not read as funding.
+DEPOSIT_CALLS = {"0x65bbdaa0": "deposit", "0x3ccfd60b": "refund"}  # propose(...), withdraw()
+for flow in flows:
+    if flow["index"] >= 0:
+        continue
+    tx = rpc("eth_getTransactionByHash", [flow["tx"]])
+    if (tx.get("to") or "").lower() == GOV.lower():
+        kind = DEPOSIT_CALLS.get(tx["input"][:10])
+        if kind:
+            flow["kind"] = kind
+
 out = {
     "from_block": first,
     "to_block": latest,
