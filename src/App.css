@@ -605,6 +605,24 @@ main {
   display: none;
 }
 
+.status-legend {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: var(--space-3) var(--space-5);
+  margin: 0 0 var(--space-4);
+  padding: var(--space-3);
+  border: 1px solid var(--line);
+}
+
+.status-legend dt,
+.status-legend dd {
+  margin: 0;
+}
+
+.status-legend dd {
+  margin-top: var(--space-1);
+}
+
 .amount-line {
   display: flex;
   flex-wrap: wrap;

@@ -5,7 +5,8 @@ from common import fmt
 OUT = sys.argv[1]
 g = json.load(open("grants.json")); v = json.load(open("verified.json"))
 cg = {x["cgp"]: x for x in json.load(open("cgps.json"))}
-recon = json.load(open("recon.json")); inflows = json.load(open("celo_in.json"))
+recon = json.load(open("recon.json")); flow_audit = json.load(open("celo_in.json"))
+flows = flow_audit["flows"]
 ledger = json.load(open("ledger.json")); pending = json.load(open("proposals.json"))
 pid2cgp = {int(p): n for p, n in v["cgp_of"].items()}
 mondo = {x["id"]: x for x in (json.load(open("mondo.json")) if os.path.exists("mondo.json") else []) if x.get("id")}
@@ -38,7 +39,9 @@ w("   calls). The effective amount is `after - before`, because `approve` replac
 w("   adding to it.")
 w("5. For each spender: approved = sum of effective amounts, remaining = current allowance,")
 w("   claimed = approved - remaining. Allowances only go down through `transferFrom`, so this is exact.")
-w("6. Read current balances, the on-chain stage of pending proposals, and trace CELO inflows to the fund.\n")
+w("6. Read current balances, the on-chain stage of pending proposals, and trace CELO flows to and from the fund. "
+  "The trace includes both CELO `Transfer` logs and native-value calls, then reconciles their net amount to the "
+  "fund's CELO balance change.\n")
 
 out = {t: sum(remaining(e) for e in ledger if e["token"] == t) for t in ("CELO", "USDm", "EURm")}
 w("## Summary\n")
@@ -111,20 +114,48 @@ w("URL they were queued with on-chain, so a CGP that expired and was re-submitte
 w("followed to the attempt that executed.")
 w("CGPs 14, 17, 20, 38, 52, 54, 61, 69, 70 and 75 have no `mainnet.json`; their fund movements were taken from the")
 w("execution receipts.\n")
-w("### 8. Inflows and replenish rate\n")
-w("After the L2 migration the regular inflow is about 30 CELO/day from `CeloUnreleasedTreasury`. Large grants are")
-w("funded in the same execution that approves them. Inflows of 100,000 CELO or more in the last year:\n")
+w("### 8. CELO flow reconciliation\n")
+w("Inflows of 100,000 CELO or more in the last year. Blockscout's CELO transfer index includes both")
+w("ERC-20 transfers and CELO value calls inside transactions (for example, a Safe execution), even where")
+w("the latter has no canonical ERC-20 `Transfer` log.\n")
 w("| Date | From | Amount | Tx | Proposal |\n|---|---|---:|---|---|")
 tx2pid = {e["tx"].lower(): int(p) for p, e in v["execs"].items()}
-SRC = {"7a8c7a833565fc428cdfba20fe03fafb178a434f": "CeloUnreleasedTreasury", "9d65e69ac940dcb469fd7c46368c1e094250a400": "Reserve"}
-for x in inflows:
-    a = int(x["data"], 16)
-    if a < 100000 * 10**18: continue
-    p = tx2pid.get(x["transactionHash"].lower()); frm = x["topics"][1][-40:]
-    d = datetime.datetime.fromtimestamp(int(x["timeStamp"], 16), datetime.timezone.utc).strftime("%Y-%m-%d")
-    w(f"| {d} | {SRC.get(frm, '`0x' + frm + '`')} | {fmt(a)} | `{x['transactionHash']}` | " + (cgp_link(pid2cgp[p]) if p in pid2cgp else "none") + " |")
-w("\nInflows with no proposal came from Safes outside governance. `0x87647780180b8f55980c7d3ffefe08a9b29e9ae1` is the")
-w(f"spender of the Mento USDm/USDC liquidity allowance from {cgp_link(69)}. Their owners should confirm what these transfers are.\n")
+SRC = {
+    "0x7a8c7a833565fc428cdfba20fe03fafb178a434f": "CeloUnreleasedTreasury",
+    "0x9d65e69ac940dcb469fd7c46368c1e094250a400": "Celo Governance Reserve",
+    "0x87647780180b8f55980c7d3ffefe08a9b29e9ae1": "Mento Reserve Safe",
+}
+# Inflows that follow from a proposal without being part of its on-chain execution.
+SRC_CGP = {"0x87647780180b8f55980c7d3ffefe08a9b29e9ae1": 253}
+mento_return = False
+for x in flows:
+    if x["direction"] != "in":
+        continue
+    a = int(x["amount"])
+    if a < 100000 * 10**18:
+        continue
+    p = tx2pid.get(x["tx"])
+    cgp = pid2cgp.get(p) or SRC_CGP.get(x["from"])
+    mento_return = mento_return or x["from"] in SRC_CGP
+    d = datetime.datetime.fromtimestamp(x["timestamp"], datetime.timezone.utc).strftime("%Y-%m-%d")
+    w(f"| {d} | {SRC.get(x['from'], '`' + x['from'] + '`')} | {fmt(a)} | `{x['tx']}` | " + (cgp_link(cgp) if cgp else "none") + " |")
+r = flow_audit["reconciliation"]
+w("\n| Reconciliation item | CELO |\n|---|---:|")
+w(f"| Opening balance (block {flow_audit['from_block'] - 1}) | {fmt(int(r['balance_start']))} |")
+w(f"| Inflows seen | {fmt(int(r['incoming']))} |")
+w(f"| Outflows seen | -{fmt(int(r['outgoing']))} |")
+w(f"| Observed net flows | {fmt(int(r['observed_delta']))} |")
+w(f"| Closing balance (block {flow_audit['to_block']}) | {fmt(int(r['balance_end']))} |")
+w(f"| Balance change | {fmt(int(r['balance_delta']))} |")
+w(f"| Unexplained difference | {fmt(int(r['unexplained']))} |\n")
+if flow_audit.get("recovered_from_rpc"):
+    w(f"Blockscout's index missed {flow_audit['recovered_from_rpc']} `Transfer` log(s) in this window. Each one was located by")
+    w("bisecting the balance against the recorded flows and read from the node, so it is included above.\n")
+if int(r["unexplained"]):
+    w("**Warning:** the CELO flow scan does not reconcile to the balance change; review the unexplained difference before relying on the inflow totals.\n")
+if mento_return:
+    w(f"The Mento Reserve Safe return is governed by {cgp_link(253)}. It is distinct from the Celo Governance")
+    w("Reserve and is shown as an inflow, not as a locked deduction from the fund.\n")
 w("### 9. Cross-check with Mondo\n")
 if mondo:
     ours = {int(p) for p in v["execs"]}

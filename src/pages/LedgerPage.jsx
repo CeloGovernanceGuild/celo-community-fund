@@ -15,6 +15,11 @@ const STATUS_FILTERS = [
   { value: 'transferred', label: 'Transferred' },
 ];
 const STATUS_LABEL = { open: 'Open', 'fully claimed': 'Fully claimed', transferred: 'Transferred' };
+const STATUS_HELP = {
+  open: 'Governance approved an allowance and the recipient has not withdrawn all of it yet.',
+  'fully claimed': 'Governance approved an allowance and the recipient already withdrew all of it.',
+  transferred: 'The proposal sent the funds directly when it executed. There was no allowance and nothing left to claim.',
+};
 const FUNCTION_LABEL = { approve: 'Allowance set', increaseAllowance: 'Allowance increased', transfer: 'Direct transfer' };
 
 // Amounts of different tokens cannot be added up, so sorting compares CELO first, then USDm, then EURm.
@@ -93,7 +98,7 @@ function Entry({ group, positions }) {
           <span className="row-title">{group.title}</span>
           <span className="row-meta">
             {positions.map((p) => <span className="badge plain" key={p.token}>{p.token}</span>)}
-            <span className={group.status === 'open' ? 'badge open' : 'badge'}>{STATUS_LABEL[group.status]}</span>
+            <span className={group.status === 'open' ? 'badge open' : 'badge'} title={STATUS_HELP[group.status]}>{STATUS_LABEL[group.status]}</span>
           </span>
         </span>
         <Amounts label="Approved" positions={positions} field="approved" />
@@ -194,6 +199,15 @@ export default function LedgerPage({ state }) {
           <p className="small muted" role="status" style={{ marginBottom: '0.75rem' }}>
             {groups.length} of {state.groups.length} recipients. Amounts are in whole units; hover a number for the exact value.
           </p>
+
+          <dl className="status-legend small">
+            {Object.keys(STATUS_HELP).map((key) => (
+              <div key={key}>
+                <dt><span className={key === 'open' ? 'badge open' : 'badge'}>{STATUS_LABEL[key]}</span></dt>
+                <dd className="muted">{STATUS_HELP[key]}</dd>
+              </div>
+            ))}
+          </dl>
 
           {groups.length === 0 ? (
             <p className="empty">Nothing matches these filters.</p>

@@ -24,5 +24,6 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
+      - run: python3 -m unittest discover -s scripts/audit -p 'test_*.py'
       - run: npm test
       - run: npm run build
