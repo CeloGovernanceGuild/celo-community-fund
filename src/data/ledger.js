@@ -509,7 +509,7 @@ export const ledger = [
     "firstGrant": "2022-06-19"
   },
   {
-    "title": "Governance-Owned USDm/USDC Liquidity",
+    "title": "Governance-Owned USDm/USDC Liquidity (Mobius)",
     "token": "USDm",
     "kind": "allowance",
     "address": "0xfa3df877f98ac5ecd87456a7accaa948462412f0",
@@ -534,7 +534,7 @@ export const ledger = [
     "firstGrant": "2022-08-25"
   },
   {
-    "title": "Mento USDm/USDC Liquidity",
+    "title": "Mento-Owned USDm/USDC Liquidity (Curve)",
     "token": "USDm",
     "kind": "allowance",
     "address": "0x87647780180b8f55980c7d3ffefe08a9b29e9ae1",
@@ -973,7 +973,7 @@ export const ledger = [
     "firstGrant": "2023-12-22"
   },
   {
-    "title": "Public Goods Funding H1 2024",
+    "title": "CeloPG H1 2024",
     "token": "CELO",
     "kind": "allowance",
     "address": "0x71f433514957d00287a9d33da759f1e0c1732381",
@@ -998,7 +998,7 @@ export const ledger = [
     "firstGrant": "2024-02-16"
   },
   {
-    "title": "Public Goods Funding H1 2024",
+    "title": "CeloPG H1 2024",
     "token": "USDm",
     "kind": "allowance",
     "address": "0x71f433514957d00287a9d33da759f1e0c1732381",
@@ -1258,7 +1258,7 @@ export const ledger = [
     "firstGrant": "2024-07-13"
   },
   {
-    "title": "CeloPG H2 2024 (second spender)",
+    "title": "CeloPG x Optimism matching (PG <> OP)",
     "token": "CELO",
     "kind": "allowance",
     "address": "0xdd817a3d583bb0b97579c5959b4c929504f688d7",
@@ -1283,7 +1283,7 @@ export const ledger = [
     "firstGrant": "2024-07-13"
   },
   {
-    "title": "CeloPG H2 2024 (second spender)",
+    "title": "CeloPG x Optimism matching (PG <> OP)",
     "token": "USDm",
     "kind": "allowance",
     "address": "0xdd817a3d583bb0b97579c5959b4c929504f688d7",
@@ -1962,7 +1962,7 @@ export const ledger = [
     "firstGrant": "2025-08-12"
   },
   {
-    "title": "Next FX Market",
+    "title": "FX Market Liquidity Strategy",
     "token": "CELO",
     "kind": "allowance",
     "address": "0x9d7bc0ed7e53c9d8bddac8ce7dff77aba54022d5",
@@ -1987,7 +1987,7 @@ export const ledger = [
     "firstGrant": "2025-08-16"
   },
   {
-    "title": "Next FX Market",
+    "title": "FX Market Liquidity Strategy",
     "token": "USDm",
     "kind": "allowance",
     "address": "0x9d7bc0ed7e53c9d8bddac8ce7dff77aba54022d5",
@@ -2184,7 +2184,7 @@ export const ledger = [
     "firstGrant": "2026-08-06"
   },
   {
-    "title": "Celo Challenger Operator",
+    "title": "Challenger Operator (Score Management Committee multisig)",
     "token": "CELO",
     "kind": "allowance",
     "address": "0x68ce71d4ceca3003701ca6844d9a345925407455",
