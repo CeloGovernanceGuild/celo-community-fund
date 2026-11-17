@@ -60,6 +60,16 @@ npm test         # run unit tests
 npm run build    # production build into ./build
 ```
 
+### Docker
+
+The `Dockerfile` builds the site and serves it with Caddy on port 80 (`deploy/Caddyfile`). Put it behind
+a reverse proxy that terminates TLS:
+
+```sh
+docker build -t celo-community-fund .
+docker run -d --name celo-community-fund -p 8080:80 celo-community-fund
+```
+
 ### Project structure
 
 ```
@@ -80,6 +90,7 @@ scripts/
   status.js             CLI version of the dashboard (npm run status)
   audit/                governance audit that generates src/data and docs/audit.md
 docs/audit.md           audit report
+Dockerfile, deploy/     container image for self-hosting
 .github/workflows/      CI, branch flow check, daily audit
 ```
 

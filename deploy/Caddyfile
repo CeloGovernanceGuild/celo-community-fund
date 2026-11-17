@@ -1,0 +1,12 @@
+# Serves the static build on port 80. TLS and the public hostname are handled by the
+# reverse proxy in front of this container.
+:80 {
+	root * /srv
+	encode zstd gzip
+	file_server
+
+	# Vite fingerprints everything under /assets, so it can be cached forever.
+	@assets path /assets/*
+	header @assets Cache-Control "public, max-age=31536000, immutable"
+	header /index.html Cache-Control "no-cache"
+}
