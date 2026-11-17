@@ -58,5 +58,39 @@ export function buildFundState({ balances, allowances, ledger, proposals = [], d
     { key: 'pending', label: 'Pending proposals', wei: celo.reserved },
   ];
 
-  return { rows, pending, tokens, composition, explorer: COMMUNITY_FUND_EXPLORER };
+  return { rows, groups: groupByRecipient(rows), pending, tokens, composition, explorer: COMMUNITY_FUND_EXPLORER };
+}
+
+/**
+ * One entry per recipient: a spender that was granted several tokens (for example CELO and USDm
+ * in the same proposal) is a single line with one position per token. Direct transfers have no
+ * spender address and are grouped by title.
+ */
+export function groupByRecipient(rows) {
+  const groups = new Map();
+  for (const row of rows) {
+    const key = row.address ? row.address.toLowerCase() : `transfer:${row.title}`;
+    if (!groups.has(key)) {
+      groups.set(key, { key, title: row.title, kind: row.kind, address: row.address, positions: [] });
+    }
+    groups.get(key).positions.push(row);
+  }
+  return [...groups.values()].map((group) => {
+    const positions = group.positions.sort((a, b) => TOKENS.indexOf(a.token) - TOKENS.indexOf(b.token));
+    const grants = positions
+      .flatMap((p) => p.grants.map((g) => ({ ...g, token: p.token })))
+      .sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : TOKENS.indexOf(a.token) - TOKENS.indexOf(b.token)));
+    const status = positions.some((p) => p.remaining > 0n)
+      ? 'open'
+      : group.kind === 'transfer' ? 'transferred' : 'fully claimed';
+    return {
+      ...group,
+      positions,
+      grants,
+      status,
+      tokens: positions.map((p) => p.token),
+      cgps: [...new Set(positions.flatMap((p) => p.cgps))].sort((a, b) => a - b),
+      lastGrant: grants.at(-1)?.date ?? '',
+    };
+  });
 }

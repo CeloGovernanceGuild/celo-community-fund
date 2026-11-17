@@ -1826,7 +1826,7 @@ export const ledger = [
     "firstGrant": "2025-03-08"
   },
   {
-    "title": "Score Management Committee",
+    "title": "Score Management Committee (incl. Challenger Operator funding)",
     "token": "USDm",
     "kind": "allowance",
     "address": "0x68ce71d4ceca3003701ca6844d9a345925407455",
@@ -2184,7 +2184,7 @@ export const ledger = [
     "firstGrant": "2026-08-06"
   },
   {
-    "title": "Challenger Operator (Score Management Committee multisig)",
+    "title": "Score Management Committee (incl. Challenger Operator funding)",
     "token": "CELO",
     "kind": "allowance",
     "address": "0x68ce71d4ceca3003701ca6844d9a345925407455",

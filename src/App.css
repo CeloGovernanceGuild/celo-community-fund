@@ -605,6 +605,27 @@ main {
   display: none;
 }
 
+.amount-line {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: baseline;
+  column-gap: 0.25rem;
+}
+
+.amount-line .unit {
+  font-size: 0.75rem;
+  color: var(--ink-muted);
+}
+
+.position {
+  margin-bottom: var(--space-3);
+}
+
+.position .progress {
+  margin-top: var(--space-1);
+}
+
 .chevron {
   width: 0.625rem;
   height: 0.625rem;
@@ -807,6 +828,10 @@ main {
 
   .ledger-cell {
     text-align: left;
+  }
+
+  .amount-line {
+    justify-content: flex-start;
   }
 
   .ledger-cell .cell-label {
