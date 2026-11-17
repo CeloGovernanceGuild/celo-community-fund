@@ -71,3 +71,53 @@ def reconcile(flows, balance_start, balance_end):
         "balance_delta": str(balance_delta),
         "unexplained": str(balance_delta - observed_delta),
     }
+
+
+def rpc_log_transfer(log, timestamp):
+    """Normalise one CELO `Transfer` log read from the RPC node, or ignore an irrelevant one."""
+    sender = "0x" + log["topics"][1][-40:]
+    recipient = "0x" + log["topics"][2][-40:]
+    direction = _direction(sender, recipient)
+    if not direction:
+        return None
+    return {
+        "direction": direction,
+        "source": "rpc_log",
+        "from": address(sender),
+        "to": address(recipient),
+        "amount": str(int(log["data"], 16)),
+        "block": int(log["blockNumber"], 16),
+        "timestamp": int(timestamp),
+        "tx": log["transactionHash"].lower(),
+        "index": int(log["logIndex"], 16),
+    }
+
+
+def net_until(flows, block):
+    """Net CELO (in minus out) of the flows up to and including `block`."""
+    return sum(int(x["amount"]) * (1 if x["direction"] == "in" else -1) for x in flows if x["block"] <= block)
+
+
+def gap_blocks(lo, hi, drift):
+    """Blocks in (lo, hi] where the balance moved without a recorded flow.
+
+    `drift(block)` is the balance change since the start of the window minus the net
+    recorded flows up to that block. It only changes at a block with an unrecorded
+    flow, so a bisection finds each one in about log2(hi - lo) balance reads. Two
+    unrecorded flows that cancel each other exactly inside one half are not found.
+    """
+    found = []
+
+    def walk(lo, hi, at_lo, at_hi):
+        if at_lo == at_hi:
+            return
+        if hi - lo == 1:
+            found.append(hi)
+            return
+        mid = (lo + hi) // 2
+        at_mid = drift(mid)
+        walk(lo, mid, at_lo, at_mid)
+        walk(mid, hi, at_mid, at_hi)
+
+    walk(lo, hi, drift(lo), drift(hi))
+    return found

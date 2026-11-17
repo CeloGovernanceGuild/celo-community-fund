@@ -17,7 +17,7 @@ nothing is rounded. The scripts that produce this report and `src/data` live in 
    adding to it.
 5. For each spender: approved = sum of effective amounts, remaining = current allowance,
    claimed = approved - remaining. Allowances only go down through `transferFrom`, so this is exact.
-6. Read current balances, the on-chain stage of pending proposals, and trace CELO inflows to the fund.
+6. Read current balances, the on-chain stage of pending proposals, and trace CELO flows to and from the fund. The trace includes both CELO `Transfer` logs and native-value calls, then reconciles their net amount to the fund's CELO balance change.
 
 ## Summary
 
@@ -184,28 +184,47 @@ followed to the attempt that executed.
 CGPs 14, 17, 20, 38, 52, 54, 61, 69, 70 and 75 have no `mainnet.json`; their fund movements were taken from the
 execution receipts.
 
-### 8. Inflows and replenish rate
+### 8. CELO flow reconciliation
 
-After the L2 migration the regular inflow is about 30 CELO/day from `CeloUnreleasedTreasury`. Large grants are
-funded in the same execution that approves them. Inflows of 100,000 CELO or more in the last year:
+Inflows of 100,000 CELO or more in the last year. Blockscout's CELO transfer index includes both
+ERC-20 transfers and CELO value calls inside transactions (for example, a Safe execution), even where
+the latter has no canonical ERC-20 `Transfer` log.
 
 | Date | From | Amount | Tx | Proposal |
 |---|---|---:|---|---|
-| 2026-02-12 | Reserve | 4,355,627 | `0xe4f10755728fdcc0513d855d04abe6c55950c81674fb17196702449ec61b618b` | [CGP-220](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0220.md) |
-| 2026-02-27 | Reserve | 43,012,777.340972869827370586 | `0x80e4b3307b76119f1bd436f36d6925a24e035fa3132bf13ca9b2c281f342f96c` | [CGP-231](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0231.md) |
+| 2026-02-12 | Celo Governance Reserve | 4,355,627 | `0xe4f10755728fdcc0513d855d04abe6c55950c81674fb17196702449ec61b618b` | [CGP-220](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0220.md) |
+| 2026-02-27 | Celo Governance Reserve | 43,012,777.340972869827370586 | `0x80e4b3307b76119f1bd436f36d6925a24e035fa3132bf13ca9b2c281f342f96c` | [CGP-231](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0231.md) |
 | 2026-04-01 | `0x7a1e98fc9a008107dbd1f430a05ace8cf6f3fe19` | 1,748,950 | `0xfbe1dac031726b6f580b561bfc2a80262b9529d09e4463fc3600cc74dce31a86` | none |
+| 2026-07-02 | `0x7a1e98fc9a008107dbd1f430a05ace8cf6f3fe19` | 2,566,770 | `0xf55ab0958005ecdd1e78e5a3e3d5fc3c8ead39db2af1644803daf5a5c291d11d` | none |
 | 2026-07-28 | `0x7a1e98fc9a008107dbd1f430a05ace8cf6f3fe19` | 1,324,344 | `0x0c9ed148e35a3c7b7cc92c49bcf8cd7b2c1947a9b20091c805a4f7187a4288b3` | none |
 | 2026-08-06 | CeloUnreleasedTreasury | 4,838,709.68 | `0x6ab4a53ba5341b78e07bfd71fca11075147cc7293659d200453a8949c8f00303` | [CGP-246](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0246.md) |
 | 2026-08-06 | CeloUnreleasedTreasury | 31,609,499 | `0xcaba97d3c63869aa8a1120a0ce5120ccb5e4f183aedf7490892c5b86467d8106` | [CGP-247](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0247.md) |
 | 2026-08-06 | `0x7a1e98fc9a008107dbd1f430a05ace8cf6f3fe19` | 795,081 | `0x8b2206b76efafe5e31d1bcfaf70de12f73b916eafe19fc79aa5a382521b1291e` | none |
 | 2026-08-10 | CeloUnreleasedTreasury | 35,838,926 | `0xed3cb2e5c385968e610bcbdc9ef875bdccf07e6f0346d329b7820f856742562b` | [CGP-248](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0248.md) |
 | 2026-08-25 | `0x7a1e98fc9a008107dbd1f430a05ace8cf6f3fe19` | 667,815 | `0x0403c49fc0458d49f76d3e82260c3112b0bf130b9d04a6fa848f0588eace4696` | none |
+| 2026-09-02 | `0x7a1e98fc9a008107dbd1f430a05ace8cf6f3fe19` | 723,708 | `0x1ab9a22bb2110471a0bb5914fae3b1a1e219f822484890b6ee719a357e687ee6` | none |
+| 2026-09-05 | `0x68ce71d4ceca3003701ca6844d9a345925407455` | 112,500 | `0xf319e4d7885bbcb8da26e1f56f28147bec70e34c6c91433a9e274ddcc7e8fcf1` | none |
+| 2026-09-18 | `0x7a1e98fc9a008107dbd1f430a05ace8cf6f3fe19` | 673,236 | `0x7badf29e12a596d2a0b649b1709b8a8642dd0883522406976459c87d5d6590ec` | none |
 | 2026-10-08 | `0x7a1e98fc9a008107dbd1f430a05ace8cf6f3fe19` | 648,972 | `0x92ebdf72a5c25849505c7ea2021afec76660f461064840b84646860e34fa68db` | none |
-| 2026-10-09 | `0x87647780180b8f55980c7d3ffefe08a9b29e9ae1` | 33,937,679.887277602347928717 | `0xece87a0b2200f51188a9f205adeb94dcb2f5f5d2ccb60b687bac5d169d664195` | none |
+| 2026-10-09 | Mento Reserve Safe | 33,937,679.887277602347928717 | `0xece87a0b2200f51188a9f205adeb94dcb2f5f5d2ccb60b687bac5d169d664195` | [CGP-253](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0253.md) |
 | 2026-10-27 | `0x7a1e98fc9a008107dbd1f430a05ace8cf6f3fe19` | 598,607 | `0x73ed01af8707e4619d1b82e906419ae4f567316f16d3569296e08a442ae210ea` | none |
+| 2026-11-06 | `0x7a1e98fc9a008107dbd1f430a05ace8cf6f3fe19` | 625,553 | `0xd46e014b3f9da3e3c4ee1b698f6bbaf08a62e6f5212970091a5fee59dc20ab14` | none |
 
-Inflows with no proposal came from Safes outside governance. `0x87647780180b8f55980c7d3ffefe08a9b29e9ae1` is the
-spender of the Mento USDm/USDC liquidity allowance from [CGP-69](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0069.md). Their owners should confirm what these transfers are.
+| Reconciliation item | CELO |
+|---|---:|
+| Opening balance (block 51478100) | 8,225,267.289688273526649185 |
+| Inflows seen | 164,664,945.625562141157100728 |
+| Outflows seen | -95,031,677.465500000000000025 |
+| Observed net flows | 69,633,268.160062141157100703 |
+| Closing balance (block 83014101) | 77,858,535.449750414683749888 |
+| Balance change | 69,633,268.160062141157100703 |
+| Unexplained difference | 0 |
+
+Blockscout's index missed 2 `Transfer` log(s) in this window. Each one was located by
+bisecting the balance against the recorded flows and read from the node, so it is included above.
+
+The Mento Reserve Safe return is governed by [CGP-253](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0253.md). It is distinct from the Celo Governance
+Reserve and is shown as an inflow, not as a locked deduction from the fund.
 
 ### 9. Cross-check with Mondo
 

@@ -1,7 +1,7 @@
 """Regression tests for the CELO flow normalisation used by fetch_inflows.py."""
 import unittest
 
-from inflows import GOV, blockscout_transfer, reconcile, unique_sorted
+from inflows import GOV, blockscout_transfer, gap_blocks, net_until, reconcile, rpc_log_transfer, unique_sorted
 
 E = 10**18
 SENDER = "0x1111111111111111111111111111111111111111"
@@ -46,6 +46,32 @@ class InflowTests(unittest.TestCase):
         rec = reconcile([flow], 0, 3 * E)
         self.assertEqual(rec["observed_delta"], str(E))
         self.assertEqual(rec["unexplained"], str(2 * E))
+
+    def test_normalises_an_rpc_transfer_log(self):
+        log = {
+            "topics": ["0xddf2", "0x" + SENDER[2:].rjust(64, "0"), "0x" + GOV[2:].rjust(64, "0")],
+            "data": hex(34 * E), "blockNumber": hex(65_381_463), "transactionHash": "0xABC", "logIndex": hex(569),
+        }
+        flow = rpc_log_transfer(log, 1_777_282_221)
+        self.assertEqual((flow["direction"], flow["from"], flow["amount"]), ("in", SENDER, str(34 * E)))
+        self.assertEqual((flow["block"], flow["tx"], flow["index"], flow["source"]), (65_381_463, "0xabc", 569, "rpc_log"))
+
+    def test_finds_blocks_where_the_balance_moved_without_a_flow(self):
+        # Flows at blocks 40 and 700 are recorded; the ones at 250 and 901 are missing from the index.
+        recorded = [blockscout_transfer(transfer(block=40, tx="0xa")), blockscout_transfer(transfer(block=700, tx="0xb"))]
+        actual = {40: E, 250: 3 * E, 700: E, 901: 2 * E}
+        balance = lambda block: sum(v for b, v in actual.items() if b <= block)
+        reads = []
+
+        def drift(block):
+            reads.append(block)
+            return balance(block) - net_until(recorded, block)
+
+        self.assertEqual(gap_blocks(0, 1000, drift), [250, 901])
+        self.assertLess(len(reads), 50)
+
+    def test_no_gap_search_result_when_flows_reconcile(self):
+        self.assertEqual(gap_blocks(0, 1000, lambda block: 0), [])
 
 
 if __name__ == "__main__":
