@@ -11,7 +11,14 @@ import {
 } from '../data/data.js';
 import { TOKENS, allowanceKey } from './fund.js';
 
-const client = createPublicClient({ chain: celo, transport: http(undefined, { batch: true }) });
+// The fund alone needs 100+ reads (balances, an allowance per grant, a deposit per proposer). Sent as
+// one JSON-RPC batch they go over what public RPCs such as Forno accept, and the whole site fails.
+// Multicall3 packs the reads into a few eth_calls, and the HTTP batch is capped as a second guard.
+const client = createPublicClient({
+  chain: celo,
+  batch: { multicall: true },
+  transport: http(undefined, { batch: { batchSize: 20 } }),
+});
 const depositsAbi = parseAbi(['function refundedDeposits(address) view returns (uint256)']);
 const feedAbi = parseAbi(['function latestRoundData() view returns (uint80, int256, uint256, uint256, uint80)']);
 

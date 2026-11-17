@@ -15,13 +15,15 @@ import AboutPage from './pages/AboutPage';
 
 const REPO = 'https://github.com/CeloGovernanceGuild/celo-community-fund';
 
+// `fund`: the page needs the fund balances and allowances. The others render straight away, so
+// a slow or failing RPC never hides them (How it works reads its own rules and has fallbacks).
 const PAGES = [
-  { path: 'overview', label: 'Overview', Component: OverviewPage },
-  { path: 'ledger', label: 'Ledger', Component: LedgerPage },
-  { path: 'balances', label: 'Balances', Component: BalancesPage },
-  { path: 'proposals', label: 'Proposals', Component: ProposalsPage },
-  { path: 'how', label: 'How it works', Component: HowPage },
-  { path: 'about', label: 'About', Component: AboutPage },
+  { path: 'overview', label: 'Overview', Component: OverviewPage, fund: true },
+  { path: 'ledger', label: 'Ledger', Component: LedgerPage, fund: true },
+  { path: 'balances', label: 'Balances', Component: BalancesPage, fund: true },
+  { path: 'proposals', label: 'Proposals', Component: ProposalsPage, fund: true },
+  { path: 'how', label: 'How it works', Component: HowPage, fund: false },
+  { path: 'about', label: 'About', Component: AboutPage, fund: false },
 ];
 
 const currentPath = () => window.location.hash.replace(/^#\/?/, '').split('?')[0] || 'overview';
@@ -91,9 +93,9 @@ function App() {
 
       <main id="main" tabIndex={-1}>
         <div className="container">
-          {state && <page.Component state={state} />}
-          {!state && !error && <p className="empty" role="status">Reading the fund from the Celo network...</p>}
-          {!state && error && (
+          {(state || !page.fund) && <page.Component state={state} />}
+          {page.fund && !state && !error && <p className="empty" role="status">Reading the fund from the Celo network...</p>}
+          {page.fund && !state && error && (
             <div className="card" role="alert">
               <h1 className="section-title">The on-chain data could not be loaded</h1>
               <p className="muted">The Celo network did not answer. Nothing is wrong with the fund; try again in a moment.</p>
