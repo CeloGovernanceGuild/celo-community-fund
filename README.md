@@ -75,14 +75,39 @@ Clicking the info button at the top right gives a more detailed overview, includ
 
 ## Development
 
-Requires Node.js 20+.
+Requires Node.js 22 (see `.nvmrc`).
 
 ```sh
-npm install
+npm ci
 npm run dev      # start the dev server
 npm test         # run unit tests
 npm run build    # production build into ./build
 ```
+
+### Project structure
+
+```
+src/
+  data/                 initiative data, the only place to edit when governance changes
+    data.js             contract addresses, colors, replenish rate
+    active_initiatives.js
+    completed_initiatives.js
+    drafts.js
+    index.js            combines the lists above
+  lib/
+    celo.js             on-chain reads (viem): fund balance and allowances
+    fund.js             pure derivation of chart and table data (tested)
+  components/           Table and icons
+  App.jsx               page
+scripts/status.js       CLI version of the dashboard (npm run status)
+.github/workflows/      CI (test-and-build) and branch flow checks
+```
+
+### Branches and releases
+
+`feature branch -> dev -> main`. `dev` and `main` are protected: changes go
+through pull requests with passing CI, and only `dev` can be merged into
+`main`. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## CLI
 
