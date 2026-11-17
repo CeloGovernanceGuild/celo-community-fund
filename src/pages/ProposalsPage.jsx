@@ -1,54 +1,78 @@
 import React from 'react';
 import { getAddress } from 'viem';
+import Amount from '../components/Amount';
 import { EXPLORER } from '../data/data';
 import { proposals } from '../data';
-import Amount from '../components/Amount';
-import { formatWhole } from '../lib/format';
+
+const STAGE_TEXT = {
+  Queued: 'Queued on-chain',
+  Approval: 'Waiting for approval',
+  Referendum: 'Voting now',
+  Execution: 'Passed, waiting for execution',
+  Expiration: 'Expired on-chain',
+};
+const LIVE = new Set(['Queued', 'Approval', 'Referendum', 'Execution']);
 
 export default function ProposalsPage({ state }) {
   return (
-    <section className="page">
-      <p className="page-intro">
-        CGPs that are not executed and not rejected, withdrawn or expired in{' '}
-        <a href="https://github.com/celo-org/governance" target="_blank" rel="noopener noreferrer">celo-org/governance</a>,
-        with the on-chain stage of their proposal. Fund requests of proposals that can still execute are reserved from the funds available.
-      </p>
+    <>
+      <header className="page-head">
+        <p className="eyebrow">Proposals</p>
+        <h1 className="display">What could change the fund next.</h1>
+        <p className="lede">
+          Governance proposals that are drafted or in progress. Funding requests that can still pass are
+          already subtracted from the available balance.
+        </p>
+        <div className="actions">
+          <a className="button" href="https://mondo.celo.org/governance" target="_blank" rel="noopener noreferrer">Vote on Mondo</a>
+          <a className="link-arrow" href="https://github.com/celo-org/governance/tree/main/CGPs" target="_blank" rel="noopener noreferrer">All CGPs</a>
+        </div>
+      </header>
 
-      {proposals.length === 0 && <p>No pending proposals.</p>}
-      <div className="cards">
+      <div className="stack">
+        {state.pending.length === 0 && (
+          <p className="notice" role="note">
+            <span><strong>No pending funding requests.</strong> None of the proposals below asks for money from the fund.</span>
+          </p>
+        )}
+
+        {proposals.length === 0 && <p className="card empty">There are no drafted or in-progress proposals right now.</p>}
+
         {proposals.map((p) => (
-          <div className="card" key={p.cgp}>
-            <h4><a href={p.url} target="_blank" rel="noopener noreferrer">CGP-{p.cgp}: {p.title}</a></h4>
-            <p>
-              Status <strong>{p.status}</strong>
-              {p.proposalId ? <> | proposal {p.proposalId}, on-chain stage <strong>{p.stage}</strong></> : ' | not submitted on-chain'}
-              {p.created && <> | created {p.created}</>}
-            </p>
-            {p.stage === 'Expiration' && <p className="note">Expired on-chain: it can no longer execute, the CGP status is out of date.</p>}
+          <article className="card" key={p.cgp}>
+            <div className="row-meta" style={{ marginTop: 0, marginBottom: '0.5rem' }}>
+              <span className="badge plain">CGP-{p.cgp}</span>
+              <span className={LIVE.has(p.stage) ? 'badge live' : 'badge'}>
+                {p.stage ? STAGE_TEXT[p.stage] ?? p.stage : 'Draft, not submitted on-chain'}
+              </span>
+              {p.created && <span>Created {p.created}</span>}
+            </div>
+            <h2 className="section-title">{p.title}</h2>
             {p.requests.length === 0 ? (
-              <p className="note">Non-funding proposal.</p>
+              <p className="muted" style={{ marginTop: '0.5rem' }}>Does not request funds.</p>
             ) : (
-              <table>
-                <thead><tr><th>Function</th><th className="num">Amount</th><th>Token</th><th>To</th></tr></thead>
-                <tbody>
-                  {p.requests.map((r) => (
-                    <tr key={`${r.function}-${r.to}`}>
-                      <td>{r.function}</td>
-                      <td className="num"><Amount wei={r.amount} /></td>
-                      <td>{r.token}</td>
-                      <td className="mono"><a href={`${EXPLORER}/address/${r.to}`} target="_blank" rel="noopener noreferrer">{getAddress(r.to)}</a></td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <ul className="rows" style={{ marginTop: '1rem' }}>
+                {p.requests.map((r) => (
+                  <li key={`${r.function}-${r.to}-${r.token}`}>
+                    <div className="row-main">
+                      <span className="row-title">Requests <Amount wei={r.amount} /> {r.token}</span>
+                      <a className="mono" href={`${EXPLORER}/address/${r.to}`} target="_blank" rel="noopener noreferrer">{getAddress(r.to)}</a>
+                    </div>
+                  </li>
+                ))}
+              </ul>
             )}
-          </div>
+            <div className="actions">
+              <a className="link-arrow" href={p.url} target="_blank" rel="noopener noreferrer">Read the proposal</a>
+              {p.proposalId && (
+                <a className="link-arrow" href={`https://mondo.celo.org/governance/${p.proposalId}`} target="_blank" rel="noopener noreferrer">
+                  Proposal {p.proposalId} on Mondo
+                </a>
+              )}
+            </div>
+          </article>
         ))}
       </div>
-
-      {state.pending.length > 0 && (
-        <p className="note">Reserved from funds available: {state.pending.map((p) => `${p.title} ${formatWhole(p.amount)} ${p.token}`).join(', ')}.</p>
-      )}
-    </section>
+    </>
   );
 }

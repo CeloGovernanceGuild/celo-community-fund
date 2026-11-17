@@ -1,12 +1,5 @@
-import {
-  COMMUNITY_FUND_EXPLORER,
-  contract_celo_available_color,
-  contract_celo_spent_color,
-  initiative_available_celo_color,
-  initiative_spent_celo_color,
-  pending_drafts_celo_color,
-} from '../data/data.js';
-import { formatWhole, parseUnits18, toNumber } from './format.js';
+import { COMMUNITY_FUND_EXPLORER } from '../data/data.js';
+import { parseUnits18 } from './format.js';
 
 export const TOKENS = ['CELO', 'USDm', 'EURm'];
 // On-chain stages in which a proposal can still execute (null: CGP not submitted on-chain yet).
@@ -57,32 +50,13 @@ export function buildFundState({ balances, allowances, ledger, proposals = [], d
     })
   );
 
+  // How the fund's CELO balance is split. `available` is clamped at zero for the bar only.
   const celo = tokens.CELO;
-  const node = (name, color, wei) => ({ name, color, loc: toNumber(wei > 0n ? wei : 0n), label: formatWhole(wei) });
-  const celoRows = rows.filter((r) => r.token === 'CELO');
-  const balanceSlice = {
-    name: 'Contract Balance',
-    color: contract_celo_available_color,
-    children: [
-      node('Community Fund', contract_celo_available_color, celo.available),
-      ...celoRows.filter((r) => r.remaining > 0n).map((r) => node(r.title, initiative_available_celo_color, r.remaining)),
-      ...(celo.reserved > 0n ? [node('Pending proposals', pending_drafts_celo_color, celo.reserved)] : []),
-    ],
-  };
-  const utilizedSlice = {
-    name: 'Contract Utilized',
-    color: contract_celo_spent_color,
-    children: celoRows.filter((r) => r.claimed > 0n).map((r) => node(`${r.title} claimed`, initiative_spent_celo_color, r.claimed)),
-  };
+  const composition = [
+    { key: 'available', label: 'Available', wei: celo.available > 0n ? celo.available : 0n },
+    { key: 'committed', label: 'Open allowances', wei: celo.open },
+    { key: 'pending', label: 'Pending proposals', wei: celo.reserved },
+  ];
 
-  return {
-    rows,
-    pending,
-    tokens,
-    explorer: COMMUNITY_FUND_EXPLORER,
-    charts: {
-      Lifetime: { name: 'Celo Community Fund', children: [balanceSlice, utilizedSlice] },
-      Current: { name: 'Celo Community Fund', children: [balanceSlice] },
-    },
-  };
+  return { rows, pending, tokens, composition, explorer: COMMUNITY_FUND_EXPLORER };
 }

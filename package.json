@@ -11,10 +11,8 @@
     "status": "node scripts/status.js"
   },
   "dependencies": {
-    "@nivo/sunburst": "^0.99.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-modal": "^3.16.3",
     "viem": "^2.56.8"
   },
   "devDependencies": {

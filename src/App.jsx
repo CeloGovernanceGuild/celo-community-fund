@@ -1,115 +1,132 @@
 import React, { useEffect, useState } from 'react';
-import Modal from 'react-modal';
 import logo from './images/celo_logo.png';
 import './App.css';
-import { CloseIcon, GitHubIcon, InfoIcon } from './components/Icons';
-import { REPL_RATE } from './data/data';
+import { COMMUNITY_FUND_EXPLORER } from './data/data';
 import { AUDIT_BLOCK, drafts, ledger, proposals } from './data';
 import { fetchFundBalances } from './lib/celo';
 import { buildFundState } from './lib/fund';
-import StatusPage from './pages/StatusPage';
+import OverviewPage from './pages/OverviewPage';
 import LedgerPage from './pages/LedgerPage';
 import BalancesPage from './pages/BalancesPage';
 import ProposalsPage from './pages/ProposalsPage';
+import AboutPage from './pages/AboutPage';
 
-Modal.setAppElement('#root');
-
-const modalStyles = {
-  content: {
-    top: '50%',
-    left: '50%',
-    right: 'auto',
-    bottom: 'auto',
-    marginRight: '-50%',
-    transform: 'translate(-50%, -50%)',
-  },
-};
+const REPO = 'https://github.com/CeloGovernanceGuild/celo-community-fund';
 
 const PAGES = [
-  { path: 'status', label: 'Fund Status', Component: StatusPage },
+  { path: 'overview', label: 'Overview', Component: OverviewPage },
   { path: 'ledger', label: 'Ledger', Component: LedgerPage },
   { path: 'balances', label: 'Balances', Component: BalancesPage },
   { path: 'proposals', label: 'Proposals', Component: ProposalsPage },
+  { path: 'about', label: 'About', Component: AboutPage },
 ];
 
-const currentPath = () => window.location.hash.replace(/^#\/?/, '') || 'status';
+const currentPath = () => window.location.hash.replace(/^#\/?/, '') || 'overview';
 
 function App() {
   const [state, setState] = useState(null);
-  const [error, setError] = useState(null);
-  const [modalIsOpen, setIsOpen] = useState(false);
+  const [error, setError] = useState(false);
   const [path, setPath] = useState(currentPath);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
-    const onHashChange = () => setPath(currentPath());
+    const onHashChange = () => {
+      setPath(currentPath());
+      window.scrollTo(0, 0);
+    };
     window.addEventListener('hashchange', onHashChange);
     return () => window.removeEventListener('hashchange', onHashChange);
   }, []);
 
   useEffect(() => {
     let cancelled = false;
+    setError(false);
     fetchFundBalances(ledger)
       .then(({ balances, allowances }) => {
         if (!cancelled) setState(buildFundState({ balances, allowances, ledger, proposals, drafts }));
       })
       .catch((err) => {
         console.error(err);
-        if (!cancelled) setError('Could not load on-chain data. Please try again later.');
+        if (!cancelled) setError(true);
       });
     return () => { cancelled = true; };
-  }, []);
+  }, [attempt]);
 
   const page = PAGES.find((p) => p.path === path) ?? PAGES[0];
 
+  useEffect(() => {
+    document.title = page.path === 'overview' ? 'Celo Community Fund' : `${page.label} | Celo Community Fund`;
+  }, [page]);
+
   return (
-    <div className="App">
-      <Modal isOpen={modalIsOpen} onRequestClose={() => setIsOpen(false)} style={modalStyles} contentLabel="About the Community Fund">
-        <div className="modal">
-          <button onClick={() => setIsOpen(false)} aria-label="Close"><CloseIcon /></button>
-          <h2 className="modal-title">Celo Community Fund</h2>
-          <p>The Community Fund provides for general upkeep of the Celo platform. CELO holders decide how to allocate these funds through governance proposals. Funds might be used to pay bounties for bugs or vulnerabilities, security audits, or grants for protocol development.</p>
-          <p>The Community Fund receives assets from three sources:</p>
-          <ul>
-            <li>The Community Fund receives a share of epoch rewards, paid from CeloUnreleasedTreasury since the L2 migration.</li>
-            <li>The Community Fund is the default destination for slashed assets.</li>
-            <li>The Community Fund also receives the 'base' portion of transaction fees.</li>
-          </ul>
-          <hr />
-          <h3>Regular inflow: ~{REPL_RATE} CELO daily</h3>
-          <p>Since the L2 migration, large grants are funded from the Reserve or the treasury in the same proposal that approves them.</p>
-          <hr />
-          <p>
-            Every grant comes from an on-chain audit of all executed governance proposals (snapshot at block {AUDIT_BLOCK}).
-            Remaining allowances and balances are read live. Amounts are tracked to the wei and shown in whole units.
-            See the <a href="https://github.com/CeloGovernanceGuild/celo-community-fund/blob/main/docs/audit.md" target="_blank" rel="noopener noreferrer">audit report</a>.
-          </p>
-        </div>
-      </Modal>
+    <>
+      <a className="skip-link" href="#main">Skip to content</a>
+      <aside className="banner" aria-label="Data source">
+        Live on-chain data, checked against every executed governance proposal.{' '}
+        <a href={`${REPO}/blob/main/docs/audit.md`} target="_blank" rel="noopener noreferrer">Read the audit</a>
+      </aside>
 
-      <header className="App-header">
-        <img className="celo-logo" src={logo} alt="Celo" />
-        <a className="github" href="https://github.com/CeloGovernanceGuild/celo-community-fund" target="_blank" rel="noopener noreferrer"><GitHubIcon /></a>
-        <button className="info" onClick={() => setIsOpen(true)} aria-label="Info"><InfoIcon /></button>
-
-        <h3 className="title">Community Fund Status</h3>
-        <nav className="nav" aria-label="Pages">
-          {PAGES.map((p) => (
-            <a key={p.path} href={`#/${p.path}`} className={p === page ? 'nav-link active' : 'nav-link'} aria-current={p === page ? 'page' : undefined}>
-              {p.label}
-            </a>
-          ))}
-        </nav>
-
-        {state ? <page.Component state={state} /> : <p className="loading">{error ?? 'Loading...'}</p>}
-
-        <div className={page.path === 'status' ? 'footer-container' : 'footer-container static'}>
-          <a className="footer" href="https://www.web3socialcapital.xyz" target="_blank" rel="noopener noreferrer">
-            Made with <span role="img" aria-label="love">❤️</span> by <span className="w3text">w3sc</span>
+      <header className="site-header">
+        <div className="container">
+          <a className="brand" href="#/overview" aria-label="Celo Community Fund, overview">
+            <img src={logo} alt="Celo" />
+            <span>Community Fund</span>
           </a>
-          <p className="donate">If you find this valuable please support us by voting for the validator group - <a className="TPT" href="https://www.thecelo.com/groupDetail/thepassivetrust" target="_blank" rel="noopener noreferrer">The Passive Trust</a></p>
+          <nav className="nav" aria-label="Main">
+            {PAGES.map((p) => (
+              <a key={p.path} href={`#/${p.path}`} aria-current={p === page ? 'page' : undefined}>{p.label}</a>
+            ))}
+          </nav>
         </div>
       </header>
-    </div>
+
+      <main id="main" tabIndex={-1}>
+        <div className="container">
+          {state && <page.Component state={state} />}
+          {!state && !error && <p className="empty" role="status">Reading the fund from the Celo network...</p>}
+          {!state && error && (
+            <div className="card" role="alert">
+              <h1 className="section-title">The on-chain data could not be loaded</h1>
+              <p className="muted">The Celo network did not answer. Nothing is wrong with the fund; try again in a moment.</p>
+              <div className="actions">
+                <button className="button primary" type="button" onClick={() => setAttempt((n) => n + 1)}>Try again</button>
+              </div>
+            </div>
+          )}
+        </div>
+      </main>
+
+      <footer className="site-footer">
+        <div className="container">
+          <div>
+            <h2>Celo Community Fund</h2>
+            <p>
+              Grants come from an audit of every executed governance proposal (snapshot at block {AUDIT_BLOCK}).
+              Balances and remaining allowances are read live.
+            </p>
+          </div>
+          <div>
+            <h2>Sources</h2>
+            <ul>
+              <li><a href={COMMUNITY_FUND_EXPLORER} target="_blank" rel="noopener noreferrer">Governance contract on Celoscan</a></li>
+              <li><a href="https://github.com/celo-org/governance" target="_blank" rel="noopener noreferrer">Celo governance proposals (CGPs)</a></li>
+              <li><a href="https://mondo.celo.org/governance" target="_blank" rel="noopener noreferrer">Vote on Mondo</a></li>
+              <li><a href={`${REPO}/blob/main/docs/audit.md`} target="_blank" rel="noopener noreferrer">Audit report</a></li>
+            </ul>
+          </div>
+          <div>
+            <h2>Project</h2>
+            <ul>
+              <li><a href={REPO} target="_blank" rel="noopener noreferrer">Source code on GitHub</a></li>
+              <li>
+                Originally built by <a href="https://www.web3socialcapital.xyz" target="_blank" rel="noopener noreferrer">w3sc</a>.
+                Support <a href="https://www.thecelo.com/groupDetail/thepassivetrust" target="_blank" rel="noopener noreferrer">The Passive Trust</a> validator group.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </footer>
+    </>
   );
 }
 
