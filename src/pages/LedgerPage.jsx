@@ -16,8 +16,8 @@ const STATUS_FILTERS = [
 ];
 const STATUS_LABEL = { open: 'Open', 'fully claimed': 'Fully claimed', transferred: 'Transferred' };
 const STATUS_HELP = {
-  open: 'Governance approved an allowance and the recipient has not withdrawn all of it yet.',
-  'fully claimed': 'Governance approved an allowance and the recipient already withdrew all of it.',
+  open: 'Governance approved an allowance and the recipient has not claimed all of it yet.',
+  'fully claimed': 'Governance approved an allowance and the recipient already claimed all of it.',
   transferred: 'The proposal sent the funds directly when it executed. There was no allowance and nothing left to claim.',
 };
 const FUNCTION_LABEL = { approve: 'Allowance set', increaseAllowance: 'Allowance increased', transfer: 'Direct transfer' };
@@ -102,7 +102,7 @@ function Entry({ group, positions }) {
           </span>
         </span>
         <Amounts label="Approved" positions={positions} field="approved" />
-        <Amounts label="Paid out" positions={positions} field="claimed" />
+        <Amounts label="Paid out" positions={positions} field="paidOut" />
         <Amounts label="Remaining" positions={positions} field="remaining" />
         <span className="chevron" aria-hidden="true" />
       </button>
@@ -110,8 +110,8 @@ function Entry({ group, positions }) {
         <div className="ledger-detail" id={id}>
           {group.kind === 'allowance' && positions.map((p) => (
             <div className="position" key={p.token}>
-              <span className="small muted">{p.token}: claimed <Amount wei={p.claimed} /> of <Amount wei={p.approved} /></span>
-              <ClaimProgress claimed={p.claimed} remaining={p.remaining} />
+              <span className="small muted">{p.token}: claimed <Amount wei={p.paidOut} /> of <Amount wei={p.approved} /></span>
+              <ClaimProgress claimed={p.paidOut} remaining={p.remaining} />
             </div>
           ))}
           {group.address && (
@@ -157,7 +157,7 @@ export default function LedgerPage({ state }) {
         <h1 className="display">Everything governance approved from the fund, to the last CELO.</h1>
         <p className="lede">
           One line per recipient address. Approved is what governance approved, paid out is what left the fund, and
-          remaining is what a recipient can still take through its allowance. Open any line to see the proposals behind it.
+          remaining is what a recipient can still claim from its allowance. Open any line to see the proposals behind it.
         </p>
       </header>
 
@@ -172,7 +172,7 @@ export default function LedgerPage({ state }) {
                 <tr key={t}>
                   <td data-label="Token">{t}</td>
                   <td className="num" data-label="Approved"><Amount wei={state.tokens[t].approved} /></td>
-                  <td className="num" data-label="Paid out"><Amount wei={state.tokens[t].claimed} /></td>
+                  <td className="num" data-label="Paid out"><Amount wei={state.tokens[t].paidOut} /></td>
                   <td className="num" data-label="Remaining"><Amount wei={state.tokens[t].open} /></td>
                 </tr>
               ))}

@@ -52,9 +52,8 @@ export default function AboutPage() {
             <ul className="rows" style={{ marginTop: '1rem' }}>
               <li><strong>Recipient.</strong> The address governance approved to use an allowance or receive a direct transfer.</li>
               <li><strong>Approved.</strong> What governance approved from the Community Fund, added up across its proposals.</li>
-              <li><strong>Paid out.</strong> Anything that left the fund through an allowance withdrawal or direct transfer.</li>
-              <li><strong>Remaining.</strong> What a recipient can still take through its allowance. It stays in the fund until then, which is why it counts as committed.</li>
-              <li>The site does not follow how the money is used afterwards.</li>
+              <li><strong>Paid out.</strong> What left the fund: what recipients claimed from their allowances and what proposals transferred directly. The site does not follow how the money is used afterwards.</li>
+              <li><strong>Remaining.</strong> What a recipient can still claim from its allowance. It stays in the fund until then, which is why it counts as committed.</li>
               <li><strong>Available.</strong> The fund balance minus everything committed, every pending funding request and the proposal deposits that belong to their proposers.</li>
             </ul>
           </section>

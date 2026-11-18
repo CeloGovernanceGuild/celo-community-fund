@@ -63,7 +63,7 @@ w("4. For every approval, read the spender allowance one block before and at the
 w("   calls). The effective amount is `after - before`, because `approve` replaces an allowance instead of")
 w("   adding to it.")
 w("5. For each spender: approved = sum of effective amounts, remaining = current allowance,")
-w("   claimed = approved - remaining. Allowances only go down through `transferFrom`, so this is exact.")
+w("   paid out = approved - remaining. Allowances only go down through `transferFrom`, so this is exact.")
 w("6. Read current balances, the on-chain stage of pending proposals, and trace CELO flows to and from the fund. "
   "The trace includes both CELO `Transfer` logs and native-value calls, then reconciles their net amount to the "
   "fund's CELO balance change.\n")
@@ -81,9 +81,9 @@ w(f"- CELO grants executed after the site's previous data update (2023-08-25): {
 w(f"- Pending CGPs with an on-chain proposal that can still execute: {sum(1 for p in pending if p['stage'] not in (None, 'Expiration'))}\n")
 
 w("## Ledger\n")
-w("One line per spender and token. `Claimed` is what the spender already pulled from the fund.")
+w("One line per recipient and token. `Paid out` is what already left the fund: claimed from an allowance or transferred directly.")
 w("Entries with a remaining allowance, however small, are listed as open.\n")
-w("| Initiative | Token | Approved | Claimed | Remaining | Status | CGPs |\n|---|---|---:|---:|---:|---|---|")
+w("| Initiative | Token | Approved | Paid out | Remaining | Status | CGPs |\n|---|---|---:|---:|---:|---|---|")
 for e in ledger:
     a = int(e["approved"]); r = remaining(e)
     w(f"| {e['title']} | {e['token']} | {fmt(a)} | {fmt(a - r)} | {fmt(r)} | {'open' if r > 0 else ('transfer' if e['kind'] == 'transfer' else 'fully claimed')} | " + ", ".join(cgp_link(n) for n in e["cgps"]) + " |")

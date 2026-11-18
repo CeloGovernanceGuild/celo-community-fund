@@ -16,12 +16,12 @@ for (const token of TOKENS) {
   console.log(`Proposal deposits: ${formatWei(t.deposits)}`);
   console.log(`Available:        ${formatWei(t.available)}`);
   console.log(`Approved total:   ${formatWei(t.approved)}`);
-  console.log(`Paid out:         ${formatWei(t.claimed)}`);
+  console.log(`Paid out:         ${formatWei(t.paidOut)}`);
 }
 
 console.log("------- Open allowances -------");
 for (const r of state.rows.filter((r) => r.status === "open")) {
-  console.log(`${r.title} [${r.token}] approved ${formatWei(r.approved)}, claimed ${formatWei(r.claimed)}, remaining ${formatWei(r.remaining)}`);
+  console.log(`${r.title} [${r.token}] approved ${formatWei(r.approved)}, claimed ${formatWei(r.paidOut)}, remaining ${formatWei(r.remaining)}`);
 }
 console.log("------- Pending -------");
 for (const p of state.pending) console.log(`${p.title}: ${formatWei(p.amount)} ${p.token}`);

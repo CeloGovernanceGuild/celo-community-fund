@@ -37,7 +37,7 @@ The design follows the celo.org brand: yellow page, black ink, serif display typ
 
 - **Overview**: balance, available, committed and paid-out CELO; what the balance is made of; open
   allowances and the latest approvals.
-- **Ledger**: every fund authorization per recipient and token with approved, paid-out and remaining amounts.
+- **Ledger**: everything governance approved from the fund, per recipient and token, with approved, paid-out and remaining amounts.
   Searchable and filterable. Each line opens into the proposals that funded it, with the execution
   transaction.
 - **Balances**: Community Fund and historical Governance Reserve holdings with USD values from Chainlink, and the fund's

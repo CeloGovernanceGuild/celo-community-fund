@@ -76,8 +76,8 @@ export default function OverviewPage({ state }) {
         />
         <Stat
           label="Paid out"
-          wei={celo.claimed}
-          note="Allowance withdrawals and direct transfers from the fund"
+          wei={celo.paidOut}
+          note="Claimed from allowances, plus direct transfers"
           link={<Out href={tokenHolderUrl('CELO', GOVERNANCE_ADDRESS)}>See fund outflows on Celoscan</Out>}
         />
       </section>
@@ -119,9 +119,9 @@ export default function OverviewPage({ state }) {
                     <span className="row-title">{r.title}</span>
                     <span className="num"><Amount wei={r.remaining} /> CELO left</span>
                   </div>
-                  <ClaimProgress claimed={r.claimed} remaining={r.remaining} />
+                  <ClaimProgress claimed={r.paidOut} remaining={r.remaining} />
                   <p className="row-meta">
-                    <span>Claimed <Amount wei={r.claimed} /> of <Amount wei={r.approved} /></span>
+                    <span>Claimed <Amount wei={r.paidOut} /> of <Amount wei={r.approved} /></span>
                     <a className="link-out" href={tokenHolderUrl('CELO', r.address)} target="_blank" rel="noopener noreferrer">See its claims on Celoscan</a>
                   </p>
                 </li>
