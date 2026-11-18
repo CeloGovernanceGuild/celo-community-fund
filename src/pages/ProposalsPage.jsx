@@ -48,7 +48,9 @@ export default function ProposalsPage({ state }) {
               {p.created && <span>Created {p.created}</span>}
             </div>
             <h2 className="section-title">{p.title}</h2>
-            {p.requests.length === 0 ? (
+            {p.stage === 'Expiration' ? (
+              <p className="muted" style={{ marginTop: '0.5rem' }}>Expired on-chain and does not affect the current available balance.</p>
+            ) : p.requests.length === 0 ? (
               <p className="muted" style={{ marginTop: '0.5rem' }}>Does not request funds.</p>
             ) : (
               <ul className="rows" style={{ marginTop: '1rem' }}>

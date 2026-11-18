@@ -120,7 +120,7 @@ open(f"{OUT}/ledger.js", "w").write(head + f"""
 // grants[].requested  amount in the proposal transaction
 // grants[].replaced   allowance that an `approve` overwrote (0 for increaseAllowance and transfers)
 // grants[].effective  change actually applied on-chain (allowance after - before, or the transfer)
-// approved            sum of effective amounts. Claimed = approved - live allowance.
+// approved            sum of effective amounts. Paid out = approved - live allowance.
 
 export const AUDIT_BLOCK = {block};
 

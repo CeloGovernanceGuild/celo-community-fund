@@ -33,6 +33,7 @@ function App() {
   const [error, setError] = useState(false);
   const [path, setPath] = useState(currentPath);
   const [attempt, setAttempt] = useState(0);
+  const page = PAGES.find((p) => p.path === path) ?? PAGES[0];
 
   useEffect(() => {
     const onHashChange = () => {
@@ -50,6 +51,10 @@ function App() {
   }, []);
 
   useEffect(() => {
+    // How it works and About have their own resilient reads or static audit material. Do not
+    // create a failing fund request for pages that cannot use its result.
+    if (!page.fund) return undefined;
+
     let cancelled = false;
     setError(false);
     fetchFundBalances(ledger, proposers)
@@ -61,17 +66,21 @@ function App() {
         if (!cancelled) setError(true);
       });
     return () => { cancelled = true; };
-  }, [attempt]);
-
-  const page = PAGES.find((p) => p.path === path) ?? PAGES[0];
+  }, [attempt, page.fund]);
 
   useEffect(() => {
     document.title = page.path === 'overview' ? 'Celo Community Fund' : `${page.label} | Celo Community Fund`;
   }, [page]);
 
+  const skipToMain = (event) => {
+    // #main would be treated as an unknown SPA route and reset the current page to Overview.
+    event.preventDefault();
+    document.getElementById('main')?.focus();
+  };
+
   return (
     <>
-      <a className="skip-link" href="#main">Skip to content</a>
+      <a className="skip-link" href="#main" onClick={skipToMain}>Skip to content</a>
       <aside className="banner" aria-label="Data source">
         Live on-chain data, checked against every executed governance proposal.{' '}
         <a href={`${REPO}/blob/main/docs/audit.md`} target="_blank" rel="noopener noreferrer">Read the audit</a>

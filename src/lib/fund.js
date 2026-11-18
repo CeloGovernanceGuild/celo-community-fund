@@ -23,7 +23,7 @@ export function buildFundState({ balances, allowances, ledger, proposals = [], d
     const approved = BigInt(entry.approved);
     const remaining = entry.kind === 'allowance' ? allowances[allowanceKey(entry.token, entry.address)] ?? 0n : 0n;
     const status = remaining > 0n ? 'open' : entry.kind === 'transfer' ? 'transferred' : 'fully claimed';
-    return { ...entry, approved, remaining, claimed: approved - remaining, status };
+    return { ...entry, approved, remaining, paidOut: approved - remaining, status };
   });
 
   const pending = [
@@ -48,7 +48,7 @@ export function buildFundState({ balances, allowances, ledger, proposals = [], d
         reserved,
         deposits: held,
         approved: sum(tokenRows, 'approved'),
-        claimed: sum(tokenRows, 'claimed'),
+        paidOut: sum(tokenRows, 'paidOut'),
         available: balance - open - reserved - held,
       }];
     })
