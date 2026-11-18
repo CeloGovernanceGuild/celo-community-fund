@@ -1,6 +1,6 @@
 # Community Fund governance audit
 
-Snapshot: Celo block 83067793 (2026-11-18). Every number was read on-chain or from
+Snapshot: Celo block 83113811 (2026-11-18). Every number was read on-chain or from
 [celo-org/governance](https://github.com/celo-org/governance) at that block. Amounts are exact to the wei:
 nothing is rounded. The scripts that produce this report and `src/data` live in [`scripts/audit`](../scripts/audit).
 
@@ -9,8 +9,8 @@ nothing is rounded. The scripts that produce this report and `src/data` live in 
 - **The fund** is the Governance contract (`0xD533Ca259b330c7A88f74E000a3FaEa2d63B7972`). It only pays out when a
   proposal executes: an `approve` or `increaseAllowance` that the recipient later draws down, or a direct `transfer`.
 - **Governance approver multisig** (`0x41822d8A191fcfB1cfcA5F7048818aCd8eE933d3`, read from `Governance.approver()`): it has to
-  approve a proposal before it can execute. 3 confirmations of 14 owners at block 83067793.
-- **Celo Operations Safe** (`0x7A1E98FC9a008107DbD1f430a05Ace8cf6f3FE19`, 2 of 5 owners at block 83067793): the only extra
+  approve a proposal before it can execute. 3 confirmations of 14 owners at block 83113811.
+- **Celo Operations Safe** (`0x7A1E98FC9a008107DbD1f430a05Ace8cf6f3FE19`, 2 of 5 owners at block 83113811): the only extra
   beneficiary registered in the FeeHandler (`0xcD437749E43A154C07F3553504c68fBfD56B8778`), under the name `cLabs`. It also
   receives the sequencer fee vault (`0x4200000000000000000000000000000000000011`) and sends the net revenue to the fund.
   It is not part of governance and its payments have no proposal; see finding 8.
@@ -27,14 +27,14 @@ nothing is rounded. The scripts that produce this report and `src/data` live in 
    calls). The effective amount is `after - before`, because `approve` replaces an allowance instead of
    adding to it.
 5. For each spender: approved = sum of effective amounts, remaining = current allowance,
-   claimed = approved - remaining. Allowances only go down through `transferFrom`, so this is exact.
+   paid out = approved - remaining. Allowances only go down through `transferFrom`, so this is exact.
 6. Read current balances, the on-chain stage of pending proposals, and trace CELO flows to and from the fund. The trace includes both CELO `Transfer` logs and native-value calls, then reconciles their net amount to the fund's CELO balance change.
 
 ## Summary
 
 | Token | Fund balance | Open allowances | Balance minus open allowances |
 |---|---:|---:|---:|
-| CELO | 77,858,565.789090605232734323 | 38,869,472.15175548892 | 38,989,093.637335116312734323 |
+| CELO | 78,433,269.128947985677598026 | 38,869,472.15175548892 | 39,563,796.977192496757598026 |
 | USDm | 1,670.502286982809573708 | 1,152,130.261 | -1,150,459.758713017190426292 |
 | EURm | 55.994895651259895506 | 0 | 55.994895651259895506 |
 
@@ -45,10 +45,10 @@ nothing is rounded. The scripts that produce this report and `src/data` live in 
 
 ## Ledger
 
-One line per spender and token. `Claimed` is what the spender already pulled from the fund.
+One line per recipient and token. `Paid out` is what already left the fund: claimed from an allowance or transferred directly.
 Entries with a remaining allowance, however small, are listed as open.
 
-| Initiative | Token | Approved | Claimed | Remaining | Status | CGPs |
+| Initiative | Token | Approved | Paid out | Remaining | Status | CGPs |
 |---|---|---:|---:|---:|---|---|
 | Celo Airdrop | CELO | 200,000 | 200,000 | 0 | fully claimed | [CGP-14](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0014.md) |
 | CCF1 | CELO | 665,387 | 658,914.20824451108 | 6,472.79175548892 | open | [CGP-17](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0017.md) |
@@ -220,15 +220,16 @@ the latter has no canonical ERC-20 `Transfer` log.
 | 2026-10-09 | Mento Reserve Safe | 33,937,679.887277602347928717 | `0xece87a0b2200f51188a9f205adeb94dcb2f5f5d2ccb60b687bac5d169d664195` | [CGP-253](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0253.md) |
 | 2026-10-27 | Celo Operations Safe (L2 sequencer revenue) | 598,607 | `0x73ed01af8707e4619d1b82e906419ae4f567316f16d3569296e08a442ae210ea` | none |
 | 2026-11-06 | Celo Operations Safe (L2 sequencer revenue) | 625,553 | `0xd46e014b3f9da3e3c4ee1b698f6bbaf08a62e6f5212970091a5fee59dc20ab14` | none |
+| 2026-11-18 | Celo Operations Safe (L2 sequencer revenue) | 574,673 | `0x9e0522f18dce9aa08c295b4f5b88be02d859d3da474d6902f624553b9cc20701` | none |
 
 | Reconciliation item | CELO |
 |---|---:|
-| Opening balance (block 51531039) | 8,225,267.289688273526649185 |
-| Inflows seen | 164,664,975.964902331706085163 |
+| Opening balance (block 51577221) | 8,225,267.289688273526649185 |
+| Inflows seen | 165,239,679.304759712150948866 |
 | Outflows seen | -95,031,677.465500000000000025 |
-| Observed net flows | 69,633,298.499402331706085138 |
-| Closing balance (block 83067040) | 77,858,565.789090605232734323 |
-| Balance change | 69,633,298.499402331706085138 |
+| Observed net flows | 70,208,001.839259712150948841 |
+| Closing balance (block 83113222) | 78,433,269.128947985677598026 |
+| Balance change | 70,208,001.839259712150948841 |
 | Unexplained difference | 0 |
 
 Blockscout's index missed 2 `Transfer` log(s) in this window. Each one was located by
