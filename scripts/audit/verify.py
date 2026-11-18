@@ -14,13 +14,28 @@ execs = {}
 for l in chain["executed"]:
     pid = int(l["topics"][1], 16)
     execs[pid] = {"tx": l["transactionHash"], "block": int(l["blockNumber"], 16), "ts": int(l["timeStamp"], 16)}
+
+
+def receipt_logs(tx):
+    """Logs of one transaction. Forno answers null for some receipts it no longer serves (for example
+    0xed1d9e45149cb89ad8703c4a2d851b7753b5cc685ca910576c41975c0496a84f) while the logs of their block
+    are still there, so fall back to those."""
+    try:
+        return rpc("eth_getTransactionReceipt", [tx], retries=4)["logs"]
+    except SystemExit:
+        block = rpc("eth_getTransactionByHash", [tx])["blockHash"]
+        logs = [lg for lg in rpc("eth_getLogs", [{"blockHash": block}]) if lg["transactionHash"].lower() == tx.lower()]
+        if not logs:
+            raise SystemExit(f"no receipt and no logs for {tx}")
+        return logs
+
+
 cache = json.load(open("receipts.json")) if os.path.exists("receipts.json") else {}
 onchain = {}
 for pid in sorted(execs):
     tx = execs[pid]["tx"]
     if tx not in cache:
-        receipt = rpc("eth_getTransactionReceipt", [tx], retries=12)
-        cache[tx] = [lg for lg in receipt["logs"] if lg["address"].lower() in BY_ADDRESS]
+        cache[tx] = [lg for lg in receipt_logs(tx) if lg["address"].lower() in BY_ADDRESS]
         json.dump(cache, open("receipts.json", "w"))
     onchain[pid] = [
         {"token": BY_ADDRESS[lg["address"].lower()], "kind": "approval" if lg["topics"][0] == APPROVAL else "transfer",
