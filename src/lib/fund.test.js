@@ -11,14 +11,14 @@ const ledger = [
 ];
 
 describe('buildFundState', () => {
-  it('computes claimed and remaining exactly, keeping 1 wei', () => {
+  it('computes paid out and remaining exactly, keeping 1 wei', () => {
     const allowances = { [allowanceKey('CELO', A)]: 1n, [allowanceKey('USDm', B)]: 0n };
     const state = buildFundState({ balances: { CELO: 10000n * E, USDm: 0n, EURm: 0n }, allowances, ledger });
     const [a, b, t] = state.rows;
 
-    expect(a).toMatchObject({ remaining: 1n, claimed: 1000n * E - 1n, status: 'open' });
-    expect(b).toMatchObject({ remaining: 0n, claimed: 500n * E, status: 'fully claimed' });
-    expect(t).toMatchObject({ remaining: 0n, claimed: 300n * E, status: 'transferred' });
+    expect(a).toMatchObject({ remaining: 1n, paidOut: 1000n * E - 1n, status: 'open' });
+    expect(b).toMatchObject({ remaining: 0n, paidOut: 500n * E, status: 'fully claimed' });
+    expect(t).toMatchObject({ remaining: 0n, paidOut: 300n * E, status: 'transferred' });
     expect(state.tokens.CELO.available).toBe(10000n * E - 1n);
   });
 

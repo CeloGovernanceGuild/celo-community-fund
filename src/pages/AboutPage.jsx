@@ -28,7 +28,7 @@ const CONTRACTS = [
   { name: 'FeeHandler', what: 'Gas fees, forwarded to the Celo Operations Safe', address: FEE_HANDLER },
   { name: 'Sequencer fee vault', what: 'Layer 2 sequencer fees, withdrawn to the Celo Operations Safe', address: SEQUENCER_FEE_VAULT },
   { name: 'CeloUnreleasedTreasury', what: 'Daily protocol payment and CELO for large grants', address: UNRELEASED_TREASURY },
-  { name: 'Reserve', what: 'Source of CELO for large grants', address: RESERVE_ADDRESS },
+  { name: 'Celo Governance Reserve (historical)', what: 'A separate governance reserve; it is not part of the Community Fund or its Available amount', address: RESERVE_ADDRESS },
   { name: 'Chainlink CELO / USD', what: 'Price used for USD values', address: CELO_USD_FEED },
   { name: 'Chainlink EUR / USD', what: 'Price used for USD values', address: EUR_USD_FEED },
 ];
@@ -50,9 +50,10 @@ export default function AboutPage() {
           <section className="card">
             <h2 className="section-title">How to read the numbers</h2>
             <ul className="rows" style={{ marginTop: '1rem' }}>
-              <li><strong>Approved.</strong> What governance granted a recipient, added up across all its proposals.</li>
-              <li><strong>Claimed.</strong> What the recipient has already taken out of the fund.</li>
-              <li><strong>Remaining.</strong> What the recipient can still take. It stays in the fund until then, which is why it counts as committed.</li>
+              <li><strong>Recipient.</strong> The address governance approved to use an allowance or receive a direct transfer.</li>
+              <li><strong>Approved.</strong> What governance approved from the Community Fund, added up across its proposals.</li>
+              <li><strong>Paid out.</strong> What left the fund: what recipients claimed from their allowances and what proposals transferred directly. The site does not follow how the money is used afterwards.</li>
+              <li><strong>Remaining.</strong> What a recipient can still claim from its allowance. It stays in the fund until then, which is why it counts as committed.</li>
               <li><strong>Available.</strong> The fund balance minus everything committed, every pending funding request and the proposal deposits that belong to their proposers.</li>
             </ul>
           </section>

@@ -6,6 +6,7 @@ export const TOKEN_ADDRESSES = {
   EURm: "0xD8763CBa276a3738E6DE85b4b3bF5FDed6D6cA73",
 };
 export const GOVERNANCE_ADDRESS = "0xD533Ca259b330c7A88f74E000a3FaEa2d63B7972";
+// Historical Celo Governance Reserve. It is distinct from the Community Fund and never enters its Available calculation.
 export const RESERVE_ADDRESS = "0x9d65E69aC940dCB469fd7C46368C1e094250a400";
 
 // How money reaches the fund and who signs off on proposals (see the About page and docs/audit.md)
@@ -40,9 +41,3 @@ export const addressUrl = (address) => `${EXPLORER}/address/${address}`;
 export const txUrl = (hash) => `${EXPLORER}/tx/${hash}`;
 // Token page filtered to one holder: its balance and every transfer of that token in or out of it.
 export const tokenHolderUrl = (token, holder) => `${EXPLORER}/token/${TOKEN_ADDRESSES[token]}?a=${holder}`;
-
-// Regular CELO inflow to the fund (CELO per day). After the L2 migration the fund
-// receives about 30 CELO/day from CeloUnreleasedTreasury; large grants are topped
-// up from the Reserve or the treasury in the same proposal that approves them.
-// Measured over 2026-02..2026-11, see docs/audit.md (finding 8).
-export const REPL_RATE = 30;
