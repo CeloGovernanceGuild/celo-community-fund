@@ -38,7 +38,10 @@ export const MEMBERS = [
   {
     name: '0xGoldo',
     role: 'Guild member',
-    links: [{ kind: 'github', href: 'https://github.com/0xGoldo' }],
+    links: [
+      { kind: 'x', href: 'https://x.com/0x_chrono' },
+      { kind: 'github', href: 'https://github.com/0xGoldo' },
+    ],
   },
   {
     name: '0xj4an',
