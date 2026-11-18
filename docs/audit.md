@@ -1,6 +1,6 @@
 # Community Fund governance audit
 
-Snapshot: Celo block 83014439 (2026-11-17). Every number was read on-chain or from
+Snapshot: Celo block 83067793 (2026-11-18). Every number was read on-chain or from
 [celo-org/governance](https://github.com/celo-org/governance) at that block. Amounts are exact to the wei:
 nothing is rounded. The scripts that produce this report and `src/data` live in [`scripts/audit`](../scripts/audit).
 
@@ -9,8 +9,8 @@ nothing is rounded. The scripts that produce this report and `src/data` live in 
 - **The fund** is the Governance contract (`0xD533Ca259b330c7A88f74E000a3FaEa2d63B7972`). It only pays out when a
   proposal executes: an `approve` or `increaseAllowance` that the recipient later draws down, or a direct `transfer`.
 - **Governance approver multisig** (`0x41822d8A191fcfB1cfcA5F7048818aCd8eE933d3`, read from `Governance.approver()`): it has to
-  approve a proposal before it can execute. 3 confirmations of 14 owners at block 83014439.
-- **Celo Operations Safe** (`0x7A1E98FC9a008107DbD1f430a05Ace8cf6f3FE19`, 2 of 5 owners at block 83014439): the only extra
+  approve a proposal before it can execute. 3 confirmations of 14 owners at block 83067793.
+- **Celo Operations Safe** (`0x7A1E98FC9a008107DbD1f430a05Ace8cf6f3FE19`, 2 of 5 owners at block 83067793): the only extra
   beneficiary registered in the FeeHandler (`0xcD437749E43A154C07F3553504c68fBfD56B8778`), under the name `cLabs`. It also
   receives the sequencer fee vault (`0x4200000000000000000000000000000000000011`) and sends the net revenue to the fund.
   It is not part of governance and its payments have no proposal; see finding 8.
@@ -223,12 +223,12 @@ the latter has no canonical ERC-20 `Transfer` log.
 
 | Reconciliation item | CELO |
 |---|---:|
-| Opening balance (block 51478100) | 8,225,267.289688273526649185 |
-| Inflows seen | 164,664,945.625562141157100728 |
+| Opening balance (block 51531039) | 8,225,267.289688273526649185 |
+| Inflows seen | 164,664,975.964902331706085163 |
 | Outflows seen | -95,031,677.465500000000000025 |
-| Observed net flows | 69,633,268.160062141157100703 |
-| Closing balance (block 83014101) | 77,858,535.449750414683749888 |
-| Balance change | 69,633,268.160062141157100703 |
+| Observed net flows | 69,633,298.499402331706085138 |
+| Closing balance (block 83067040) | 77,858,565.789090605232734323 |
+| Balance change | 69,633,298.499402331706085138 |
 | Unexplained difference | 0 |
 
 Blockscout's index missed 2 `Transfer` log(s) in this window. Each one was located by
