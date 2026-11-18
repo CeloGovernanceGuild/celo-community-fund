@@ -24,6 +24,7 @@ export const LINKS = {
   callIssues: "https://github.com/celo-org/governance/issues",
   createProposal: "https://docs.celo.org/learn/protocol/governance/create-governance-proposal",
   governanceDocs: "https://docs.celo.org/learn/protocol/governance/overview",
+  calls: "https://luma.com/CeloGovernance",
   mondo: "https://mondo.celo.org/governance",
   celocli: "https://docs.celo.org/build/tools/libraries-sdks/cli",
 };

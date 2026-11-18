@@ -5,6 +5,9 @@ on:
     branches: [dev, main]
   push:
     branches: [dev, main]
+  # The daily audit opens its pull request with GITHUB_TOKEN, which does not trigger
+  # pull_request workflows, so it starts this one by hand on the audit branch.
+  workflow_dispatch:
 
 permissions:
   contents: read
