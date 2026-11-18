@@ -11,12 +11,19 @@
 Flow:
 
 1. Branch from `dev`: `git checkout dev && git pull && git checkout -b data/add-initiative-x`
-2. Open a pull request into `dev`.
+2. Open a pull request into `dev` from your own Guild member account.
 3. When `dev` is ready to release, open a pull request from `dev` into `main`.
+
+Guild members work from their own accounts and open the pull requests. The
+`celogovernance` account, the only repository admin, reviews, approves and merges every
+pull request into `dev` and `main`. It is the code owner of the whole repository
+(`.github/CODEOWNERS`).
 
 Both `dev` and `main` are protected by repository rulesets:
 
 - Changes only through pull requests, no direct pushes, no force pushes, no deletion.
+- One approval from the code owner (`celogovernance`), given after the last push.
+- Only the admin role can merge.
 - Required status checks: `test-and-build` (`.github/workflows/ci.yml`) and
   `branch-flow` (`.github/workflows/branch-flow.yml`).
 - `branch-flow` fails any pull request into `main` whose source is not `dev`.
