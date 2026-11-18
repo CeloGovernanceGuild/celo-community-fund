@@ -102,7 +102,7 @@ function Entry({ group, positions }) {
           </span>
         </span>
         <Amounts label="Approved" positions={positions} field="approved" />
-        <Amounts label="Drawn" positions={positions} field="claimed" />
+        <Amounts label="Paid out" positions={positions} field="claimed" />
         <Amounts label="Remaining" positions={positions} field="remaining" />
         <span className="chevron" aria-hidden="true" />
       </button>
@@ -154,10 +154,10 @@ export default function LedgerPage({ state }) {
     <>
       <header className="page-head">
         <p className="eyebrow">Ledger</p>
-        <h1 className="display">Every fund authorization, to the last CELO.</h1>
+        <h1 className="display">Everything governance approved from the fund, to the last CELO.</h1>
         <p className="lede">
-          One line per approved spender or direct transfer. Approved is what governance authorized, drawn is what left
-          the fund, and remaining is what an approved spender can still take. Open any line to see the proposals behind it.
+          One line per recipient address. Approved is what governance approved, paid out is what left the fund, and
+          remaining is what a recipient can still take through its allowance. Open any line to see the proposals behind it.
         </p>
       </header>
 
@@ -165,14 +165,14 @@ export default function LedgerPage({ state }) {
         <section className="card" aria-label="Totals by token">
           <table className="table stackable">
             <thead>
-              <tr><th>Token</th><th className="num">Approved</th><th className="num">Drawn or transferred</th><th className="num">Remaining</th></tr>
+              <tr><th>Token</th><th className="num">Approved</th><th className="num">Paid out</th><th className="num">Remaining</th></tr>
             </thead>
             <tbody>
               {TOKENS.map((t) => (
                 <tr key={t}>
                   <td data-label="Token">{t}</td>
                   <td className="num" data-label="Approved"><Amount wei={state.tokens[t].approved} /></td>
-                  <td className="num" data-label="Claimed"><Amount wei={state.tokens[t].claimed} /></td>
+                  <td className="num" data-label="Paid out"><Amount wei={state.tokens[t].claimed} /></td>
                   <td className="num" data-label="Remaining"><Amount wei={state.tokens[t].open} /></td>
                 </tr>
               ))}
@@ -214,7 +214,7 @@ export default function LedgerPage({ state }) {
           ) : (
             <>
               <div className="ledger-head" aria-hidden="true">
-                <span>Spender or transfer</span><span>Approved</span><span>Drawn</span><span>Remaining</span><span />
+                <span>Recipient</span><span>Approved</span><span>Paid out</span><span>Remaining</span><span />
               </div>
               <ul className="rows" style={{ borderTop: 0 }}>
                 {groups.map((g) => (

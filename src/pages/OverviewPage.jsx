@@ -46,8 +46,8 @@ export default function OverviewPage({ state }) {
         <p className="eyebrow">Celo governance treasury</p>
         <h1 className="display">Where the Community Fund stands today.</h1>
         <p className="lede">
-          Every authorization from the Community Fund: how much governance approved, how much was drawn or
-          transferred, and how much remains available. Read live from the chain.
+          Everything governance approved from the Community Fund: how much was approved, paid out and remains
+          available. Read live from the chain.
         </p>
         <div className="actions">
           <a className="button primary" href="#/ledger">Explore the ledger</a>
@@ -71,13 +71,13 @@ export default function OverviewPage({ state }) {
         <Stat
           label="Committed"
           wei={celo.open}
-          note={`Approved and not yet drawn, across ${open.length} open allowances`}
+          note={`Approved and not yet paid out, across ${open.length} open allowances`}
           link={<a className="stat-link" href="#/ledger?status=open">See the open allowances</a>}
         />
         <Stat
-          label="Drawn or transferred from the fund"
+          label="Paid out"
           wei={celo.claimed}
-          note="Allowance withdrawals and direct transfers; not a verified record of onward recipient payments"
+          note="Allowance withdrawals and direct transfers from the fund"
           link={<Out href={tokenHolderUrl('CELO', GOVERNANCE_ADDRESS)}>See fund outflows on Celoscan</Out>}
         />
       </section>

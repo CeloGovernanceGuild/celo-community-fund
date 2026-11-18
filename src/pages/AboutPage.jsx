@@ -50,9 +50,11 @@ export default function AboutPage() {
           <section className="card">
             <h2 className="section-title">How to read the numbers</h2>
             <ul className="rows" style={{ marginTop: '1rem' }}>
-              <li><strong>Approved.</strong> What governance authorized to move from the Community Fund, added up across its proposals.</li>
-              <li><strong>Drawn or transferred.</strong> Allowance withdrawals and direct transfers from the fund. This site does not claim to verify onward payments to final recipients.</li>
-              <li><strong>Remaining.</strong> What an approved spender can still take. It stays in the fund until then, which is why it counts as committed.</li>
+              <li><strong>Recipient.</strong> The address governance approved to use an allowance or receive a direct transfer.</li>
+              <li><strong>Approved.</strong> What governance approved from the Community Fund, added up across its proposals.</li>
+              <li><strong>Paid out.</strong> Anything that left the fund through an allowance withdrawal or direct transfer.</li>
+              <li><strong>Remaining.</strong> What a recipient can still take through its allowance. It stays in the fund until then, which is why it counts as committed.</li>
+              <li>The site does not follow how the money is used afterwards.</li>
               <li><strong>Available.</strong> The fund balance minus everything committed, every pending funding request and the proposal deposits that belong to their proposers.</li>
             </ul>
           </section>

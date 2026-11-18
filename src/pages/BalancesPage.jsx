@@ -68,7 +68,11 @@ export default function BalancesPage({ state }) {
 
         {reserveEmpty && (
           <p className="notice" role="note">
-            <span>The historical Celo Governance Reserve holds none of these tokens. It is separate from the Community Fund and does not reduce its Available amount.</span>
+            <span>
+              The historical Celo Governance Reserve holds none of these tokens. Governance moved its CELO into the
+              Community Fund under <a href="https://github.com/celo-org/governance/blob/main/CGPs/cgp-0220.md" target="_blank" rel="noopener noreferrer">CGP-220</a>{' '}
+              and <a href="https://github.com/celo-org/governance/blob/main/CGPs/cgp-0231.md" target="_blank" rel="noopener noreferrer">CGP-231</a>. It remains separate from the fund and does not reduce Available.
+            </span>
           </p>
         )}
         {error && <p className="notice" role="alert"><span>Governance Reserve balances and prices could not be loaded.</span></p>}

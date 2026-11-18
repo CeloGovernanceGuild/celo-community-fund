@@ -16,7 +16,7 @@ for (const token of TOKENS) {
   console.log(`Proposal deposits: ${formatWei(t.deposits)}`);
   console.log(`Available:        ${formatWei(t.available)}`);
   console.log(`Approved total:   ${formatWei(t.approved)}`);
-  console.log(`Drawn/transferred: ${formatWei(t.claimed)}`);
+  console.log(`Paid out:         ${formatWei(t.claimed)}`);
 }
 
 console.log("------- Open allowances -------");

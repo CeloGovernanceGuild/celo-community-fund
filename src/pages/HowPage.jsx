@@ -133,9 +133,10 @@ export default function HowPage() {
               <Out href={REVENUE_REPORTS_URL}>each one on the Celo forum</Out>.
             </li>
             <li>
-              <strong>Protocol payments.</strong> The <Out href={addressUrl(UNRELEASED_TREASURY)}>unreleased treasury</Out>{' '}
-              makes epoch payments to the fund. They are separate from sequencer distributions and can change through
-              governance, so the audit reports each flow rather than presenting a combined daily rate as guaranteed.
+              <strong>Epoch payments.</strong> Every epoch, which lasts at least one day and usually closes once a day,
+              the <Out href={addressUrl(UNRELEASED_TREASURY)}>unreleased treasury</Out> pays the fund its share of the
+              epoch rewards. Both the share and the size of the rewards are set by governance and change over time. An
+              epoch that closes late still pays a single epoch.
             </li>
             <li>
               <strong>One-off returns and transfers.</strong> Governance can return CELO to the fund or move it in from
