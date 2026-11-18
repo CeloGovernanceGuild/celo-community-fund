@@ -167,7 +167,8 @@ export default function HowPage() {
             <li>
               <h3>Present it on a Governance Call</h3>
               <p>
-                Calls are held every two weeks, with up to three proposals each. Ask for a slot on the{' '}
+                Calls are held every two weeks, with up to three proposals each, and are listed on the{' '}
+                <Out href={LINKS.calls}>Celo Governance calendar</Out>. Ask for a slot on the{' '}
                 <Out href={LINKS.callIssues}>call's GitHub issue</Out> or its forum post.
               </p>
             </li>
@@ -343,6 +344,7 @@ export default function HowPage() {
           <h2 className="section-title" id="links-title">Tools and links</h2>
           <ul className="rows" style={{ marginTop: '1rem' }}>
             <li><Out href={LINKS.governanceRepo}>Governance repository</Out> <span className="muted">Every CGP, the call log and the technical guide.</span></li>
+            <li><Out href={LINKS.calls}>Governance Call calendar</Out> <span className="muted">Sign up for the next call.</span></li>
             <li><Out href={LINKS.callIssues}>Governance Call agendas</Out> <span className="muted">Ask for a slot to present.</span></li>
             <li><Out href={LINKS.createProposal}>Submitting a proposal on-chain</Out> <span className="muted">Celo docs.</span></li>
             <li><Out href={LINKS.governanceDocs}>Governance in the Celo docs</Out> <span className="muted">How the on-chain stages work.</span></li>

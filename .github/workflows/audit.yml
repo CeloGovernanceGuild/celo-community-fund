@@ -12,6 +12,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  actions: write
 
 concurrency:
   group: governance-audit
@@ -39,6 +40,7 @@ jobs:
       - name: Open pull request if data changed
         env:
           GH_TOKEN: ${{ secrets.AUDIT_PR_TOKEN || github.token }}
+          HAS_PR_TOKEN: ${{ secrets.AUDIT_PR_TOKEN != '' }}
         run: |
           if git diff --quiet -- src/data docs/audit.md; then
             echo "No changes."
@@ -55,4 +57,10 @@ jobs:
             gh pr create --base dev --head "$branch" \
               --title "chore(data): refresh governance audit $(date -u +%Y-%m-%d)" \
               --body "Automated run of \`scripts/audit/run.sh\`. Review \`docs/audit.md\` for new grants, claims and findings."
+          fi
+          # A pull request opened with GITHUB_TOKEN does not start pull_request workflows.
+          # Start the required checks on the branch so the pull request can be merged.
+          if [ "$HAS_PR_TOKEN" != "true" ]; then
+            gh workflow run ci.yml --ref "$branch"
+            gh workflow run branch-flow.yml --ref "$branch"
           fi
