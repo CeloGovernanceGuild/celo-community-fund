@@ -156,7 +156,7 @@ export default function LedgerPage({ state }) {
         <p className="eyebrow">Ledger</p>
         <h1 className="display">Everything governance approved from the fund, to the last CELO.</h1>
         <p className="lede">
-          One line per recipient address. Approved is what governance approved, paid out is what left the fund, and
+          One line per recipient address. Approved is what governance authorized, paid out is what left the fund, and
           remaining is what a recipient can still claim from its allowance. Open any line to see the proposals behind it.
         </p>
       </header>

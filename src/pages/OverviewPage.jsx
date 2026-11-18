@@ -46,8 +46,8 @@ export default function OverviewPage({ state }) {
         <p className="eyebrow">Celo governance treasury</p>
         <h1 className="display">Where the Community Fund stands today.</h1>
         <p className="lede">
-          Everything governance approved from the Community Fund: how much was approved, paid out and remains
-          available. Read live from the chain.
+          Everything governance approved from the Community Fund: how much was approved, how much has been paid
+          out and how much is still available. Read live from the chain.
         </p>
         <div className="actions">
           <a className="button primary" href="#/ledger">Explore the ledger</a>
