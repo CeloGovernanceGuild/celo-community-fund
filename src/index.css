@@ -17,6 +17,12 @@
   --series-claimed: #8c8272;
   --series-deposits: #2a6fb0;
 
+  /* Who received the money (src/data/organisations.js), and the History and Participation pages. */
+  --camp-companies: #1d3f8a;
+  --camp-community: #b4441a;
+  --camp-partners: #7a756b;
+  --camp-operations: #2f6f6a;
+
   --font-display: 'Fraunces', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;

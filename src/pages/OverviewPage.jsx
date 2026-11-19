@@ -4,6 +4,7 @@ import { ClaimProgress, SegmentedBar } from '../components/Charts';
 import { COMMUNITY_FUND_EXPLORER, GOVERNANCE_ADDRESS, tokenHolderUrl, txUrl } from '../data/data';
 import { fetchMarket } from '../lib/celo';
 import { formatUsd } from '../lib/format';
+import { paidOutByCamp } from '../lib/organisations';
 
 const cgpUrl = (n) => `https://github.com/celo-org/governance/blob/main/CGPs/cgp-${String(n).padStart(4, '0')}.md`;
 
@@ -93,6 +94,23 @@ export default function OverviewPage({ state }) {
           <SegmentedBar segments={state.composition} unit="CELO" label="Fund balance" />
           <div className="actions">
             <a className="link-out" href={COMMUNITY_FUND_EXPLORER} target="_blank" rel="noopener noreferrer">Open the fund contract on Celoscan</a>
+          </div>
+        </section>
+
+        <section className="card" aria-labelledby="camps-title">
+          <div className="card-head">
+            <div>
+              <h2 className="section-title" id="camps-title">Who the fund has paid</h2>
+              <p className="muted">
+                Everything paid out so far, by the kind of organisation that received it. CELO and USDm are shown
+                separately because they cannot be added up.
+              </p>
+            </div>
+            <a className="link-arrow" href="#/ledger?view=organisations">Ledger by organisation</a>
+          </div>
+          <div className="stack-tight">
+            <SegmentedBar segments={paidOutByCamp(state.groups, 'CELO')} unit="CELO" label="CELO paid out by camp" />
+            <SegmentedBar segments={paidOutByCamp(state.groups, 'USDm')} unit="USDm" label="USDm paid out by camp" />
           </div>
         </section>
 
