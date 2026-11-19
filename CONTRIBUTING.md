@@ -52,8 +52,8 @@ Types: feat, fix, docs, style, refactor, perf, test, chore, ci, build.
 have no CGP yet. Link the forum post in the pull request.
 
 `src/data/organisations.js` is also edited by hand: it says which organisation and camp each ledger recipient
-belongs to. A new spender needs a line there too; `npm test` fails until it has one. `src/data/history.js` and
-`src/data/participation.js` are dated snapshots, explained in `docs/history.md`.
+belongs to. A new spender needs a line there too; `npm test` fails until it has one. `src/data/fundHistory.js` is a
+dated snapshot for the History page, explained in `docs/history.md`.
 
 ## Local checks
 

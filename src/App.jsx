@@ -11,7 +11,6 @@ import LedgerPage from './pages/LedgerPage';
 import BalancesPage from './pages/BalancesPage';
 import ProposalsPage from './pages/ProposalsPage';
 import HistoryPage from './pages/HistoryPage';
-import ParticipationPage from './pages/ParticipationPage';
 import HowPage from './pages/HowPage';
 import AboutPage from './pages/AboutPage';
 
@@ -25,7 +24,6 @@ const PAGES = [
   { path: 'balances', label: 'Balances', Component: BalancesPage, fund: true },
   { path: 'proposals', label: 'Proposals', Component: ProposalsPage, fund: true },
   { path: 'history', label: 'History', Component: HistoryPage, fund: false },
-  { path: 'participation', label: 'Participation', Component: ParticipationPage, fund: false },
   { path: 'how', label: 'How it works', Component: HowPage, fund: false },
   { path: 'about', label: 'About', Component: AboutPage, fund: false },
 ];

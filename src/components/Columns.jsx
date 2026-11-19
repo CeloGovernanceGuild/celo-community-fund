@@ -12,20 +12,21 @@ import React from 'react';
  * @param {string} props.label what the chart shows, for screen readers
  * @param {(row: object) => string} [props.foot] a short line under each column (a rate, a median)
  * @param {(row: object) => boolean} [props.highlight] columns whose total is set in bold
+ * @param {(value: number) => string} [props.format] how values are written (default: as is)
  */
-export default function Columns({ rows, xKey, series, label, foot, highlight }) {
+export default function Columns({ rows, xKey, series, label, foot, highlight, format = String }) {
   const totals = rows.map((r) => series.reduce((sum, s) => sum + (r[s.key] ?? 0), 0));
   const max = Math.max(1, ...totals);
-  const summary = rows.map((r, i) => `${r[xKey]}: ${totals[i]}${series.length > 1 ? ` (${series.map((s) => `${s.label} ${r[s.key] ?? 0}`).join(', ')})` : ''}`).join('; ');
+  const summary = rows.map((r, i) => `${r[xKey]}: ${format(totals[i])}${series.length > 1 ? ` (${series.map((s) => `${s.label} ${format(r[s.key] ?? 0)}`).join(', ')})` : ''}`).join('; ');
 
   return (
     <figure className="columns-figure">
       <div className="columns" role="img" aria-label={`${label}. ${summary}`}>
         {rows.map((r, i) => (
           <div className="column" key={r[xKey]}>
-            <span className={highlight?.(r) ? 'column-total strong' : 'column-total'}>{totals[i]}</span>
-            <div className="column-stack" style={{ height: `calc((100% - 1.5rem) * ${totals[i] / max})` }}
-              title={series.map((s) => `${s.label}: ${r[s.key] ?? 0}`).join('\n')}>
+            <span className={highlight?.(r) ? 'column-total strong' : 'column-total'}>{format(totals[i])}</span>
+            <div className="column-stack" style={{ height: `calc((100% - 1.5rem) * ${Math.max(0, totals[i]) / max})` }}
+              title={series.map((s) => `${s.label}: ${format(r[s.key] ?? 0)}`).join('\n')}>
               {series.map((s) => (r[s.key] ?? 0) > 0 && (
                 <span key={s.key} className={s.className} style={{ flexGrow: r[s.key], flexBasis: 0 }} />
               ))}
@@ -42,7 +43,7 @@ export default function Columns({ rows, xKey, series, label, foot, highlight }) 
         ))}
       </div>
       {series.length > 1 && (
-        <ul className="map-legend small">
+        <ul className="chart-legend small">
           {series.map((s) => <li key={s.key}><span className={`swatch ${s.className}`} aria-hidden="true" />{s.label}</li>)}
         </ul>
       )}
