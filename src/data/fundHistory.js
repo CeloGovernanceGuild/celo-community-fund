@@ -12,7 +12,7 @@ export const FUND_PROPOSALS = {
     "notPassed": 16,
     "withdrawn": 2,
     "draft": 1,
-    "contested": 13,
+    "opposed": 13,
     "submissions": 120
   },
   "years": [
@@ -20,6 +20,7 @@ export const FUND_PROPOSALS = {
       "year": 2021,
       "companies": 4,
       "community": 2,
+      "governance": 0,
       "partners": 0,
       "total": 6,
       "passed": 6,
@@ -33,6 +34,7 @@ export const FUND_PROPOSALS = {
       "year": 2022,
       "companies": 3,
       "community": 4,
+      "governance": 0,
       "partners": 0,
       "total": 7,
       "passed": 5,
@@ -46,6 +48,7 @@ export const FUND_PROPOSALS = {
       "year": 2023,
       "companies": 3,
       "community": 12,
+      "governance": 0,
       "partners": 7,
       "total": 22,
       "passed": 15,
@@ -58,7 +61,8 @@ export const FUND_PROPOSALS = {
     {
       "year": 2024,
       "companies": 3,
-      "community": 11,
+      "community": 10,
+      "governance": 1,
       "partners": 6,
       "total": 20,
       "passed": 15,
@@ -71,7 +75,8 @@ export const FUND_PROPOSALS = {
     {
       "year": 2025,
       "companies": 11,
-      "community": 14,
+      "community": 9,
+      "governance": 5,
       "partners": 3,
       "total": 28,
       "passed": 23,
@@ -84,7 +89,8 @@ export const FUND_PROPOSALS = {
     {
       "year": 2026,
       "companies": 8,
-      "community": 7,
+      "community": 2,
+      "governance": 5,
       "partners": 1,
       "total": 16,
       "passed": 16,
@@ -101,24 +107,31 @@ export const FUND_PROPOSALS = {
       "cgps": 32,
       "passed": 30,
       "notPassed": 2,
-      "contested": 0
+      "opposed": 0
     },
     {
       "key": "community",
-      "cgps": 50,
-      "passed": 37,
-      "notPassed": 10,
-      "contested": 9
+      "cgps": 39,
+      "passed": 27,
+      "notPassed": 9,
+      "opposed": 9
+    },
+    {
+      "key": "governance",
+      "cgps": 11,
+      "passed": 10,
+      "notPassed": 1,
+      "opposed": 0
     },
     {
       "key": "partners",
       "cgps": 17,
       "passed": 13,
       "notPassed": 4,
-      "contested": 4
+      "opposed": 4
     }
   ],
-  "contested": [
+  "opposed": [
     {
       "cgp": 183,
       "year": 2025,
@@ -499,9 +512,9 @@ export const INFLOWS = [
       202
     ],
     "source": "Celo Governance Reserve",
-    "what": "Transfer to the fund",
+    "what": "Moved in to fund CICLOPS Season 1",
     "celo": 9254340,
-    "basis": "onchain"
+    "basis": "stated"
   },
   {
     "year": 2025,
@@ -557,59 +570,135 @@ export const INFLOWS = [
   }
 ];
 
-/** Who ran the proposal process, and what the fund paid for it. */
-export const PROCESS = {
-  "handoff": [
-    {
-      "name": "Yaz Khoury & Will Kraft",
-      "role": "Volunteer CGP editors",
-      "years": "2021-22"
-    },
-    {
-      "name": "Will Kraft, with 0xj4an-Work, 0xzoz & 0xGoldo",
-      "role": "Volunteer CGP editors. Advisor: Eric Nakagawa (Celo Foundation)",
-      "years": "2023, unpaid"
-    },
-    {
-      "name": "Governance Guardians: 0xj4an-Work, 0xzoz & 0xGoldo",
-      "role": "Advisors: Eric Nakagawa and, from July 2024, Anna Alexa (Celo Foundation)",
-      "years": "2024, paid through CeloPG"
-    },
-    {
-      "name": "Celo Governance Guild: 0xj4an-Work, 0xzoz & 0xGoldo",
-      "role": "Advisors: Anna Alexa (Celo Foundation), Eric Nakagawa (Celo Foundation, external from late 2025) and Kate Gielty (Celo Core Co., from July 2026)",
-      "years": "2025-today (approved Nov 2024, CGP-152)"
-    }
-  ],
-  "costs": [
-    {
-      "year": 2024,
-      "usd": null,
-      "cgp": [
-        115,
-        141
-      ],
-      "note": "The Governance Guardians were paid by CeloPG out of its 2024 budgets. Their share is not itemized in those proposals."
-    },
-    {
-      "year": 2025,
-      "usd": 55000,
-      "cgp": [
-        152
-      ],
-      "note": "The Guild's own budget and Safe, paid in USDm."
-    },
-    {
-      "year": 2026,
-      "usd": 82500,
-      "cgp": [
-        223,
-        250
-      ],
-      "note": "Season 2 asked for $60,400 and was paid 532,000 CELO. CELO kept falling, so a $22,100 top-up followed, paid as 330,000 CELO."
-    }
-  ]
+/**
+ * The people named in PROCESS: display name, GitHub login and Celo forum username, so each mention links to
+ * the same account. Members of the Guild go by their handles.
+ */
+export const PEOPLE = {
+  "yaz": { "name": "Yaz Khoury", "github": "YazzyYaz", "forum": "Yaz" },
+  "will": { "name": "Will Kraft", "github": "willkraft", "forum": "willkraft" },
+  "chris": { "name": "Chris Wilson", "github": "calicokittencat", "forum": "CalicoKittencat" },
+  "elizabeth": { "name": "Elizabeth Barnes", "github": "ebethbarnes", "forum": "ebeth" },
+  "ronan": { "name": "Ronan McGovern", "github": "RonanKMcGovern", "forum": "Pinotio.com" },
+  "eric": { "name": "Eric Nakagawa", "github": "ericnakagawa", "forum": "ericnakagawa" },
+  "0xj4an-work": { "name": "0xj4an-Work", "github": "0xj4an-Work", "forum": "0xj4an-work" },
+  "0xzoz": { "name": "0xzoz", "github": "0xzoz", "forum": "Wade" },
+  "0xgoldo": { "name": "0xGoldo", "github": "0xGoldo", "forum": "0xGoldo" },
+  "anna": { "name": "Anna Alexa", "github": "annaalexakr", "forum": "annaalexa" },
+  "kate": { "name": "Kate Gielty", "github": "katen0ra", "forum": "KateNora" }
 };
+
+/**
+ * Who ran the proposal process, period by period, and what the fund paid for it. A new period starts when the
+ * group or its advisor changes; each period has at most one advisor. `budget` is what the proposals approved for
+ * the period, split into payments to the group and other expenses (usd null when the proposal does not itemize
+ * it). `paid` is what actually left the paying Safe, read on-chain: the CeloPG Safe
+ * 0x7f5599fBf0F36E38156C48439E934799EB81175A (H1 2024), the CeloPG operations wallet
+ * 0xe4bBa4464d3bAEd28dD8A1845C177dFCcFaAEF4A (H2 2024) and the Guild Safe
+ * 0xc733285e8e4db433d4cd641f99C46Bf108DCb54F (2025 on). Other expenses are the legal entity and Google
+ * Workspace and domain reimbursements, as noted on each Safe transaction.
+ */
+export const PROCESS = [
+  {
+    "name": "CGP Editors",
+    "when": "2021-22",
+    "terms": "Volunteers",
+    "role": "Editors",
+    "people": ["yaz", "will", "chris", "elizabeth", "ronan"]
+  },
+  {
+    "name": "CGP Editors",
+    "when": "2023",
+    "terms": "Volunteers",
+    "role": "Editors",
+    "people": ["will", "0xj4an-work", "0xzoz", "0xgoldo"],
+    "advisor": "eric"
+  },
+  {
+    "name": "Governance Guardians",
+    "when": "Jan-Jun 2024",
+    "terms": "Paid through CeloPG",
+    "role": "Guardians",
+    "people": ["0xj4an-work", "0xzoz", "0xgoldo"],
+    "advisor": "eric",
+    "budget": [
+      { "item": "Payments", "usd": 30000 }
+    ],
+    "paid": [
+      { "item": "Payments", "usd": 18750 }
+    ],
+    "details": "The Governance Guardians line in the CeloPG H1 2024 budget.",
+    "cgp": [115]
+  },
+  {
+    "name": "Governance Guardians",
+    "when": "Jul-Dec 2024",
+    "terms": "Paid through CeloPG",
+    "role": "Guardians",
+    "people": ["0xj4an-work", "0xzoz", "0xgoldo"],
+    "advisor": "anna",
+    "budget": [
+      { "item": "Payments", "usd": null }
+    ],
+    "paid": [
+      { "item": "Payments", "usd": 22500 }
+    ],
+    "details": "Paid from the CeloPG Operations budget, which does not itemize it.",
+    "cgp": [141]
+  },
+  {
+    "name": "Celo Governance Guild",
+    "when": "2025",
+    "terms": "Its own budget and Safe, approved in November 2024",
+    "role": "Guardians",
+    "people": ["0xj4an-work", "0xzoz", "0xgoldo"],
+    "advisor": "anna",
+    "budget": [
+      { "item": "Payments", "usd": 54000 },
+      { "item": "Other expenses", "usd": 1000 }
+    ],
+    "paid": [
+      { "item": "Payments", "usd": 54000 },
+      { "item": "Other expenses", "usd": 605 }
+    ],
+    "details": "The Guild's own budget, paid in USDm.",
+    "cgp": [152]
+  },
+  {
+    "name": "Celo Governance Guild",
+    "when": "Jan-Jun 2026",
+    "terms": "Season 2 budget, approved in February 2026",
+    "role": "Guardians",
+    "people": ["0xj4an-work", "0xzoz", "0xgoldo"],
+    "advisor": "anna",
+    "budget": [
+      { "item": "Payments", "usd": 29700 },
+      { "item": "Other expenses", "usd": 1000 }
+    ],
+    "paid": [
+      { "item": "Payments", "usd": 29700 },
+      { "item": "Other expenses", "usd": 535 }
+    ],
+    "details": "Season 2, paid in CELO.",
+    "cgp": [223]
+  },
+  {
+    "name": "Celo Governance Guild",
+    "when": "Jul 2026-today",
+    "terms": "Season 2 budget, approved in February 2026",
+    "role": "Guardians",
+    "people": ["0xj4an-work", "0xzoz", "0xgoldo"],
+    "advisor": "kate",
+    "budget": [
+      { "item": "Payments", "usd": 29700 }
+    ],
+    "paid": [
+      { "item": "Payments", "usd": 24750, "note": "(as of November 2026)" }
+    ],
+    "details": "Season 2, paid in CELO. A top-up covered the fall in the CELO price.",
+    "cgp": [223, 250]
+  }
+];
 
 export const ERAS = [
   {
@@ -771,7 +860,7 @@ export const MAP = {
     {
       "key": "govguild",
       "label": "Governance Guild",
-      "camp": "community",
+      "camp": "governance",
       "orgs": [
         "Celo Governance Guild"
       ]
@@ -779,7 +868,7 @@ export const MAP = {
     {
       "key": "commguild",
       "label": "Communities Guild",
-      "camp": "community",
+      "camp": "governance",
       "orgs": [
         "Celo Communities Guild"
       ]
@@ -916,7 +1005,7 @@ export const MAP = {
     },
     {
       "lane": "govguild",
-      "camp": "community",
+      "camp": "governance",
       "style": "volunteer",
       "start": "2021-04-20",
       "end": "2024-01-01",
@@ -924,7 +1013,7 @@ export const MAP = {
     },
     {
       "lane": "govguild",
-      "camp": "community",
+      "camp": "governance",
       "style": "via",
       "start": "2024-01-01",
       "end": "2025-01-01",
@@ -932,7 +1021,7 @@ export const MAP = {
     },
     {
       "lane": "govguild",
-      "camp": "community",
+      "camp": "governance",
       "style": "own",
       "start": "2025-01-01",
       "end": null,
@@ -940,7 +1029,7 @@ export const MAP = {
     },
     {
       "lane": "commguild",
-      "camp": "community",
+      "camp": "governance",
       "style": "via",
       "start": "2024-07-01",
       "end": "2025-01-01",
@@ -948,7 +1037,7 @@ export const MAP = {
     },
     {
       "lane": "commguild",
-      "camp": "community",
+      "camp": "governance",
       "style": "own",
       "start": "2025-01-01",
       "end": null,
@@ -1251,7 +1340,7 @@ export const MOVES = [
   },
   {
     "when": "May 2024",
-    "what": "Stabila Foundation is created as a new entity for stablecoin and DeFi liquidity, run by Celo Foundation staff (CGP-132)."
+    "what": "Stabila Foundation is funded as a new entity to accelerate stablecoin adoption on Celo (CGP-132)."
   },
   {
     "when": "Nov 2024",

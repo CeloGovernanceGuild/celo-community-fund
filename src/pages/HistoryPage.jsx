@@ -5,7 +5,7 @@ import MovementMap, { MapLegend } from '../components/MovementMap';
 import PriceChart from '../components/PriceChart';
 import { ledger } from '../data';
 import { CAMPS } from '../data/organisations';
-import { ERAS, FUND_PROPOSALS, INFLOWS, MAP, MOVES, PRICED, PROCESS, SNAPSHOT } from '../data/fundHistory';
+import { ERAS, FUND_PROPOSALS, INFLOWS, MAP, MOVES, PEOPLE, PRICED, PROCESS, SNAPSHOT } from '../data/fundHistory';
 import { fetchCeloPrice } from '../lib/celo';
 import { formatWhole } from '../lib/format';
 import { approvedByYear, grantTimeline, ledgerGrants, pricedProposals, pricedTotals, wholeTokens } from '../lib/history';
@@ -26,6 +26,40 @@ function compact(n) {
   return String(Math.round(n));
 }
 const dollars = (n) => `$${number.format(Math.round(n))}`;
+
+/** A person from PEOPLE, linked to their GitHub profile, or to their forum profile when there is none. */
+function Person({ id }) {
+  const p = PEOPLE[id];
+  const href = p.github ? `https://github.com/${p.github}` : `https://forum.celo.org/u/${p.forum}`;
+  const accounts = [p.github && `GitHub @${p.github}`, `forum @${p.forum}`].filter(Boolean).join(', ');
+  return (
+    <a href={href} target="_blank" rel="noreferrer" title={accounts}>
+      {p.name}
+    </a>
+  );
+}
+
+/** "$54,000 + $1,000 other expenses": payments first, then any other line with its name. */
+function amounts(items) {
+  return items.map((c, i) => (
+    <span key={c.item}>
+      {i > 0 && ' + '}
+      <strong>{c.usd === null ? 'not itemized' : dollars(c.usd)}</strong>
+      {c.item !== 'Payments' && ` ${c.item.toLowerCase()}`}
+      {c.note && ` ${c.note}`}
+    </span>
+  ));
+}
+
+/** A plain comma list. */
+function joined(items) {
+  return items.map((item, i) => (
+    <span key={item.key}>
+      {i > 0 && ', '}
+      {item}
+    </span>
+  ));
+}
 const price = (n) => `$${n.toFixed(n < 1 ? 3 : 2)}`;
 const change = (c) => (c === null ? '-' : `${c > 0 ? '+' : ''}${Math.round(c * 100)}%`);
 
@@ -103,7 +137,7 @@ export default function HistoryPage() {
   const today = celoUsd8 ? Number(celoUsd8) / 1e8 : null;
   const eurm = grants.filter((g) => g.token === 'EURm').reduce((sum, g) => sum + g.wei, 0n);
 
-  const { totals, years, camps, contested } = FUND_PROPOSALS;
+  const { totals, years, camps, opposed } = FUND_PROPOSALS;
   const decided = totals.passed + totals.notPassed;
   const inflowTotal = INFLOWS.reduce((sum, i) => sum + i.celo, 0);
   const guild = years.filter((y) => y.year >= 2023).reduce((a, y) => ({ by: a.by + y.byGuild, all: a.all + y.byGuild + y.byOthers }), { by: 0, all: 0 });
@@ -278,20 +312,20 @@ export default function HistoryPage() {
             <h2 className="section-title" id="camps-heading">Who asks, and how it goes</h2>
             <p className="muted">Community requests fail more often and draw the most No votes.</p>
             <table className="table stackable" style={{ marginTop: '1rem' }}>
-              <thead><tr><th>Camp</th><th className="num">Proposals</th><th className="num">Passed</th><th className="num">Contested</th></tr></thead>
+              <thead><tr><th>Camp</th><th className="num">Proposals</th><th className="num">Passed</th><th className="num">Opposed</th></tr></thead>
               <tbody>
                 {camps.map((c) => (
                   <tr key={c.key}>
                     <td data-label="Camp"><span className="org-tag"><span className={`swatch camp-${c.key}`} aria-hidden="true" />{campLabel(c.key)}</span></td>
                     <td className="num" data-label="Proposals">{c.cgps}</td>
                     <td className="num" data-label="Passed">{passRate(c)}</td>
-                    <td className="num" data-label="Contested">{c.contested}</td>
+                    <td className="num" data-label="Opposed">{c.opposed}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
             <p className="small muted" style={{ marginTop: '0.75rem' }}>
-              Passed is executed out of executed, rejected and expired. Contested means No reached 10% or more of Yes and
+              Passed is executed out of executed, rejected and expired. Opposed means No reached 10% or more of Yes and
               No.
             </p>
           </section>
@@ -319,12 +353,12 @@ export default function HistoryPage() {
             </table>
           </div>
           <details className="template">
-            <summary>The {contested.length} contested funding votes</summary>
+            <summary>The {opposed.length} opposed funding votes</summary>
             <div className="table-scroll" tabIndex={0}>
               <table className="table" style={{ marginTop: '0.75rem' }}>
                 <thead><tr><th>Proposal</th><th>Title</th><th>Year</th><th className="num">No</th><th>Outcome</th></tr></thead>
                 <tbody>
-                  {contested.map((c) => (
+                  {opposed.map((c) => (
                     <tr key={c.cgp}>
                       <td><CgpLinks cgps={[c.cgp]} /></td>
                       <td>{c.title}</td>
@@ -345,23 +379,41 @@ export default function HistoryPage() {
         <section className="card" aria-labelledby="process-heading">
           <h2 className="section-title" id="process-heading">Who runs the process the fund pays for</h2>
           <p className="muted">Reviewing proposals, running the governance calls and taking proposals on-chain. Volunteers until 2023, then paid from the fund.</p>
-          <ol className="handoff">
-            {PROCESS.handoff.map((h, i) => (
-              <li key={h.name} className={i === PROCESS.handoff.length - 1 ? 'current' : undefined}>
-                <strong>{h.name}</strong>
-                {h.role && <span className="small">{h.role}</span>}
-                <span className="muted">{h.years}</span>
+          <ol className="process-steps">
+            {PROCESS.map((p) => (
+              <li key={`${p.name}-${p.when}`}>
+                <p className="process-years">{p.when}</p>
+                <div className="process-body">
+                  <h3 className="process-name">{p.name}</h3>
+                  <p className="muted">{p.terms}.</p>
+                  <dl className="process-people">
+                    <dt>{p.role}</dt>
+                    <dd>{joined(p.people.map((id) => <Person key={id} id={id} />))}</dd>
+                    {p.advisor && (
+                      <>
+                        <dt>Advisor</dt>
+                        <dd><Person id={p.advisor} /></dd>
+                      </>
+                    )}
+                    {p.budget && (
+                      <>
+                        <dt>Budget</dt>
+                        <dd>{amounts(p.budget)}</dd>
+                        {p.paid && (
+                          <>
+                            <dt>Paid</dt>
+                            <dd>{amounts(p.paid)}</dd>
+                          </>
+                        )}
+                        <dt>Details</dt>
+                        <dd>{p.details} <CgpLinks cgps={p.cgp} />.</dd>
+                      </>
+                    )}
+                  </dl>
+                </div>
               </li>
             ))}
           </ol>
-          <ul className="rows">
-            {PROCESS.costs.map((c) => (
-              <li key={c.year}>
-                <div className="row-main"><span className="row-title">{c.year}</span><span className="num">{c.usd === null ? 'Not itemized' : dollars(c.usd)}</span></div>
-                <p className="row-meta"><span>{c.note} <CgpLinks cgps={c.cgp} />.</span></p>
-              </li>
-            ))}
-          </ul>
         </section>
 
         <section className="card" aria-labelledby="eras-heading">

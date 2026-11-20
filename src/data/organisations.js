@@ -4,16 +4,18 @@
 //
 // Camps are deliberately coarse:
 // - companies: cLabs, the Celo Foundation, Celo Core Co. and programs run by or spun out of them.
-// - community: grant stewards, guilds, regional and community DAOs, governance operations.
+// - community: grant stewards, builder programs, regional and community DAOs.
+// - governance: the groups that run governance, community spaces and network operations (Guilds, committees).
 // - partners: companies paid for distribution, liquidity, acceleration or a service.
-// - operations: money the protocol spends on itself (airdrop, oracle and approver gas, liquidity it owns).
+// - operations: money the protocol spends on itself (airdrop, approver gas, liquidity it owns).
 // See docs/history.md for the reasoning behind each assignment.
 
 export const CAMPS = [
   { key: 'companies', label: 'Celo companies & affiliates', note: 'cLabs, the Celo Foundation, Celo Core Co. and programs spun out of them' },
-  { key: 'community', label: 'Community initiatives', note: 'Grant stewards, guilds, regional DAOs and governance operations' },
+  { key: 'community', label: 'Community initiatives', note: 'Grant stewards, builder programs and regional DAOs' },
+  { key: 'governance', label: 'Governance & community operations', note: 'Guilds and committees that run governance, community spaces and network operations' },
   { key: 'partners', label: 'External partners & vendors', note: 'Companies paid for distribution, liquidity, acceleration or a service' },
-  { key: 'operations', label: 'Protocol & treasury operations', note: 'Airdrop, oracle and approver gas, and liquidity the fund owns' },
+  { key: 'operations', label: 'Protocol & treasury operations', note: 'Airdrop, approver gas and liquidity the fund owns' },
 ];
 
 export const ORGANISATIONS = {
@@ -21,7 +23,7 @@ export const ORGANISATIONS = {
   'Celo Foundation': { camp: 'companies', family: 'Core contributors' },
   'Celo Core Co.': { camp: 'companies', family: 'Core contributors', note: 'cLabs and the Celo Foundation merged into Celo Core Co. in 2026' },
   'CICLOPS': { camp: 'companies', family: 'Spun-out programs', note: 'Infrastructure stewardship led from the Celo Foundation (CGP-158)' },
-  'Stabila': { camp: 'companies', family: 'Spun-out programs', note: 'Stabila Foundation, a new entity created in CGP-132 for stablecoin and DeFi liquidity, run by Celo Foundation staff' },
+  'Stabila': { camp: 'companies', family: 'Spun-out programs', note: 'Stabila Foundation, a new entity funded in CGP-132 to accelerate stablecoin adoption on Celo' },
   'Mento Reserve': { camp: 'companies', family: 'Spun-out programs', note: 'Liquidity Mento owns, sent to the Mento Reserve Safe (CGP-69)' },
 
   'Celo Community Fund stewards': { camp: 'community', family: 'Grant stewards', note: 'The first stewardship; Prezenti reopened the fund in 2022 (CGP-54)' },
@@ -30,9 +32,9 @@ export const ORGANISATIONS = {
   'Climate Collective': { camp: 'community', family: 'Grant stewards' },
   'CeloPG': { camp: 'community', family: 'Grant stewards', note: 'Paid regional DAOs, Prezenti and governance work in 2024, then each left for its own budget' },
   'Community Appreciation Gifts': { camp: 'community', family: 'Grant stewards' },
-  'Celo Governance Guild': { camp: 'community', family: 'Governance & network operations' },
-  'Celo Communities Guild': { camp: 'community', family: 'Governance & network operations' },
-  'Score Management Committee': { camp: 'community', family: 'Governance & network operations' },
+  'Celo Governance Guild': { camp: 'governance', family: 'Governance', note: 'Runs the proposal process: reviews, governance calls and taking proposals on-chain' },
+  'Celo Communities Guild': { camp: 'governance', family: 'Community operations', note: 'Moderates the Celo community spaces: Discord, Telegram, Reddit and X' },
+  'Score Management Committee': { camp: 'governance', family: 'Network operations', note: 'Manages validator scores after the L2 hard fork, and runs the challenger operator' },
   'Celo Africa DAO': { camp: 'community', family: 'Regional & community DAOs', note: 'Folded into the Celo Regional Council in 2025 (CGP-160)' },
   'CeLatam DAO': { camp: 'community', family: 'Regional & community DAOs', note: 'Folded into the Celo Regional Council in 2025 (CGP-160)' },
   'Celo Europe DAO': { camp: 'community', family: 'Regional & community DAOs', note: 'Folded into the Celo Regional Council in 2025 (CGP-160)' },

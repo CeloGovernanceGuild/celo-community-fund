@@ -16,6 +16,7 @@ const COLOR = {
   companies: 'var(--camp-companies)',
   community: 'var(--camp-community)',
   partners: 'var(--camp-partners)',
+  governance: 'var(--camp-governance)',
   operations: 'var(--camp-operations)',
 };
 const DASH = { via: '8 6', volunteer: '2 5' };
@@ -26,7 +27,7 @@ function layout(lanes) {
   const ys = {};
   const sections = [];
   for (const lane of lanes) {
-    const section = lane.camp === 'community' ? 'community' : 'companies';
+    const section = lane.camp === 'community' || lane.camp === 'governance' ? 'community' : 'companies';
     if (previous && section !== previous) y += SECTION_GAP;
     if (section !== previous) sections.push({ section, y });
     ys[lane.key] = y;
@@ -178,6 +179,7 @@ export function MapLegend() {
       <li><span className="swatch camp-companies" aria-hidden="true" />Celo companies &amp; affiliates</li>
       <li><span className="swatch camp-community" aria-hidden="true" />Community initiatives</li>
       <li><span className="swatch camp-partners" aria-hidden="true" />External partner</li>
+      <li><span className="swatch camp-governance" aria-hidden="true" />Governance &amp; community operations</li>
       <li>{line('own')}Operating or funded</li>
       <li>{line('via')}Funded through CeloPG</li>
       <li>{line('volunteer')}Volunteer, unpaid</li>
