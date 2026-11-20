@@ -48,6 +48,9 @@ export async function fetchFundBalances(ledger, proposers = []) {
   };
 }
 
+/** CELO/USD from the Chainlink feed (8 decimals), or null when it cannot be read. */
+export const fetchCeloPrice = () => price(CELO_USD_FEED);
+
 /** Reserve balances and Chainlink USD prices (8 decimals) for the Balances page. */
 export async function fetchMarket() {
   const [reserve, celoUsd, eurUsd] = await Promise.all([
