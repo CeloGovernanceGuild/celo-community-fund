@@ -218,7 +218,7 @@ export const FUND_PROPOSALS = {
     {
       "cgp": 143,
       "year": 2024,
-      "title": "Enable Account Abstraction (ERC 4337) On Celo’s upcoming L2 leveraging Biconomy’s AA infrastructure",
+      "title": "Enable Account Abstraction (ERC 4337) On Celo's upcoming L2 leveraging Biconomy's AA infrastructure",
       "camp": "partners",
       "noPct": 12.6,
       "outcome": "rejected"
@@ -496,6 +496,16 @@ export const INFLOWS = [
   {
     "year": 2025,
     "cgp": [
+      202
+    ],
+    "source": "Celo Governance Reserve",
+    "what": "Transfer to the fund",
+    "celo": 9254340,
+    "basis": "onchain"
+  },
+  {
+    "year": 2025,
+    "cgp": [
       209
     ],
     "source": "Celo Governance Reserve",
@@ -551,30 +561,35 @@ export const INFLOWS = [
 export const PROCESS = {
   "handoff": [
     {
-      "name": "Yaz Khoury",
-      "years": "2020–22"
+      "name": "Yaz Khoury & Will Kraft",
+      "role": "Volunteer CGP editors",
+      "years": "2021-22"
     },
     {
-      "name": "Will Kraft",
-      "years": "2022–23"
-    },
-    {
-      "name": "Juan, zoz & Goldo",
+      "name": "Will Kraft, with 0xj4an-Work, 0xzoz & 0xGoldo",
+      "role": "Volunteer CGP editors. Advisor: Eric Nakagawa (Celo Foundation)",
       "years": "2023, unpaid"
     },
     {
-      "name": "Governance Guild",
-      "years": "2024–26"
+      "name": "Governance Guardians: 0xj4an-Work, 0xzoz & 0xGoldo",
+      "role": "Advisors: Eric Nakagawa and, from July 2024, Anna Alexa (Celo Foundation)",
+      "years": "2024, paid through CeloPG"
+    },
+    {
+      "name": "Celo Governance Guild: 0xj4an-Work, 0xzoz & 0xGoldo",
+      "role": "Advisors: Anna Alexa (Celo Foundation), Eric Nakagawa (Celo Foundation, external from late 2025) and Kate Gielty (Celo Core Co., from July 2026)",
+      "years": "2025-today (approved Nov 2024, CGP-152)"
     }
   ],
   "costs": [
     {
       "year": 2024,
-      "usd": 30000,
+      "usd": null,
       "cgp": [
-        115
+        115,
+        141
       ],
-      "note": "A Governance Guardian line inside the CeloPG H1 2024 budget. H2 2024 was paid from CeloPG operations and is not itemized."
+      "note": "The Governance Guardians were paid by CeloPG out of its 2024 budgets. Their share is not itemized in those proposals."
     },
     {
       "year": 2025,
@@ -611,7 +626,7 @@ export const ERAS = [
     "start": "2022-01-01",
     "end": "2023-01-01",
     "name": "Stewards",
-    "text": "Climate Collective (CGP-52) and Prezenti (CGP-54) are funded to run grant programs, and 5M cUSD goes into liquidity the fund owns (CGP-61)."
+    "text": "Climate Collective (CGP-52) and Prezenti (CGP-54) are funded to run grant programs, and 5M USDm goes into liquidity the fund owns (CGP-61)."
   },
   {
     "years": "2023",
@@ -1002,7 +1017,7 @@ export const MAP = {
     {
       "lane": "coreco",
       "date": "2018-01-01",
-      "label": "Founded 2017–18",
+      "label": "Founded 2017-18",
       "anchor": "start",
       "dx": 14,
       "dy": 4,
@@ -1207,7 +1222,7 @@ export const MAP = {
 
 export const MOVES = [
   {
-    "when": "2017–18",
+    "when": "2017-18",
     "what": "Celo is founded; cLabs and the Celo Foundation start side by side."
   },
   {
@@ -1236,7 +1251,11 @@ export const MOVES = [
   },
   {
     "when": "May 2024",
-    "what": "Stabila takes on stablecoin and liquidity work (CGP-132)."
+    "what": "Stabila Foundation is created as a new entity for stablecoin and DeFi liquidity, run by Celo Foundation staff (CGP-132)."
+  },
+  {
+    "when": "Nov 2024",
+    "what": "The Governance Guild is approved (CGP-152). A first attempt expired without the approvers' sign-off."
   },
   {
     "when": "Jan 2025",

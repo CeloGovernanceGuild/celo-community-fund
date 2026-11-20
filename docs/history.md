@@ -21,10 +21,10 @@ Camps:
 
 | Camp | Who | Notes |
 |---|---|---|
-| Celo companies & affiliates | cLabs, the Celo Foundation, Celo Core Co., CICLOPS, Stabila | CICLOPS was led from the Foundation (CGP-158); Stabila took on stablecoin and liquidity work the Foundation handed off (CGP-132). Both still file their own budgets, so they are not merged into Celo Core Co. |
+| Celo companies & affiliates | cLabs, the Celo Foundation, Celo Core Co., CICLOPS, Stabila, Mento Reserve | CICLOPS was led from the Foundation (CGP-158). Stabila Foundation was created in CGP-132 (May 2024) as a new entity for stablecoin and DeFi liquidity, run by Celo Foundation staff. The liquidity sent to the Mento Reserve Safe in CGP-69 is Mento's, not the fund's. Both still file their own budgets, so they are not merged into Celo Core Co. |
 | Community initiatives | Grant stewards, guilds, regional and community DAOs, governance operations | Ocelot, the Celo Ecosystem Treasury (CGP-38), is a 5-of-9 multisig of ecosystem members and counts here, not under cLabs. |
 | External partners & vendors | Opera (MiniPay), Credit Collective, Chainlink, Centrifuge, accelerators, Artemis, oracle providers | Opera's 160M CELO stake (CGP-232) came from the unreleased treasury, not the Community Fund, so it is not in the Ledger. |
-| Protocol & treasury operations | The CELO airdrop to cUSD holders, oracle and approver gas, liquidity the fund owns | Money the protocol spends on itself rather than a grant to an organisation. |
+| Protocol & treasury operations | The CELO airdrop to USDm holders, oracle and approver gas, liquidity the fund owns | Money the protocol spends on itself rather than a grant to an organisation. |
 
 ## The History page
 
@@ -74,7 +74,7 @@ which is not visible on-chain.
   [celo-org/governance](https://github.com/celo-org/governance), and the Guild's budgets from CGP-115, CGP-152,
   CGP-223 and CGP-250.
 - `MAP` and `MOVES`: the lanes of the movement map and their spin-outs and merges. Each lane lists the
-  organisations whose ledger grants are drawn on it. Founding is shown as 2017–18 because sources differ; the
+  organisations whose ledger grants are drawn on it. Founding is shown as 2017-18 because sources differ; the
   cLabs and Celo Foundation unification is dated to its announcement in January 2026, and Celo Core Co. was first
   funded as one organisation in Season 3 (CGP-247). A segment with no end runs to today.
 - `ERAS`: one short paragraph per year of the fund.

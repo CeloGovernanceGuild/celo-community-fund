@@ -14,7 +14,7 @@ import { campLabel } from '../lib/organisations';
 const REPO = 'https://github.com/CeloGovernanceGuild/celo-community-fund';
 const CGP_URL = (n) => `https://github.com/celo-org/governance/blob/main/CGPs/cgp-${String(n).padStart(4, '0')}.md`;
 const number = new Intl.NumberFormat('en-US');
-const pct = (part, whole) => (whole > 0 ? `${Math.round((100 * part) / whole)}%` : '–');
+const pct = (part, whole) => (whole > 0 ? `${Math.round((100 * part) / whole)}%` : '-');
 const passRate = (r) => pct(r.passed, r.passed + r.notPassed);
 
 /** 1.2M, 640k, 900: short labels for chart columns. */
@@ -27,7 +27,7 @@ function compact(n) {
 }
 const dollars = (n) => `$${number.format(Math.round(n))}`;
 const price = (n) => `$${n.toFixed(n < 1 ? 3 : 2)}`;
-const change = (c) => (c === null ? '–' : `${c > 0 ? '+' : ''}${Math.round(c * 100)}%`);
+const change = (c) => (c === null ? '-' : `${c > 0 ? '+' : ''}${Math.round(c * 100)}%`);
 
 const CAMP_SERIES = CAMPS.map((c) => ({ key: c.key, label: c.label, className: `camp-${c.key}` }));
 const PROPOSER_SERIES = CAMP_SERIES.filter((s) => s.key !== 'operations');
@@ -147,7 +147,7 @@ export default function HistoryPage() {
             the {priced.length} proposals that did this: the dollars it asked for, divided by the CELO it was paid.
             The line is today&apos;s price from the Chainlink CELO/USD feed.
           </p>
-          <div className="chart-scroll">
+          <div className="chart-scroll" tabIndex={0}>
             <PriceChart rows={priced} today={today} />
           </div>
           <p style={{ marginTop: '1rem' }}>
@@ -155,9 +155,9 @@ export default function HistoryPage() {
             <strong>{dollars(pricedAll.then)}</strong> of budgets.{' '}
             {pricedAll.today !== null
               ? <>At today&apos;s price the same CELO is worth <strong>{dollars(pricedAll.today)}</strong> ({change(pricedAll.today / pricedAll.then - 1)}).</>
-              : priceFailed ? "Today's price could not be read, so the value today is left out." : 'Reading today’s price…'}
+              : priceFailed ? "Today's price could not be read, so the value today is left out." : "Reading today's price..."}
           </p>
-          <div className="table-scroll">
+          <div className="table-scroll" tabIndex={0}>
             <table className="table" style={{ marginTop: '1rem' }}>
               <thead>
                 <tr><th>Year</th><th className="num">Proposals</th><th className="num">CELO paid</th><th className="num">Dollars in the proposals</th><th className="num">Worth today</th></tr>
@@ -169,7 +169,7 @@ export default function HistoryPage() {
                     <td className="num">{y.count}</td>
                     <td className="num">{number.format(y.celo)}</td>
                     <td className="num">{dollars(y.then)}</td>
-                    <td className="num">{y.today === null ? '–' : `${dollars(y.today)} (${change(y.today / y.then - 1)})`}</td>
+                    <td className="num">{y.today === null ? '-' : `${dollars(y.today)} (${change(y.today / y.then - 1)})`}</td>
                   </tr>
                 ))}
               </tbody>
@@ -177,7 +177,7 @@ export default function HistoryPage() {
           </div>
           <details className="template">
             <summary>All {priced.length} proposals</summary>
-            <div className="table-scroll">
+            <div className="table-scroll" tabIndex={0}>
               <table className="table" style={{ marginTop: '0.75rem' }}>
                 <thead>
                   <tr><th>Proposal</th><th>Organisation</th><th>Executed</th><th className="num">Price used</th><th className="num">CELO</th><th className="num">Dollars</th><th className="num">Today</th></tr>
@@ -191,7 +191,7 @@ export default function HistoryPage() {
                       <td className="num">{price(p.price)}</td>
                       <td className="num">{number.format(p.celo)}</td>
                       <td className="num">{dollars(p.usdForCelo)}</td>
-                      <td className="num">{p.today === null ? '–' : `${dollars(p.today)} (${change(p.change)})`}</td>
+                      <td className="num">{p.today === null ? '-' : `${dollars(p.today)} (${change(p.change)})`}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -227,7 +227,7 @@ export default function HistoryPage() {
           <details className="template">
             <summary>Every grant, for all {timeline.length} organisations</summary>
             <CampLegend keys={[...new Set(timeline.map((o) => o.camp))]} />
-            <div className="chart-scroll">
+            <div className="chart-scroll" tabIndex={0}>
               <GrantTimeline timeline={timeline} band={{ from: '2024-01-01', to: '2025-01-01', label: '2024: community programs paid through CeloPG' }} />
             </div>
           </details>
@@ -245,7 +245,7 @@ export default function HistoryPage() {
             <a href="#/how">How it works</a>), governance has moved {number.format(inflowTotal)} CELO into the fund in
             one-off returns and transfers.
           </p>
-          <div className="table-scroll">
+          <div className="table-scroll" tabIndex={0}>
             <table className="table" style={{ marginTop: '1rem' }}>
               <thead><tr><th>Year</th><th>Proposal</th><th>From</th><th>What</th><th className="num">CELO</th></tr></thead>
               <tbody>
@@ -303,7 +303,7 @@ export default function HistoryPage() {
             The median funding vote drew between {Math.min(...years.map((y) => y.medianVoters ?? Infinity))} and {Math.max(...years.map((y) => y.medianVoters ?? 0))} voters, depending on the year. Since 2023 the people who now form the Governance Guild
             have submitted {guild.by} of {guild.all} funding proposals on-chain for the teams asking.
           </p>
-          <div className="table-scroll">
+          <div className="table-scroll" tabIndex={0}>
             <table className="table" style={{ marginTop: '1rem' }}>
               <thead><tr><th>Year</th><th className="num">Submitted on-chain</th><th className="num">By the Guild</th><th className="num">Median voters</th></tr></thead>
               <tbody>
@@ -312,7 +312,7 @@ export default function HistoryPage() {
                     <td>{y.year}</td>
                     <td className="num">{y.byGuild + y.byOthers}</td>
                     <td className="num">{y.byGuild}</td>
-                    <td className="num">{y.medianVoters ?? '–'}</td>
+                    <td className="num">{y.medianVoters ?? '-'}</td>
                   </tr>
                 ))}
               </tbody>
@@ -320,7 +320,7 @@ export default function HistoryPage() {
           </div>
           <details className="template">
             <summary>The {contested.length} contested funding votes</summary>
-            <div className="table-scroll">
+            <div className="table-scroll" tabIndex={0}>
               <table className="table" style={{ marginTop: '0.75rem' }}>
                 <thead><tr><th>Proposal</th><th>Title</th><th>Year</th><th className="num">No</th><th>Outcome</th></tr></thead>
                 <tbody>
@@ -349,6 +349,7 @@ export default function HistoryPage() {
             {PROCESS.handoff.map((h, i) => (
               <li key={h.name} className={i === PROCESS.handoff.length - 1 ? 'current' : undefined}>
                 <strong>{h.name}</strong>
+                {h.role && <span className="small">{h.role}</span>}
                 <span className="muted">{h.years}</span>
               </li>
             ))}
@@ -356,7 +357,7 @@ export default function HistoryPage() {
           <ul className="rows">
             {PROCESS.costs.map((c) => (
               <li key={c.year}>
-                <div className="row-main"><span className="row-title">{c.year}</span><span className="num">{dollars(c.usd)}</span></div>
+                <div className="row-main"><span className="row-title">{c.year}</span><span className="num">{c.usd === null ? 'Not itemized' : dollars(c.usd)}</span></div>
                 <p className="row-meta"><span>{c.note} <CgpLinks cgps={c.cgp} />.</span></p>
               </li>
             ))}

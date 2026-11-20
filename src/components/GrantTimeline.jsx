@@ -61,7 +61,7 @@ export default function GrantTimeline({ timeline, band }) {
             const cy = s.top + i * ROW + ROW / 2;
             return (
               <g key={o.name}>
-                <text className="timeline-name" x={8} y={cy + 4}>{o.name.length > 30 ? `${o.name.slice(0, 29)}…` : o.name}</text>
+                <text className="timeline-name" x={8} y={cy + 4}>{o.name.length > 30 ? `${o.name.slice(0, 29)}...` : o.name}</text>
                 <line className={`timeline-span camp-stroke-${s.key}`} x1={x(o.first)} x2={x(o.last)} y1={cy} y2={cy} />
                 {o.grants.map((g, j) => (
                   <g key={`${g.cgp}-${g.token}-${j}`}>

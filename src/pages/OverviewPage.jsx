@@ -109,8 +109,14 @@ export default function OverviewPage({ state }) {
             <a className="link-arrow" href="#/ledger?view=organisations">Ledger by organisation</a>
           </div>
           <div className="stack-tight">
-            <SegmentedBar segments={paidOutByCamp(state.groups, 'CELO')} unit="CELO" label="CELO paid out by camp" />
-            <SegmentedBar segments={paidOutByCamp(state.groups, 'USDm')} unit="USDm" label="USDm paid out by camp" />
+            <div>
+              <h3 className="eyebrow">CELO paid out</h3>
+              <SegmentedBar segments={paidOutByCamp(state.groups, 'CELO')} unit="CELO" label="CELO paid out by camp" />
+            </div>
+            <div>
+              <h3 className="eyebrow">USDm paid out</h3>
+              <SegmentedBar segments={paidOutByCamp(state.groups, 'USDm')} unit="USDm" label="USDm paid out by camp" />
+            </div>
           </div>
         </section>
 

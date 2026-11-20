@@ -21,7 +21,8 @@ export const ORGANISATIONS = {
   'Celo Foundation': { camp: 'companies', family: 'Core contributors' },
   'Celo Core Co.': { camp: 'companies', family: 'Core contributors', note: 'cLabs and the Celo Foundation merged into Celo Core Co. in 2026' },
   'CICLOPS': { camp: 'companies', family: 'Spun-out programs', note: 'Infrastructure stewardship led from the Celo Foundation (CGP-158)' },
-  'Stabila': { camp: 'companies', family: 'Spun-out programs', note: 'Stablecoin and DeFi liquidity work the Foundation handed off (CGP-132)' },
+  'Stabila': { camp: 'companies', family: 'Spun-out programs', note: 'Stabila Foundation, a new entity created in CGP-132 for stablecoin and DeFi liquidity, run by Celo Foundation staff' },
+  'Mento Reserve': { camp: 'companies', family: 'Spun-out programs', note: 'Liquidity Mento owns, sent to the Mento Reserve Safe (CGP-69)' },
 
   'Celo Community Fund stewards': { camp: 'community', family: 'Grant stewards', note: 'The first stewardship; Prezenti reopened the fund in 2022 (CGP-54)' },
   'Ocelot (Celo Ecosystem Treasury)': { camp: 'community', family: 'Grant stewards', note: 'A 5-of-9 multisig of ecosystem members (CGP-38)' },
@@ -51,14 +52,14 @@ export const ORGANISATIONS = {
   'Artemis': { camp: 'partners', family: 'Service providers' },
   'Oracle providers': { camp: 'partners', family: 'Service providers' },
 
-  'Airdrop to cUSD holders': { camp: 'operations', family: 'Protocol operations' },
+  'Airdrop to USDm holders': { camp: 'operations', family: 'Protocol operations' },
   'Governance approvers': { camp: 'operations', family: 'Protocol operations' },
   'Fund-owned liquidity': { camp: 'operations', family: 'Liquidity' },
 };
 
 // Ledger recipient (lower-case address, or `transfer:<title>` for direct transfers) -> organisation.
 export const RECIPIENTS = {
-  '0x7bdee323f5227f214edfc3ae4bd4ebc032b59c82': 'Airdrop to cUSD holders',
+  '0x7bdee323f5227f214edfc3ae4bd4ebc032b59c82': 'Airdrop to USDm holders',
   '0x2f90bb1caf4079192481b1a7f3088220d291456d': 'Celo Community Fund stewards',
   'transfer:Oracle Funding': 'Oracle providers',
   '0x5374cf78f82e3610f9678bd7af617785ff6c578a': 'Community Appreciation Gifts',
@@ -68,7 +69,7 @@ export const RECIPIENTS = {
   '0xda2069f47d252121c2288301d6ef50b87220a693': 'Prezenti',
   '0xa5c9389a0ce1bfe24ff883e761ff313225c77d44': 'Prezenti',
   '0xfa3df877f98ac5ecd87456a7accaa948462412f0': 'Fund-owned liquidity',
-  '0x87647780180b8f55980c7d3ffefe08a9b29e9ae1': 'Fund-owned liquidity',
+  '0x87647780180b8f55980c7d3ffefe08a9b29e9ae1': 'Mento Reserve',
   '0xc59533fd060e38230100f3577ef5ad9467ae2594': 'Celo Africa DAO',
   '0x46421b8ef42b67ae4e24be599bd78144e5e12088': 'Chainlink SCALE',
   '0x38dbab5c651f352c8f5f765fda292e9b92d850ff': 'CeLatam DAO',

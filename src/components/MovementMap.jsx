@@ -56,12 +56,12 @@ export default function MovementMap({ map, eras, grants, today = new Date().toIS
   const height = axisY + 50;
   const years = Array.from({ length: 10 }, (_, i) => 2018 + i);
   const band = { x1: x('2024-01-01'), x2: x('2025-01-01'), y1: ys.celopg - 16, y2: ys.commguild + 16 };
-  const stripes = [{ name: 'Before the fund', years: '2018–20', start: '2018-01-01', end: '2021-01-01' }, ...eras];
+  const stripes = [{ name: 'Before the fund', years: '2018-20', start: '2018-01-01', end: '2021-01-01' }, ...eras];
   const laneGrants = map.lanes.flatMap((lane) => grants.filter((g) => lane.orgs.includes(g.organisation)).map((g) => ({ ...g, lane })));
   const label = (lane) => (ys[lane] ?? 0);
 
   return (
-    <div className="chart-scroll">
+    <div className="chart-scroll" tabIndex={0}>
       <svg
         className="movement-map"
         viewBox={`0 0 ${W} ${height}`}
