@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Celo">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Celo">
   <title>Celo</title>
-  <circle cx="24" cy="32" r="15" fill="none" stroke="#35D07F" stroke-width="6"/>
-  <circle cx="40" cy="32" r="15" fill="none" stroke="#FCFF52" stroke-width="6"/>
+  <rect width="100" height="100" fill="#FCFF52"/>
+  <path transform="translate(25 25)" fill="#000" d="M49.9533 0.0913391H0.0913223V49.9544H49.9533V32.5571H41.6886C38.8348 38.9041 32.4194 43.3334 25.068 43.3334C14.9312 43.3334 6.73502 35.0685 6.73502 25C6.73502 14.9315 14.9312 6.73518 25.068 6.73518C32.5564 6.73518 38.9718 11.3014 41.8256 17.7854H49.9533V0.0913391Z"/>
 </svg>
