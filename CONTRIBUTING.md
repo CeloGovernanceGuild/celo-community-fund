@@ -51,6 +51,10 @@ Types: feat, fix, docs, style, refactor, perf, test, chore, ci, build.
 `src/data/drafts.js` is the only data edited by hand: funding requests discussed on the forum that
 have no CGP yet. Link the forum post in the pull request.
 
+`src/data/organisations.js` is also edited by hand: it says which organisation and camp each ledger recipient
+belongs to. A new spender needs a line there too; `npm test` fails until it has one. `src/data/fundHistory.js` is a
+dated snapshot for the History page, explained in `docs/history.md`.
+
 ## Local checks
 
 ```sh
