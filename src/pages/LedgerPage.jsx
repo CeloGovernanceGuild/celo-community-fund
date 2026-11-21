@@ -4,6 +4,8 @@ import Amount from '../components/Amount';
 import { ClaimProgress } from '../components/Charts';
 import { addressUrl, tokenHolderUrl, txUrl } from '../data/data';
 import { TOKENS } from '../lib/fund';
+import { CAMPS } from '../data/organisations';
+import { campLabel, groupByOrganisation, organisationOf } from '../lib/organisations';
 
 const cgpUrl = (n) => `https://github.com/celo-org/governance/blob/main/CGPs/cgp-${String(n).padStart(4, '0')}.md`;
 const short = (hex) => `${hex.slice(0, 6)}...${hex.slice(-4)}`;
@@ -20,6 +22,10 @@ const STATUS_HELP = {
   'fully claimed': 'Governance approved an allowance and the recipient already claimed all of it.',
   transferred: 'The proposal sent the funds directly when it executed. There was no allowance and nothing left to claim.',
 };
+const VIEWS = [
+  { value: 'recipients', label: 'Recipients' },
+  { value: 'organisations', label: 'Organisations' },
+];
 const FUNCTION_LABEL = { approve: 'Allowance set', increaseAllowance: 'Allowance increased', transfer: 'Direct transfer' };
 
 // Amounts of different tokens cannot be added up, so sorting compares CELO first, then USDm, then EURm.
@@ -87,8 +93,18 @@ function Amounts({ label, positions, field }) {
   );
 }
 
-function Entry({ group, positions }) {
+function OrgTag({ org }) {
+  return (
+    <span className="org-tag" title={campLabel(org.camp)}>
+      <span className={`swatch camp-${org.camp}`} aria-hidden="true" />
+      {org.name}
+    </span>
+  );
+}
+
+function Entry({ group, positions, showOrg = true }) {
   const [open, setOpen] = useState(false);
+  const org = organisationOf(group);
   const id = `entry-${group.key.replace(/\W+/g, '-')}`;
   const tokens = new Set(positions.map((p) => p.token));
   return (
@@ -97,6 +113,7 @@ function Entry({ group, positions }) {
         <span className="ledger-name">
           <span className="row-title">{group.title}</span>
           <span className="row-meta">
+            {showOrg && org.name !== group.title && <OrgTag org={org} />}
             {positions.map((p) => <span className="badge plain" key={p.token}>{p.token}</span>)}
             <span className={group.status === 'open' ? 'badge open' : 'badge'} title={STATUS_HELP[group.status]}>{STATUS_LABEL[group.status]}</span>
           </span>
@@ -132,6 +149,43 @@ function Entry({ group, positions }) {
   );
 }
 
+// One organisation: its totals per token, and every recipient address underneath.
+function OrgEntry({ org, token }) {
+  const [open, setOpen] = useState(false);
+  const id = `org-${org.title.replace(/\W+/g, '-')}`;
+  const positions = token === 'all' ? org.positions : org.positions.filter((p) => p.token === token);
+  const count = org.recipients.length;
+  return (
+    <li className="ledger-item">
+      <button className="ledger-toggle" type="button" aria-expanded={open} aria-controls={id} onClick={() => setOpen((v) => !v)}>
+        <span className="ledger-name">
+          <span className="row-title">{org.title}</span>
+          <span className="row-meta">
+            <span className="org-tag"><span className={`swatch camp-${org.camp}`} aria-hidden="true" />{campLabel(org.camp)}</span>
+            <span>{org.family}</span>
+            <span>{count === 1 ? '1 recipient' : `${count} recipients`}</span>
+            <span className={org.status === 'open' ? 'badge open' : 'badge'} title={STATUS_HELP[org.status]}>{STATUS_LABEL[org.status]}</span>
+          </span>
+        </span>
+        <Amounts label="Approved" positions={positions} field="approved" />
+        <Amounts label="Paid out" positions={positions} field="paidOut" />
+        <Amounts label="Remaining" positions={positions} field="remaining" />
+        <span className="chevron" aria-hidden="true" />
+      </button>
+      {open && (
+        <div className="ledger-detail" id={id}>
+          {org.note && <p className="small muted" style={{ marginBottom: '0.75rem' }}>{org.note}</p>}
+          <ul className="rows nested">
+            {org.recipients.map((g) => (
+              <Entry key={g.key} group={g} showOrg={false} positions={token === 'all' ? g.positions : g.positions.filter((p) => p.token === token)} />
+            ))}
+          </ul>
+        </div>
+      )}
+    </li>
+  );
+}
+
 export default function LedgerPage({ state }) {
   const [query, setQuery] = useState('');
   const [token, setToken] = useState('all');
@@ -140,15 +194,24 @@ export default function LedgerPage({ state }) {
     return STATUS_FILTERS.some((f) => f.value === wanted) ? wanted : 'all';
   });
   const [sort, setSort] = useState('newest');
+  const [view, setView] = useState(() => {
+    const wanted = new URLSearchParams(window.location.hash.split('?')[1] ?? '').get('view');
+    return VIEWS.some((v) => v.value === wanted) ? wanted : 'recipients';
+  });
+  const [camp, setCamp] = useState('all');
 
   const groups = useMemo(() => {
     const q = query.trim().toLowerCase();
     return state.groups
       .filter((g) => token === 'all' || g.tokens.includes(token))
       .filter((g) => status === 'all' || g.status === status)
-      .filter((g) => !q || g.title.toLowerCase().includes(q) || (g.address ?? '').toLowerCase().includes(q) || g.cgps.some((n) => `cgp-${n}` === q || String(n) === q))
+      .filter((g) => camp === 'all' || organisationOf(g).camp === camp)
+      .filter((g) => !q || g.title.toLowerCase().includes(q) || organisationOf(g).name.toLowerCase().includes(q) || (g.address ?? '').toLowerCase().includes(q) || g.cgps.some((n) => `cgp-${n}` === q || String(n) === q))
       .sort(SORTS[sort].compare);
-  }, [state.groups, query, token, status, sort]);
+  }, [state.groups, query, token, status, camp, sort]);
+
+  const orgs = useMemo(() => groupByOrganisation(groups).sort(SORTS[sort].compare), [groups, sort]);
+  const allOrgs = useMemo(() => groupByOrganisation(state.groups).length, [state.groups]);
 
   return (
     <>
@@ -156,8 +219,9 @@ export default function LedgerPage({ state }) {
         <p className="eyebrow">Ledger</p>
         <h1 className="display">Everything governance approved from the fund, to the last CELO.</h1>
         <p className="lede">
-          One line per recipient address. Approved is what governance authorized, paid out is what left the fund, and
-          remaining is what a recipient can still claim from its allowance. Open any line to see the proposals behind it.
+          One line per recipient address, or per organisation. Approved is what governance authorized, paid out is what
+          left the fund, and remaining is what a recipient can still claim from its allowance. Open any line to see the
+          proposals behind it.
         </p>
       </header>
 
@@ -186,8 +250,16 @@ export default function LedgerPage({ state }) {
               Search
               <input type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Name, address or CGP" />
             </label>
+            <Segmented label="View" options={VIEWS} value={view} onChange={setView} />
             <Segmented label="Token" options={[{ value: 'all', label: 'All' }, ...TOKENS.map((t) => ({ value: t, label: t }))]} value={token} onChange={setToken} />
             <Segmented label="Status" options={STATUS_FILTERS} value={status} onChange={setStatus} />
+            <label className="field">
+              Camp
+              <select value={camp} onChange={(e) => setCamp(e.target.value)}>
+                <option value="all">All camps</option>
+                {CAMPS.map((c) => <option key={c.key} value={c.key}>{c.label}</option>)}
+              </select>
+            </label>
             <label className="field">
               Sort by
               <select value={sort} onChange={(e) => setSort(e.target.value)}>
@@ -197,7 +269,10 @@ export default function LedgerPage({ state }) {
           </div>
 
           <p className="small muted" role="status" style={{ marginBottom: '0.75rem' }}>
-            {groups.length} of {state.groups.length} recipients. Amounts are in whole units; hover a number for the exact value.
+            {view === 'organisations'
+              ? `${orgs.length} of ${allOrgs} organisations, ${groups.length} recipients.`
+              : `${groups.length} of ${state.groups.length} recipients.`}{' '}
+            Amounts are in whole units; hover a number for the exact value.
           </p>
 
           <dl className="status-legend small">
@@ -214,13 +289,19 @@ export default function LedgerPage({ state }) {
           ) : (
             <>
               <div className="ledger-head" aria-hidden="true">
-                <span>Recipient</span><span>Approved</span><span>Paid out</span><span>Remaining</span><span />
+                <span>{view === 'organisations' ? 'Organisation' : 'Recipient'}</span><span>Approved</span><span>Paid out</span><span>Remaining</span><span />
               </div>
               <ul className="rows" style={{ borderTop: 0 }}>
-                {groups.map((g) => (
-                  <Entry key={g.key} group={g} positions={token === 'all' ? g.positions : g.positions.filter((p) => p.token === token)} />
-                ))}
+                {view === 'organisations'
+                  ? orgs.map((o) => <OrgEntry key={o.key} org={o} token={token} />)
+                  : groups.map((g) => (
+                    <Entry key={g.key} group={g} positions={token === 'all' ? g.positions : g.positions.filter((p) => p.token === token)} />
+                  ))}
               </ul>
+              <p className="small muted" style={{ marginTop: '0.75rem' }}>
+                Organisations and camps are assigned by hand in <span className="mono">src/data/organisations.js</span>.
+                See <a href="#/history">History</a> for how they connect.
+              </p>
             </>
           )}
         </section>

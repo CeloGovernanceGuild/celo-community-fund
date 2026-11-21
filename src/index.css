@@ -17,6 +17,14 @@
   --series-claimed: #8c8272;
   --series-deposits: #2a6fb0;
 
+  /* Who received the money (src/data/organisations.js), on the Ledger, Overview and History pages.
+     Validated for color vision deficiency on the gypsum surface; operations is the neutral gray. */
+  --camp-companies: #2a6fb0;
+  --camp-community: #e8751a;
+  --camp-partners: #476520;
+  --camp-governance: #7a4fb5;
+  --camp-operations: #8c8272;
+
   --font-display: 'Fraunces', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
