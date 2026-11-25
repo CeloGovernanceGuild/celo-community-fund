@@ -6,7 +6,7 @@ name: Branch flow
 on:
   pull_request:
     branches: [dev, main]
-  # Started by the daily audit for its own branch, which always targets dev.
+  # Manual runs only. The daily audit reports this check on its own commit (see audit.yml).
   workflow_dispatch:
 
 permissions: {}

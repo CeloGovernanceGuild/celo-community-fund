@@ -2,7 +2,7 @@ name: Governance audit
 
 # Re-runs the on-chain audit every day and opens a pull request into dev when
 # the ledger, pending proposals or report changed. dev is protected, so the
-# update only lands after CI passes and someone merges it.
+# update only lands after the required checks pass and celogovernance merges it.
 
 on:
   schedule:
@@ -12,7 +12,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
-  actions: write
+  statuses: write
 
 concurrency:
   group: governance-audit
@@ -22,11 +22,14 @@ jobs:
   audit:
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    env:
+      # Secrets cannot be read in step conditions, so their presence is passed as a flag.
+      HAS_PR_TOKEN: ${{ secrets.AUDIT_PR_TOKEN != '' }}
     steps:
       - uses: actions/checkout@v5
         with:
           ref: dev
-          # A token other than GITHUB_TOKEN is needed for the pull request to trigger CI.
+          # With a token other than GITHUB_TOKEN the pull request starts the CI workflows by itself.
           token: ${{ secrets.AUDIT_PR_TOKEN || github.token }}
       - uses: actions/checkout@v5
         with:
@@ -35,15 +38,20 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
       - name: Run audit
         run: scripts/audit/run.sh .governance
       - name: Open pull request if data changed
+        id: pr
         env:
           GH_TOKEN: ${{ secrets.AUDIT_PR_TOKEN || github.token }}
-          HAS_PR_TOKEN: ${{ secrets.AUDIT_PR_TOKEN != '' }}
         run: |
           if git diff --quiet -- src/data docs/audit.md; then
             echo "No changes."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           branch="data/audit-$(date -u +%Y-%m-%d)"
@@ -58,9 +66,34 @@ jobs:
               --title "chore(data): refresh governance audit $(date -u +%Y-%m-%d)" \
               --body "Automated run of \`scripts/audit/run.sh\`. Review \`docs/audit.md\` for new grants, claims and findings."
           fi
-          # A pull request opened with GITHUB_TOKEN does not start pull_request workflows.
-          # Start the required checks on the branch so the pull request can be merged.
-          if [ "$HAS_PR_TOKEN" != "true" ]; then
-            gh workflow run ci.yml --ref "$branch"
-            gh workflow run branch-flow.yml --ref "$branch"
-          fi
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      # A pull request opened with GITHUB_TOKEN does not start pull_request workflows, and runs
+      # started by hand are not linked to the pull request, so the dev ruleset never sees them.
+      # Without AUDIT_PR_TOKEN this job runs the same checks as ci.yml and branch-flow.yml on the
+      # audit commit and reports them as commit statuses, which the ruleset reads by commit.
+      - name: Run the required checks on the audit commit
+        id: checks
+        if: steps.pr.outputs.changed == 'true' && env.HAS_PR_TOKEN != 'true'
+        continue-on-error: true
+        run: |
+          npm ci
+          python3 -m unittest discover -s scripts/audit -p 'test_*.py'
+          npm test
+          npm run build
+      - name: Report the checks on the audit commit
+        if: steps.pr.outputs.changed == 'true' && env.HAS_PR_TOKEN != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SHA: ${{ steps.pr.outputs.sha }}
+          RESULT: ${{ steps.checks.outcome }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          state=$([ "$RESULT" = "success" ] && echo success || echo failure)
+          gh api "repos/$GITHUB_REPOSITORY/statuses/$SHA" -f state="$state" -f context=test-and-build \
+            -f description="Tests and build run by the governance audit" -f target_url="$RUN_URL"
+          # The audit branch always targets dev, which is the allowed path for branch-flow.
+          gh api "repos/$GITHUB_REPOSITORY/statuses/$SHA" -f state=success -f context=branch-flow \
+            -f description="data/audit-* -> dev" -f target_url="$RUN_URL"
+          [ "$state" = "success" ]
