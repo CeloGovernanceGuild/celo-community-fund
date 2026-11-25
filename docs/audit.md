@@ -1,6 +1,6 @@
 # Community Fund governance audit
 
-Snapshot: Celo block 83286085 (2026-11-20). Every number was read on-chain or from
+Snapshot: Celo block 83740380 (2026-11-25). Every number was read on-chain or from
 [celo-org/governance](https://github.com/celo-org/governance) at that block. Amounts are exact to the wei:
 nothing is rounded. The scripts that produce this report and `src/data` live in [`scripts/audit`](../scripts/audit).
 
@@ -9,8 +9,8 @@ nothing is rounded. The scripts that produce this report and `src/data` live in 
 - **The fund** is the Governance contract (`0xD533Ca259b330c7A88f74E000a3FaEa2d63B7972`). It only pays out when a
   proposal executes: an `approve` or `increaseAllowance` that the recipient later draws down, or a direct `transfer`.
 - **Governance approver multisig** (`0x41822d8A191fcfB1cfcA5F7048818aCd8eE933d3`, read from `Governance.approver()`): it has to
-  approve a proposal before it can execute. 3 confirmations of 14 owners at block 83286085.
-- **Celo Operations Safe** (`0x7A1E98FC9a008107DbD1f430a05Ace8cf6f3FE19`, 2 of 5 owners at block 83286085): the only extra
+  approve a proposal before it can execute. 3 confirmations of 14 owners at block 83740380.
+- **Celo Operations Safe** (`0x7A1E98FC9a008107DbD1f430a05Ace8cf6f3FE19`, 2 of 5 owners at block 83740380): the only extra
   beneficiary registered in the FeeHandler (`0xcD437749E43A154C07F3553504c68fBfD56B8778`), under the name `cLabs`. It also
   receives the sequencer fee vault (`0x4200000000000000000000000000000000000011`) and sends the net revenue to the fund.
   It is not part of governance and its payments have no proposal; see finding 8.
@@ -34,14 +34,14 @@ nothing is rounded. The scripts that produce this report and `src/data` live in 
 
 | Token | Fund balance | Open allowances | Balance minus open allowances |
 |---|---:|---:|---:|
-| CELO | 78,423,329.79205181218521778 | 38,869,472.15175548892 | 39,553,857.64029632326521778 |
+| CELO | 78,433,481.458913602237745613 | 38,869,472.15175548892 | 39,564,009.307158113317745613 |
 | USDm | 1,670.502286982809573708 | 1,152,130.261 | -1,150,459.758713017190426292 |
 | EURm | 55.994895651259895506 | 0 | 55.994895651259895506 |
 
 - Executed proposals checked: 208
 - CGP spend transactions verified against execution receipts: 112 of 112
 - CELO grants executed after the site's previous data update (2023-08-25): 54
-- Pending CGPs with an on-chain proposal that can still execute: 0
+- Pending CGPs with an on-chain proposal that can still execute: 1
 
 ## Ledger
 
@@ -224,12 +224,12 @@ the latter has no canonical ERC-20 `Transfer` log.
 
 | Reconciliation item | CELO |
 |---|---:|
-| Opening balance (block 51749366) | 8,226,405.187271742901695597 |
-| Inflows seen | 165,228,602.070280069283522208 |
+| Opening balance (block 52203753) | 8,228,644.058731320081170582 |
+| Inflows seen | 165,236,514.865682282156575056 |
 | Outflows seen | -95,031,677.465500000000000025 |
-| Observed net flows | 70,196,924.604780069283522183 |
-| Closing balance (block 83285367) | 78,423,329.79205181218521778 |
-| Balance change | 70,196,924.604780069283522183 |
+| Observed net flows | 70,204,837.400182282156575031 |
+| Closing balance (block 83739754) | 78,433,481.458913602237745613 |
+| Balance change | 70,204,837.400182282156575031 |
 | Unexplained difference | 0 |
 
 Blockscout's index missed 2 `Transfer` log(s) in this window. Each one was located by
@@ -242,18 +242,18 @@ Celo Core Co. reports each payment, with its period and deductions, in
 
 **Proposal deposits.** Submitting a proposal sends a deposit to the Governance contract, which is the fund. When the
 proposal leaves the queue the deposit becomes withdrawable by its proposer; if it expires in the queue it is forfeited
-and stays in the fund. Of the 316 proposals ever submitted, 316 left the queue,
-0 are in the queue and 0 expired in it.
+and stays in the fund. Of the 317 proposals ever submitted, 316 left the queue,
+1 are in the queue and 0 expired in it.
 
 | Proposal deposits, all time | CELO |
 |---|---:|
-| Deposited | 1,605,704 |
+| Deposited | 1,615,704 |
 | Withdrawn by proposers | 1,554,104 |
 | Withdrawable, not withdrawn yet | 51,600 |
-| In the queue | 0 |
+| In the queue | 10,000 |
 | Forfeited to the fund | 0 |
 
-The 51,600 CELO not withdrawn yet is in the fund's balance but belongs to the proposers,
+The 61,600 CELO not withdrawn yet is in the fund's balance but belongs to the proposers,
 so the site subtracts it from the available amount. The deposits still withdrawable, by proposal:
 
 | Proposal | Submitted | Deposit (CELO) | CGP | Outcome | Proposer | Submission tx |
@@ -285,7 +285,7 @@ Reserve and is shown as an inflow, not as a locked deduction from the fund.
 
 ### 9. Cross-check with Mondo
 
-[Mondo](https://mondo.celo.org/governance), the Celo governance app, lists 294 proposals, 200 of them executed.
+[Mondo](https://mondo.celo.org/governance), the Celo governance app, lists 295 proposals, 200 of them executed.
 - Executed on-chain and executed in Mondo: 200
 - Executed in Mondo but not on-chain: none
 - Executed on-chain but not listed as executed in Mondo: 68, 83, 86, 88, 89, 96, 111, 115 (not in Mondo's list at all)
@@ -295,7 +295,7 @@ Reserve and is shown as an inflow, not as a locked deduction from the fund.
 
 | CGP | Status | Proposal | On-chain stage | Fund requests |
 |---|---|---:|---|---|
-| [CGP-257](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0257.md) Revenue-Based CELO Burn - Allocate 25% of Net L2 Sequencer Revenue to Permanent Burn | DRAFT | - | not submitted | none |
+| [CGP-257](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0257.md) Revenue-Based CELO Burn - Allocate 25% of Net L2 Sequencer Revenue to Permanent Burn | DRAFT | 318 | Queued | none |
 | [CGP-190](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0190.md) Enable USDGLO as Gas Currency | DRAFT | - | not submitted | none |
 | [CGP-89](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0089.md) Enable G$ as Gas Currency | DRAFT | - | not submitted | none |
 | [CGP-63](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0063.md) Learn to Earn | DRAFT | 78 | Expiration | none |
