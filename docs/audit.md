@@ -1,6 +1,6 @@
 # Community Fund governance audit
 
-Snapshot: Celo block 83740380 (2026-11-25). Every number was read on-chain or from
+Snapshot: Celo block 83809737 (2026-11-26). Every number was read on-chain or from
 [celo-org/governance](https://github.com/celo-org/governance) at that block. Amounts are exact to the wei:
 nothing is rounded. The scripts that produce this report and `src/data` live in [`scripts/audit`](../scripts/audit).
 
@@ -9,8 +9,8 @@ nothing is rounded. The scripts that produce this report and `src/data` live in 
 - **The fund** is the Governance contract (`0xD533Ca259b330c7A88f74E000a3FaEa2d63B7972`). It only pays out when a
   proposal executes: an `approve` or `increaseAllowance` that the recipient later draws down, or a direct `transfer`.
 - **Governance approver multisig** (`0x41822d8A191fcfB1cfcA5F7048818aCd8eE933d3`, read from `Governance.approver()`): it has to
-  approve a proposal before it can execute. 3 confirmations of 14 owners at block 83740380.
-- **Celo Operations Safe** (`0x7A1E98FC9a008107DbD1f430a05Ace8cf6f3FE19`, 2 of 5 owners at block 83740380): the only extra
+  approve a proposal before it can execute. 3 confirmations of 14 owners at block 83809737.
+- **Celo Operations Safe** (`0x7A1E98FC9a008107DbD1f430a05Ace8cf6f3FE19`, 2 of 5 owners at block 83809737): the only extra
   beneficiary registered in the FeeHandler (`0xcD437749E43A154C07F3553504c68fBfD56B8778`), under the name `cLabs`. It also
   receives the sequencer fee vault (`0x4200000000000000000000000000000000000011`) and sends the net revenue to the fund.
   It is not part of governance and its payments have no proposal; see finding 8.
@@ -34,7 +34,7 @@ nothing is rounded. The scripts that produce this report and `src/data` live in 
 
 | Token | Fund balance | Open allowances | Balance minus open allowances |
 |---|---:|---:|---:|
-| CELO | 78,433,481.458913602237745613 | 38,869,472.15175548892 | 39,564,009.307158113317745613 |
+| CELO | 78,433,511.808301401875894223 | 38,869,472.15175548892 | 39,564,039.656545912955894223 |
 | USDm | 1,670.502286982809573708 | 1,152,130.261 | -1,150,459.758713017190426292 |
 | EURm | 55.994895651259895506 | 0 | 55.994895651259895506 |
 
@@ -224,12 +224,12 @@ the latter has no canonical ERC-20 `Transfer` log.
 
 | Reconciliation item | CELO |
 |---|---:|
-| Opening balance (block 52203753) | 8,228,644.058731320081170582 |
-| Inflows seen | 165,236,514.865682282156575056 |
+| Opening balance (block 52273038) | 8,229,245.124552160986173498 |
+| Inflows seen | 165,235,944.14924924088972075 |
 | Outflows seen | -95,031,677.465500000000000025 |
-| Observed net flows | 70,204,837.400182282156575031 |
-| Closing balance (block 83739754) | 78,433,481.458913602237745613 |
-| Balance change | 70,204,837.400182282156575031 |
+| Observed net flows | 70,204,266.683749240889720725 |
+| Closing balance (block 83809039) | 78,433,511.808301401875894223 |
+| Balance change | 70,204,266.683749240889720725 |
 | Unexplained difference | 0 |
 
 Blockscout's index missed 2 `Transfer` log(s) in this window. Each one was located by
@@ -242,15 +242,15 @@ Celo Core Co. reports each payment, with its period and deductions, in
 
 **Proposal deposits.** Submitting a proposal sends a deposit to the Governance contract, which is the fund. When the
 proposal leaves the queue the deposit becomes withdrawable by its proposer; if it expires in the queue it is forfeited
-and stays in the fund. Of the 317 proposals ever submitted, 316 left the queue,
-1 are in the queue and 0 expired in it.
+and stays in the fund. Of the 317 proposals ever submitted, 317 left the queue,
+0 are in the queue and 0 expired in it.
 
 | Proposal deposits, all time | CELO |
 |---|---:|
 | Deposited | 1,615,704 |
 | Withdrawn by proposers | 1,554,104 |
-| Withdrawable, not withdrawn yet | 51,600 |
-| In the queue | 10,000 |
+| Withdrawable, not withdrawn yet | 61,600 |
+| In the queue | 0 |
 | Forfeited to the fund | 0 |
 
 The 61,600 CELO not withdrawn yet is in the fund's balance but belongs to the proposers,
@@ -261,6 +261,7 @@ so the site subtracts it from the available amount. The deposits still withdrawa
 | 316 | 2026-11-03 | 10,000 | [CGP-256](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0256.md) Fix USAT and XAUT0 Fee Distribution in FeeHandler | executed | `0x9f9671112b64005edf17d85384a6b16a494d44c4` | `0xe55b9c87ce543ffa4bebfc73b7e28c29b0cc4e5ec52321589587abd51f68de43` |
 | 317 | 2026-11-03 | 10,000 | [CGP-254](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0254.md) Governance Approver Rotation Correction: Re-add Eran Tromer, Remove Kobi Gurkan | executed | `0x9f9671112b64005edf17d85384a6b16a494d44c4` | `0x749509ebc3ac89a10ae069092c08139d4c940824e77f7a9402872cb1d90aaffc` |
 | 314 | 2026-10-20 | 10,000 | [CGP-254](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0254.md) Governance Approver Rotation Correction: Re-add Eran Tromer, Remove Kobi Gurkan | expired | `0x8ef439ee8f6905bfd2343668039d39eb2b77706e` | `0x3fba41a47310c1dfb26f5e5f45e3f63cb1ed9643daa68c434abb3ef5fb871acf` |
+| 318 | 2026-11-25 | 10,000 | [CGP-257](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0257.md) Revenue-Based CELO Burn - Allocate 25% of Net L2 Sequencer Revenue to Permanent Burn | not executed | `0xb0973470b5db57bf647628d537f54ee8e2787171` | `0xa6248b0557a64bb744dabb320bdaed3b94a6a83f32cd6f4e5bdc1cc5aa2d32e9` |
 | 290 | 2026-05-12 | 10,000 | [CGP-238](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0238.md) Contracts Release 16 | executed | `0xc11f5ac70b86517dcc10f20d8b0d5e77ebb956ce` | `0xf033db3a1a595c2472c1719d1596320c019e0279d9d31c630288b9f4361f1461` |
 | 305 | 2026-07-31 | 10,000 | [CGP-249](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0249.md) Prezenti Grants Season 3: Redeployment of Held Funds | executed | `0xc685ccecfea58d10d0ca1a058bb0b37032a7a310` | `0xf60527df6155995be82b708a5ac65621cd3a7014afe132fd4e023538de0d8f7d` |
 | 135 | 2023-09-15 | 100 | [CGP-99](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0099.md) Celo Core Contracts Release 10 | executed | `0xf3eb910da09b8af348e0e5b6636da442cfa79239` | `0x1a52162ef0f0b6cb474cfb9715156960c147a2a77b7c1290aa4c0890d787404a` |
@@ -295,7 +296,7 @@ Reserve and is shown as an inflow, not as a locked deduction from the fund.
 
 | CGP | Status | Proposal | On-chain stage | Fund requests |
 |---|---|---:|---|---|
-| [CGP-257](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0257.md) Revenue-Based CELO Burn - Allocate 25% of Net L2 Sequencer Revenue to Permanent Burn | DRAFT | 318 | Queued | none |
+| [CGP-257](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0257.md) Revenue-Based CELO Burn - Allocate 25% of Net L2 Sequencer Revenue to Permanent Burn | DRAFT | 318 | Referendum | none |
 | [CGP-190](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0190.md) Enable USDGLO as Gas Currency | DRAFT | - | not submitted | none |
 | [CGP-89](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0089.md) Enable G$ as Gas Currency | DRAFT | - | not submitted | none |
 | [CGP-63](https://github.com/celo-org/governance/blob/main/CGPs/cgp-0063.md) Learn to Earn | DRAFT | 78 | Expiration | none |
